@@ -21,6 +21,7 @@ public final class ClientEventSubscriber {
         registerItemModel(ModItems.COPPER_ORE_ITEM);
         registerItemModel(ModItems.COPPER_INGOT);
         registerItemModel(ModItems.MUFFLE_FURNACE_ITEM);
+        registerItemModel(ModItems.FLYWHEEL);
     }
 
     private static void registerItemModel(Item item) {
