@@ -17,7 +17,6 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import com.example.examplemod.recipe.MuffleFurnaceRecipes;
 import com.example.examplemod.init.ModBlocks;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import org.apache.logging.log4j.Logger;
 
@@ -33,7 +32,6 @@ public class ExampleMod
     public static final String VERSION = "1.0";
 
     public static final int GUI_MUFFLE_FURNACE = 1;
-
 
     @Mod.Instance(MODID)
     public static ExampleMod INSTANCE;
@@ -63,7 +61,6 @@ public class ExampleMod
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-
         logger = event.getModLog();
 
         GameRegistry.registerTileEntity(
@@ -89,7 +86,9 @@ public class ExampleMod
                 "DIRT BLOCK >> {}",
                 Blocks.DIRT.getRegistryName()
         );
+
         MuffleFurnaceRecipes.registerRecipes();
+
         GameRegistry.addShapedRecipe(
                 new ResourceLocation(MODID, "muffle_furnace"),
                 null,
@@ -99,6 +98,27 @@ public class ExampleMod
                 "JJJ",
                 'K', Blocks.STONE,
                 'J', Items.IRON_INGOT
+        );
+
+        // Steam engine casing: 2x3 rectangle of copper ingots.
+        GameRegistry.addShapedRecipe(
+                new ResourceLocation(MODID, "steam_engine_casing_vertical"),
+                null,
+                new ItemStack(ModBlocks.STEAM_ENGINE_CASING),
+                "MM",
+                "MM",
+                "MM",
+                'M', ModItems.COPPER_INGOT
+        );
+
+        // Same recipe rotated: 3x2 rectangle of copper ingots.
+        GameRegistry.addShapedRecipe(
+                new ResourceLocation(MODID, "steam_engine_casing_horizontal"),
+                null,
+                new ItemStack(ModBlocks.STEAM_ENGINE_CASING),
+                "MMM",
+                "MMM",
+                'M', ModItems.COPPER_INGOT
         );
     }
 }
