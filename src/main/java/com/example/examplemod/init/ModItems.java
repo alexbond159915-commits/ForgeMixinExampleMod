@@ -9,21 +9,26 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @Mod.EventBusSubscriber(modid = ExampleMod.MODID)
+
 public final class ModItems {
     public static final Item RAW_IRON = new Item()
-            .setRegistryName(ExampleMod.MODID, "raw_iron")
-            .setUnlocalizedName(ExampleMod.MODID + ".raw_iron")
-            .setCreativeTab(CreativeTabs.MATERIALS);
+            .setTranslationKey(ExampleMod.MODID + ".raw_iron")
+            .setRegistryName("raw_iron")
+            .setCreativeTab(ExampleMod.CREATIVE_TAB);
 
     public static final Item RAW_COPPER = new Item()
-            .setRegistryName(ExampleMod.MODID, "raw_copper")
-            .setUnlocalizedName(ExampleMod.MODID + ".raw_copper")
-            .setCreativeTab(CreativeTabs.MATERIALS);
+            .setTranslationKey(ExampleMod.MODID + ".raw_copper")
+            .setRegistryName("raw_copper")
+            .setCreativeTab(ExampleMod.CREATIVE_TAB);
 
     public static final ItemBlock COPPER_ORE_ITEM = (ItemBlock) new ItemBlock(ModBlocks.COPPER_ORE)
             .setRegistryName(ExampleMod.MODID, "copper_ore")
-            .setUnlocalizedName(ExampleMod.MODID + ".copper_ore")
+            .setTranslationKey(ExampleMod.MODID + ".copper_ore")
             .setCreativeTab(CreativeTabs.BUILDING_BLOCKS);
+    public static final Item COPPER_INGOT = new Item()
+            .setTranslationKey(ExampleMod.MODID + ".copper_ingot")
+            .setRegistryName("copper_ingot")
+            .setCreativeTab(ExampleMod.CREATIVE_TAB);
 
     private ModItems() {}
 
@@ -32,5 +37,13 @@ public final class ModItems {
         event.getRegistry().register(RAW_IRON);
         event.getRegistry().register(RAW_COPPER);
         event.getRegistry().register(COPPER_ORE_ITEM);
+        event.getRegistry().register(COPPER_INGOT);
+        event.getRegistry().register(
+                new ItemBlock(ModBlocks.MUFFLE_FURNACE)
+                        .setRegistryName(
+                                ModBlocks.MUFFLE_FURNACE.getRegistryName()
+                        )
+                        .setCreativeTab(ExampleMod.CREATIVE_TAB)
+        );
     }
 }
