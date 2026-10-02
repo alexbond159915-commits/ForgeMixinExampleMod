@@ -4,4 +4,4 @@ tile.examplemod.copper_ore.name=Медная руда
 itemGroup.examplemod=Химия
 tile.examplemod.muffle_furnace.name=Муфельная печь
 item.examplemod.copper_ingot.name=Медный слиток
-item.examplemod.steam_engine_casing.name=Обшивка парового двигателя
+tile.examplemod.steam_engine_casing.name=Обшивка парового двигателя
