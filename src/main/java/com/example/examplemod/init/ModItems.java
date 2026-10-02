@@ -30,15 +30,33 @@ public final class ModItems {
             .setRegistryName(ExampleMod.MODID, "copper_ore")
             .setTranslationKey(ExampleMod.MODID + ".copper_ore")
             .setCreativeTab(CreativeTabs.BUILDING_BLOCKS);
+
     public static final Item COPPER_INGOT = new Item()
             .setTranslationKey(ExampleMod.MODID + ".copper_ingot")
             .setRegistryName("copper_ingot")
             .setCreativeTab(ExampleMod.CREATIVE_TAB);
+
+    public static final ItemBlock STEAM_ENGINE_CASING_ITEM =
+            new ItemBlock(ModBlocks.STEAM_ENGINE_CASING);
+
     public static final ItemBlock MUFFLE_FURNACE_ITEM =
             new ItemBlock(ModBlocks.MUFFLE_FURNACE);
 
     static
     {
+        STEAM_ENGINE_CASING_ITEM.setRegistryName(
+                ExampleMod.MODID,
+                "steam_engine_casing"
+        );
+
+        STEAM_ENGINE_CASING_ITEM.setTranslationKey(
+                ExampleMod.MODID + ".steam_engine_casing"
+        );
+
+        STEAM_ENGINE_CASING_ITEM.setCreativeTab(
+                ExampleMod.MACHINES_TAB
+        );
+
         MUFFLE_FURNACE_ITEM.setRegistryName(
                 ExampleMod.MODID,
                 "muffle_furnace"
@@ -62,6 +80,7 @@ public final class ModItems {
         event.getRegistry().register(RAW_COPPER);
         event.getRegistry().register(COPPER_ORE_ITEM);
         event.getRegistry().register(COPPER_INGOT);
+        event.getRegistry().register(STEAM_ENGINE_CASING_ITEM);
         event.getRegistry().register(MUFFLE_FURNACE_ITEM);
     }
 }

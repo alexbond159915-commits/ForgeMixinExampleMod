@@ -6,3 +6,4 @@ tile.examplemod.muffle_furnace.name=Muffle Furnace
 item.examplemod.copper_ingot.name=Copper Ingot
 item.examplemod.flywheel.name=Flywheel
 itemGroup.examplemod.machines=Machines
+item.examplemod.steam_engine_casing.name=Steam Engine Casing

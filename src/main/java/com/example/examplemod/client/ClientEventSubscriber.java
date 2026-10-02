@@ -20,6 +20,7 @@ public final class ClientEventSubscriber {
         registerItemModel(ModItems.RAW_COPPER);
         registerItemModel(ModItems.COPPER_ORE_ITEM);
         registerItemModel(ModItems.COPPER_INGOT);
+        registerItemModel(ModItems.STEAM_ENGINE_CASING_ITEM);
         registerItemModel(ModItems.MUFFLE_FURNACE_ITEM);
         registerItemModel(ModItems.FLYWHEEL);
     }
