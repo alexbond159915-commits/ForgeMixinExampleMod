@@ -13,6 +13,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.util.EnumBlockRenderType;
 
 public class BlockMuffleFurnace extends BlockContainer
 {
@@ -111,5 +112,10 @@ public class BlockMuffleFurnace extends BlockContainer
             int meta)
     {
         return new TileEntityMuffleFurnace();
+    }
+    @Override
+    public EnumBlockRenderType getRenderType(IBlockState state)
+    {
+        return EnumBlockRenderType.MODEL;
     }
 }
