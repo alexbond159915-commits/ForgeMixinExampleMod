@@ -13,6 +13,9 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.event.ForgeEventFactory;
+import com.example.examplemod.block.BlockMuffleFurnace;
+import com.example.examplemod.init.ModBlocks;
+import net.minecraft.block.state.IBlockState;
 
 public class TileEntityMuffleFurnace extends TileEntity implements IInventory, ITickable
 {
@@ -92,6 +95,21 @@ public class TileEntityMuffleFurnace extends TileEntity implements IInventory, I
             {
                 cookTime = 0;
                 dirty = true;
+            }
+        }
+        IBlockState state = world.getBlockState(pos);
+
+        if (state.getBlock() == ModBlocks.MUFFLE_FURNACE)
+        {
+            boolean lit = burnTime > 0;
+
+            if (state.getValue(BlockMuffleFurnace.LIT) != lit)
+            {
+                world.setBlockState(
+                        pos,
+                        state.withProperty(BlockMuffleFurnace.LIT, lit),
+                        3
+                );
             }
         }
 

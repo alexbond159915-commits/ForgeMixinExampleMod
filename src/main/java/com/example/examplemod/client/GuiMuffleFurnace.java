@@ -2,6 +2,8 @@ package com.example.examplemod.client;
 
 import com.example.examplemod.ExampleMod;
 import com.example.examplemod.container.ContainerMuffleFurnace;
+import com.example.examplemod.tileentity.TileEntityMuffleFurnace;
+
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -9,19 +11,30 @@ import net.minecraft.util.ResourceLocation;
 
 public class GuiMuffleFurnace extends GuiContainer
 {
-    private static final ResourceLocation TEXTURE =
+    private static final ResourceLocation GUI_TEXTURE =
             new ResourceLocation(
                     ExampleMod.MODID,
-                    "textures/gui/muffle_furnace.png"
+                    "textures/gui/mufflefurnace/muffle_furnace.png"
+            );
+
+    // Ванильная текстура печи Minecraft 1.12.2.
+    // Из неё берём только огонь и стрелку.
+    private static final ResourceLocation FURNACE_TEXTURE =
+            new ResourceLocation(
+                    "minecraft",
+                    "textures/gui/mufflefurnace/muffle_furnace.png"
             );
 
     private final ContainerMuffleFurnace container;
 
     public GuiMuffleFurnace(
             InventoryPlayer playerInventory,
-            com.example.examplemod.tileentity.TileEntityMuffleFurnace furnace)
+            TileEntityMuffleFurnace furnace)
     {
-        super(new ContainerMuffleFurnace(playerInventory, furnace));
+        super(new ContainerMuffleFurnace(
+                playerInventory,
+                furnace
+        ));
 
         this.container =
                 (ContainerMuffleFurnace) this.inventorySlots;
@@ -36,61 +49,92 @@ public class GuiMuffleFurnace extends GuiContainer
             int mouseX,
             int mouseY)
     {
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.color(
+                1.0F,
+                1.0F,
+                1.0F,
+                1.0F
+        );
 
-        mc.getTextureManager().bindTexture(TEXTURE);
+        int x = this.guiLeft;
+        int y = this.guiTop;
 
-        int x = (width - xSize) / 2;
-        int y = (height - ySize) / 2;
+        // =====================================
+        // ФОН ТВОЕГО GUI
+        // =====================================
 
-        // Основная текстура GUI
+        mc.getTextureManager().bindTexture(GUI_TEXTURE);
+
         drawTexturedModalRect(
                 x,
                 y,
                 0,
                 0,
-                xSize,
-                ySize
+                176,
+                166
         );
 
-        // Прогресс плавки
+        // =====================================
+        // АНИМАЦИЯ
+        // =====================================
+
+        mc.getTextureManager().bindTexture(FURNACE_TEXTURE);
+
+        // Огонь
+        int fireHeight = getBurnLeftScaled(13);
+
+        if (fireHeight > 0)
+        {
+            drawTexturedModalRect(
+                    x + 57,
+                    y + 38 + 12 - fireHeight,
+                    176,
+                    12 - fireHeight,
+                    14,
+                    fireHeight + 1
+            );
+        }
+
+        // Стрелка
+        int progress = getCookProgressScaled(24);
+
+        if (progress > 0)
+        {
+            drawTexturedModalRect(
+                    x + 78,
+                    y + 34,
+                    176,
+                    14,
+                    progress + 1,
+                    16
+            );
+        }
+    }
+
+    private int getCookProgressScaled(int pixels)
+    {
         int cookTime = container.getCookTime();
         int totalCookTime = container.getTotalCookTime();
 
-        if (cookTime > 0 && totalCookTime > 0)
+        if (totalCookTime <= 0)
         {
-            int progress =
-                    cookTime * 24 / totalCookTime;
-
-            drawRect(
-                    x + 89,
-                    y + 40,
-                    x + 89 + progress,
-                    y + 44,
-                    0xFFFFA500
-            );
+            return 0;
         }
 
-        // Полоска горения топлива
-        int burnTime =
-                container.getBurnTime();
+        return cookTime * pixels / totalCookTime;
+    }
 
-        int maxBurn =
-                container.getCurrentItemBurnTime();
+    private int getBurnLeftScaled(int pixels)
+    {
+        int burnTime = container.getBurnTime();
+        int maxBurnTime = container.getCurrentItemBurnTime();
 
-        if (burnTime > 0 && maxBurn > 0)
+        if (maxBurnTime <= 0)
         {
-            int flame =
-                    burnTime * 13 / maxBurn;
-
-            drawRect(
-                    x + 60,
-                    y + 71 - flame,
-                    x + 64,
-                    y + 71,
-                    0xFFFFA500
-            );
+            maxBurnTime = 200;
         }
+
+        return burnTime * pixels / maxBurnTime;
     }
 
     @Override
@@ -102,6 +146,13 @@ public class GuiMuffleFurnace extends GuiContainer
                 "Муфельная печь",
                 8,
                 6,
+                0x404040
+        );
+
+        fontRenderer.drawString(
+                "Инвентарь",
+                8,
+                72,
                 0x404040
         );
     }

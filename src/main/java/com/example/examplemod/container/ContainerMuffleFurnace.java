@@ -23,16 +23,16 @@ public class ContainerMuffleFurnace extends Container
         this.furnace = furnace;
 
         // Сырьё
-        addSlotToContainer(new Slot(furnace, 0, 47, 34));
+        addSlotToContainer(new Slot(furnace, 0, 45, 20));
 
-        // Уголь
-        addSlotToContainer(new Slot(furnace, 1, 71, 34));
+// Уголь
+        addSlotToContainer(new Slot(furnace, 1, 67, 20));
 
-        // Топливо
-        addSlotToContainer(new Slot(furnace, 2, 59, 58));
+// Топливо
+        addSlotToContainer(new Slot(furnace, 2, 56, 53));
 
-        // Выход
-        addSlotToContainer(new Slot(furnace, 3, 133, 34)
+// Выход
+        addSlotToContainer(new Slot(furnace, 3, 116, 35)
         {
             @Override
             public boolean isItemValid(ItemStack stack)

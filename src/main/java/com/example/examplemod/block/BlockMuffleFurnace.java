@@ -14,11 +14,14 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.util.EnumBlockRenderType;
+import net.minecraft.block.properties.PropertyBool;
 
 public class BlockMuffleFurnace extends BlockContainer
 {
     public static final PropertyDirection FACING =
             PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
+    public static final PropertyBool LIT =
+            PropertyBool.create("lit");
 
     public BlockMuffleFurnace()
     {
@@ -31,7 +34,8 @@ public class BlockMuffleFurnace extends BlockContainer
         setCreativeTab(ExampleMod.CREATIVE_TAB);
 
         setDefaultState(blockState.getBaseState()
-                .withProperty(FACING, EnumFacing.NORTH));
+                .withProperty(FACING, EnumFacing.NORTH)
+                .withProperty(LIT, false));
     }
 
     @Override
@@ -88,22 +92,36 @@ public class BlockMuffleFurnace extends BlockContainer
         switch (meta)
         {
             case 0:
-                return getDefaultState().withProperty(FACING, EnumFacing.NORTH);
+                return getDefaultState()
+                        .withProperty(FACING, EnumFacing.NORTH)
+                        .withProperty(LIT, false);
+
             case 1:
-                return getDefaultState().withProperty(FACING, EnumFacing.SOUTH);
+                return getDefaultState()
+                        .withProperty(FACING, EnumFacing.SOUTH)
+                        .withProperty(LIT, false);
+
             case 2:
-                return getDefaultState().withProperty(FACING, EnumFacing.WEST);
+                return getDefaultState()
+                        .withProperty(FACING, EnumFacing.WEST)
+                        .withProperty(LIT, false);
+
             case 3:
-                return getDefaultState().withProperty(FACING, EnumFacing.EAST);
+                return getDefaultState()
+                        .withProperty(FACING, EnumFacing.EAST)
+                        .withProperty(LIT, false);
+
             default:
-                return getDefaultState().withProperty(FACING, EnumFacing.NORTH);
+                return getDefaultState()
+                        .withProperty(FACING, EnumFacing.NORTH)
+                        .withProperty(LIT, false);
         }
     }
 
     @Override
     protected BlockStateContainer createBlockState()
     {
-        return new BlockStateContainer(this, FACING);
+        return new BlockStateContainer(this, FACING, LIT);
     }
 
     @Override
