@@ -4,3 +4,5 @@ tile.examplemod.copper_ore.name=Copper Ore
 itemGroup.examplemod=Chemistry
 tile.examplemod.muffle_furnace.name=Muffle Furnace
 item.examplemod.copper_ingot.name=Copper Ingot
+item.examplemod.flywheel.name=Flywheel
+itemGroup.examplemod.machines=Machines
