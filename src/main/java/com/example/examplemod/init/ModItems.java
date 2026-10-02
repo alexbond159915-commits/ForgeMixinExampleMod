@@ -11,6 +11,11 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 @Mod.EventBusSubscriber(modid = ExampleMod.MODID)
 
 public final class ModItems {
+    public static final Item FLYWHEEL = new Item()
+            .setTranslationKey(ExampleMod.MODID + ".flywheel")
+            .setRegistryName("flywheel")
+            .setCreativeTab(ExampleMod.MACHINES_TAB);
+
     public static final Item RAW_IRON = new Item()
             .setTranslationKey(ExampleMod.MODID + ".raw_iron")
             .setRegistryName("raw_iron")
@@ -52,7 +57,7 @@ public final class ModItems {
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
-        event.getRegistry().register(RAW_IRON);
+        event.getRegistry().register(FLYWHEEL);\n        event.getRegistry().register(RAW_IRON);
         event.getRegistry().register(RAW_COPPER);
         event.getRegistry().register(COPPER_ORE_ITEM);
         event.getRegistry().register(COPPER_INGOT);
