@@ -19,6 +19,8 @@ public final class ClientEventSubscriber {
         registerItemModel(ModItems.RAW_IRON);
         registerItemModel(ModItems.RAW_COPPER);
         registerItemModel(ModItems.COPPER_ORE_ITEM);
+        registerItemModel(ModItems.COPPER_INGOT);
+        registerItemModel(ModItems.MUFFLE_FURNACE_ITEM);
     }
 
     private static void registerItemModel(Item item) {

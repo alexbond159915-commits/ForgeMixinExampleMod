@@ -29,6 +29,24 @@ public final class ModItems {
             .setTranslationKey(ExampleMod.MODID + ".copper_ingot")
             .setRegistryName("copper_ingot")
             .setCreativeTab(ExampleMod.CREATIVE_TAB);
+    public static final ItemBlock MUFFLE_FURNACE_ITEM =
+            new ItemBlock(ModBlocks.MUFFLE_FURNACE);
+
+    static
+    {
+        MUFFLE_FURNACE_ITEM.setRegistryName(
+                ExampleMod.MODID,
+                "muffle_furnace"
+        );
+
+        MUFFLE_FURNACE_ITEM.setTranslationKey(
+                ExampleMod.MODID + ".muffle_furnace"
+        );
+
+        MUFFLE_FURNACE_ITEM.setCreativeTab(
+                ExampleMod.CREATIVE_TAB
+        );
+    }
 
     private ModItems() {}
 
@@ -38,12 +56,6 @@ public final class ModItems {
         event.getRegistry().register(RAW_COPPER);
         event.getRegistry().register(COPPER_ORE_ITEM);
         event.getRegistry().register(COPPER_INGOT);
-        event.getRegistry().register(
-                new ItemBlock(ModBlocks.MUFFLE_FURNACE)
-                        .setRegistryName(
-                                ModBlocks.MUFFLE_FURNACE.getRegistryName()
-                        )
-                        .setCreativeTab(ExampleMod.CREATIVE_TAB)
-        );
+        event.getRegistry().register(MUFFLE_FURNACE_ITEM);
     }
 }
