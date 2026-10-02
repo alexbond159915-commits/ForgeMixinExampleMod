@@ -57,7 +57,8 @@ public final class ModItems {
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
-        event.getRegistry().register(FLYWHEEL);\n        event.getRegistry().register(RAW_IRON);
+        event.getRegistry().register(FLYWHEEL);
+        event.getRegistry().register(RAW_IRON);
         event.getRegistry().register(RAW_COPPER);
         event.getRegistry().register(COPPER_ORE_ITEM);
         event.getRegistry().register(COPPER_INGOT);
