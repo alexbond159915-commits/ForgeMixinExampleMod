@@ -1,8 +1,12 @@
 package com.example.examplemod.tileentity;
 
-import com.example.examplemod.init.ModItems;
+import com.example.examplemod.block.BlockMuffleFurnace;
+import com.example.examplemod.init.ModBlocks;
+import com.example.examplemod.recipe.MuffleFurnaceRecipe;
+import com.example.examplemod.recipe.MuffleFurnaceRecipes;
+
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
@@ -10,14 +14,14 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.event.ForgeEventFactory;
-import com.example.examplemod.block.BlockMuffleFurnace;
-import com.example.examplemod.init.ModBlocks;
-import net.minecraft.block.state.IBlockState;
 
-public class TileEntityMuffleFurnace extends TileEntity implements IInventory, ITickable
+public class TileEntityMuffleFurnace
+        extends TileEntity
+        implements IInventory, ITickable
 {
     private final NonNullList<ItemStack> inventory =
             NonNullList.withSize(4, ItemStack.EMPTY);
@@ -25,8 +29,8 @@ public class TileEntityMuffleFurnace extends TileEntity implements IInventory, I
     private int burnTime = 0;
     private int currentItemBurnTime = 0;
     private int cookTime = 0;
-    private final int totalCookTime = 200;
 
+    private final int totalCookTime = 200;
     @Override
     public void update()
     {
@@ -35,23 +39,53 @@ public class TileEntityMuffleFurnace extends TileEntity implements IInventory, I
             return;
         }
 
-        if (world.getTotalWorldTime() % 20 == 0)
-        {
-            System.out.println(
-                    "[MUFFLE] input=" + inventory.get(0) +
-                            " coal=" + inventory.get(1) +
-                            " fuel=" + inventory.get(2) +
-                            " output=" + inventory.get(3) +
-                            " burn=" + burnTime +
-                            " cook=" + cookTime
-            );
-        }
-
         boolean dirty = false;
 
+        MuffleFurnaceRecipe recipe = getCurrentRecipe();
 
-        // Если топливо закончилось — пытаемся взять новое
-        if (burnTime <= 0 && canSmelt())
+        /*
+         * Если рецепта нет — плавить нечего.
+         */
+        if (recipe == null)
+        {
+            if (cookTime != 0)
+            {
+                cookTime = 0;
+                dirty = true;
+            }
+
+            /*
+             * Состояние огня
+             */
+            IBlockState state = world.getBlockState(pos);
+
+            if (state.getBlock() == ModBlocks.MUFFLE_FURNACE)
+            {
+                if (state.getValue(BlockMuffleFurnace.LIT))
+                {
+                    world.setBlockState(
+                            pos,
+                            state.withProperty(
+                                    BlockMuffleFurnace.LIT,
+                                    false
+                            ),
+                            3
+                    );
+                }
+            }
+
+            if (dirty)
+            {
+                markDirty();
+            }
+
+            return;
+        }
+
+        /*
+         * Если топлива нет — берём следующее.
+         */
+        if (burnTime <= 0)
         {
             ItemStack fuel = inventory.get(2);
 
@@ -73,30 +107,40 @@ public class TileEntityMuffleFurnace extends TileEntity implements IInventory, I
             }
         }
 
-        // Плавка
-        if (burnTime > 0 && canSmelt())
+        /*
+         * Плавка.
+         */
+        if (burnTime > 0)
         {
-
             burnTime--;
             cookTime++;
 
             dirty = true;
 
-            if (cookTime >= totalCookTime)
+            if (cookTime >= recipe.getCookTime())
             {
                 cookTime = 0;
+
                 smeltItem();
+
                 dirty = true;
             }
         }
-        else if (burnTime <= 0)
+        else
         {
+            /*
+             * Топлива нет — прогресс сбрасываем.
+             */
             if (cookTime != 0)
             {
                 cookTime = 0;
                 dirty = true;
             }
         }
+
+        /*
+         * Включение/выключение состояния lit.
+         */
         IBlockState state = world.getBlockState(pos);
 
         if (state.getBlock() == ModBlocks.MUFFLE_FURNACE)
@@ -107,7 +151,10 @@ public class TileEntityMuffleFurnace extends TileEntity implements IInventory, I
             {
                 world.setBlockState(
                         pos,
-                        state.withProperty(BlockMuffleFurnace.LIT, lit),
+                        state.withProperty(
+                                BlockMuffleFurnace.LIT,
+                                lit
+                        ),
                         3
                 );
             }
@@ -118,6 +165,10 @@ public class TileEntityMuffleFurnace extends TileEntity implements IInventory, I
             markDirty();
         }
     }
+
+    /*
+     * Возвращает время горения топлива.
+     */
     private int getFuelBurnTime(ItemStack fuel)
     {
         if (fuel.isEmpty())
@@ -125,69 +176,86 @@ public class TileEntityMuffleFurnace extends TileEntity implements IInventory, I
             return 0;
         }
 
-        if (fuel.getItem() == Items.COAL && fuel.getMetadata() == 0)
+        /*
+         * Обычный уголь — 1600 тиков.
+         */
+        if (fuel.getItem() == net.minecraft.init.Items.COAL
+                && fuel.getMetadata() == 0)
         {
             return 1600;
         }
 
+        /*
+         * Остальное топливо через Forge.
+         */
         return ForgeEventFactory.getItemBurnTime(fuel);
     }
 
+    /*
+     * Ищем рецепт для предметов
+     * в слотах 0 и 1.
+     */
+    private MuffleFurnaceRecipe getCurrentRecipe()
+    {
+        ItemStack input = inventory.get(0);
+        ItemStack ingredient = inventory.get(1);
+
+        return MuffleFurnaceRecipes.getRecipe(
+                input,
+                ingredient
+        );
+    }
+
+    /*
+     * Проверяет, может ли печь сейчас плавить.
+     */
     private boolean canSmelt()
     {
         ItemStack input = inventory.get(0);
-        ItemStack coal = inventory.get(1);
+        ItemStack ingredient = inventory.get(1);
         ItemStack output = inventory.get(3);
 
-        // Нет сырья
-        if (input.isEmpty())
+        MuffleFurnaceRecipe recipe =
+                MuffleFurnaceRecipes.getRecipe(
+                        input,
+                        ingredient
+                );
+
+        /*
+         * Подходящего рецепта нет.
+         */
+        if (recipe == null)
         {
             return false;
         }
 
-        // Нет угля как ингредиента
-        if (coal.isEmpty())
-        {
-            return false;
-        }
+        ItemStack result = recipe.getOutput();
 
-        // Разрешён только обычный уголь
-        if (coal.getItem() != Items.COAL || coal.getMetadata() != 0)
-        {
-            return false;
-        }
-
-        ItemStack result;
-
-        if (input.getItem() == ModItems.RAW_IRON)
-        {
-            result = new ItemStack(Items.IRON_INGOT);
-        }
-        else if (input.getItem() == ModItems.RAW_COPPER)
-        {
-            result = new ItemStack(ModItems.COPPER_INGOT);
-        }
-        else
-        {
-            return false;
-        }
-
-        // Выход пуст
+        /*
+         * Выход пуст.
+         */
         if (output.isEmpty())
         {
             return true;
         }
 
-        // В выходе другой предмет
-        if (output.getItem() != result.getItem())
+        /*
+         * В выходе должен быть тот же предмет.
+         */
+        if (!ItemStack.areItemsEqual(output, result))
         {
             return false;
         }
 
-        // Не помещается новый слиток
+        /*
+         * Проверяем вместимость.
+         */
         return output.getCount() + result.getCount() <= 64;
     }
 
+    /*
+     * Выполняет текущий рецепт.
+     */
     private void smeltItem()
     {
         if (!canSmelt())
@@ -196,32 +264,40 @@ public class TileEntityMuffleFurnace extends TileEntity implements IInventory, I
         }
 
         ItemStack input = inventory.get(0);
-        ItemStack coal = inventory.get(1);
+        ItemStack ingredient = inventory.get(1);
         ItemStack output = inventory.get(3);
 
-        ItemStack result;
+        MuffleFurnaceRecipe recipe =
+                MuffleFurnaceRecipes.getRecipe(
+                        input,
+                        ingredient
+                );
 
-        if (input.getItem() == ModItems.RAW_IRON)
+        if (recipe == null)
         {
-            result = new ItemStack(Items.IRON_INGOT);
-        }
-        else
-        {
-            result = new ItemStack(ModItems.COPPER_INGOT);
+            return;
         }
 
-        // Забираем сырьё
-        input.shrink(1);
-        coal.shrink(1);
+        ItemStack recipeInput = recipe.getInput();
+        ItemStack recipeIngredient = recipe.getIngredient();
+        ItemStack result = recipe.getOutput();
 
-        // Кладём результат
+        /*
+         * Забираем сырьё.
+         */
+        input.shrink(recipeInput.getCount());
+        ingredient.shrink(recipeIngredient.getCount());
+
+        /*
+         * Кладём результат.
+         */
         if (output.isEmpty())
         {
             inventory.set(3, result);
         }
         else
         {
-            output.grow(1);
+            output.grow(result.getCount());
         }
 
         markDirty();
@@ -249,6 +325,13 @@ public class TileEntityMuffleFurnace extends TileEntity implements IInventory, I
 
     public int getTotalCookTime()
     {
+        MuffleFurnaceRecipe recipe = getCurrentRecipe();
+
+        if (recipe != null)
+        {
+            return recipe.getCookTime();
+        }
+
         return totalCookTime;
     }
 
@@ -279,19 +362,30 @@ public class TileEntityMuffleFurnace extends TileEntity implements IInventory, I
     }
 
     @Override
-    public ItemStack decrStackSize(int index, int count)
+    public ItemStack decrStackSize(
+            int index,
+            int count)
     {
-        return ItemStackHelper.getAndSplit(inventory, index, count);
+        return ItemStackHelper.getAndSplit(
+                inventory,
+                index,
+                count
+        );
     }
 
     @Override
     public ItemStack removeStackFromSlot(int index)
     {
-        return ItemStackHelper.getAndRemove(inventory, index);
+        return ItemStackHelper.getAndRemove(
+                inventory,
+                index
+        );
     }
 
     @Override
-    public void setInventorySlotContents(int index, ItemStack stack)
+    public void setInventorySlotContents(
+            int index,
+            ItemStack stack)
     {
         inventory.set(index, stack);
 
@@ -326,26 +420,71 @@ public class TileEntityMuffleFurnace extends TileEntity implements IInventory, I
     {
     }
 
+    /*
+     * Проверяет, разрешён ли предмет
+     * для конкретного слота.
+     */
     @Override
-    public boolean isItemValidForSlot(int index, ItemStack stack)
+    public boolean isItemValidForSlot(
+            int index,
+            ItemStack stack)
     {
+        /*
+         * Слот 0 — сырьё.
+         */
         if (index == 0)
         {
-            return stack.getItem() == ModItems.RAW_IRON
-                    || stack.getItem() == ModItems.RAW_COPPER;
+            for (MuffleFurnaceRecipe recipe :
+                    MuffleFurnaceRecipes.getRecipes())
+            {
+                ItemStack input =
+                        recipe.getInput();
+
+                if (stack.getItem() == input.getItem()
+                        && stack.getMetadata()
+                        == input.getMetadata())
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
+        /*
+         * Слот 1 — ингредиент.
+         */
         if (index == 1)
         {
-            return stack.getItem() == Items.COAL
-                    && stack.getMetadata() == 0;
+            for (MuffleFurnaceRecipe recipe :
+                    MuffleFurnaceRecipes.getRecipes())
+            {
+                ItemStack ingredient =
+                        recipe.getIngredient();
+
+                if (stack.getItem()
+                        == ingredient.getItem()
+                        && stack.getMetadata()
+                        == ingredient.getMetadata())
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
+        /*
+         * Слот 2 — любое нормальное топливо.
+         */
         if (index == 2)
         {
             return getFuelBurnTime(stack) > 0;
         }
 
+        /*
+         * Слот 3 — только выход.
+         */
         return false;
     }
 
@@ -382,7 +521,7 @@ public class TileEntityMuffleFurnace extends TileEntity implements IInventory, I
                 return cookTime;
 
             case 3:
-                return totalCookTime;
+                return getTotalCookTime();
 
             default:
                 return 0;
@@ -390,7 +529,9 @@ public class TileEntityMuffleFurnace extends TileEntity implements IInventory, I
     }
 
     @Override
-    public void setField(int id, int value)
+    public void setField(
+            int id,
+            int value)
     {
         switch (id)
         {
@@ -404,6 +545,14 @@ public class TileEntityMuffleFurnace extends TileEntity implements IInventory, I
 
             case 2:
                 cookTime = value;
+                break;
+
+            case 3:
+                /*
+                 * totalCookTime теперь берётся
+                 * из рецепта, поэтому здесь
+                 * ничего менять не нужно.
+                 */
                 break;
 
             default:
@@ -422,35 +571,82 @@ public class TileEntityMuffleFurnace extends TileEntity implements IInventory, I
     {
         for (int i = 0; i < inventory.size(); i++)
         {
-            inventory.set(i, ItemStack.EMPTY);
+            inventory.set(
+                    i,
+                    ItemStack.EMPTY
+            );
         }
     }
 
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound compound)
+    public NBTTagCompound writeToNBT(
+            NBTTagCompound compound)
     {
         super.writeToNBT(compound);
 
-        ItemStackHelper.saveAllItems(compound, inventory);
+        ItemStackHelper.saveAllItems(
+                compound,
+                inventory
+        );
 
-        compound.setInteger("BurnTime", burnTime);
-        compound.setInteger("CurrentItemBurnTime", currentItemBurnTime);
-        compound.setInteger("CookTime", cookTime);
+        compound.setInteger(
+                "BurnTime",
+                burnTime
+        );
+
+        compound.setInteger(
+                "CurrentItemBurnTime",
+                currentItemBurnTime
+        );
+
+        compound.setInteger(
+                "CookTime",
+                cookTime
+        );
 
         return compound;
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound)
+    public void readFromNBT(
+            NBTTagCompound compound)
     {
         super.readFromNBT(compound);
 
-        ItemStackHelper.loadAllItems(compound, inventory);
+        ItemStackHelper.loadAllItems(
+                compound,
+                inventory
+        );
 
-        burnTime = compound.getInteger("BurnTime");
+        burnTime =
+                compound.getInteger(
+                        "BurnTime"
+                );
+
         currentItemBurnTime =
-                compound.getInteger("CurrentItemBurnTime");
+                compound.getInteger(
+                        "CurrentItemBurnTime"
+                );
+
         cookTime =
-                compound.getInteger("CookTime");
+                compound.getInteger(
+                        "CookTime"
+                );
+    }
+
+    /*
+     * ВАЖНО:
+     * при переключении LIT TileEntity
+     * не должен пересоздаваться.
+     */
+    @Override
+    public boolean shouldRefresh(
+            net.minecraft.world.World world,
+            BlockPos pos,
+            IBlockState oldState,
+            IBlockState newState)
+    {
+        return oldState.getBlock()
+                != newState.getBlock();
     }
 }

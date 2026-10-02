@@ -4,17 +4,19 @@ import com.example.examplemod.client.GuiHandler;
 import com.example.examplemod.init.ModItems;
 import com.example.examplemod.tileentity.TileEntityMuffleFurnace;
 import com.example.examplemod.world.CopperOreWorldGenerator;
-
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import com.example.examplemod.recipe.MuffleFurnaceRecipes;
+import com.example.examplemod.init.ModBlocks;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import org.apache.logging.log4j.Logger;
@@ -31,6 +33,7 @@ public class ExampleMod
     public static final String VERSION = "1.0";
 
     public static final int GUI_MUFFLE_FURNACE = 1;
+
 
     @Mod.Instance(MODID)
     public static ExampleMod INSTANCE;
@@ -50,6 +53,7 @@ public class ExampleMod
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
+
         logger = event.getModLog();
 
         GameRegistry.registerTileEntity(
@@ -74,6 +78,17 @@ public class ExampleMod
         logger.info(
                 "DIRT BLOCK >> {}",
                 Blocks.DIRT.getRegistryName()
+        );
+        MuffleFurnaceRecipes.registerRecipes();
+        GameRegistry.addShapedRecipe(
+                new ResourceLocation(MODID, "muffle_furnace"),
+                null,
+                new ItemStack(ModBlocks.MUFFLE_FURNACE),
+                "KJK",
+                "K K",
+                "JJJ",
+                'K', Blocks.STONE,
+                'J', Items.IRON_INGOT
         );
     }
 }

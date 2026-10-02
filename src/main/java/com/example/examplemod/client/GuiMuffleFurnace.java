@@ -22,7 +22,7 @@ public class GuiMuffleFurnace extends GuiContainer
     private static final ResourceLocation FURNACE_TEXTURE =
             new ResourceLocation(
                     "minecraft",
-                    "textures/gui/mufflefurnace/muffle_furnace.png"
+                    "textures/gui/container/furnace.png"
             );
 
     private final ContainerMuffleFurnace container;
