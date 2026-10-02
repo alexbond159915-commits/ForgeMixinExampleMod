@@ -48,6 +48,16 @@ public class ExampleMod
                 }
             };
 
+    public static final CreativeTabs MACHINES_TAB =
+            new CreativeTabs("examplemod.machines")
+            {
+                @Override
+                public ItemStack createIcon()
+                {
+                    return new ItemStack(ModItems.FLYWHEEL);
+                }
+            };
+
     private static Logger logger;
 
     @EventHandler
