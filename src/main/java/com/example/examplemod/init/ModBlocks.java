@@ -36,11 +36,15 @@ public final class ModBlocks {
             .setCreativeTab(ExampleMod.CREATIVE_TAB);
 
     public static final Block STEAM_ENGINE_CASING = new Block(Material.IRON)
+    {
+        {
+            setSoundType(SoundType.METAL);
+        }
+    }
             .setTranslationKey(ExampleMod.MODID + ".steam_engine_casing")
             .setRegistryName("steam_engine_casing")
             .setHardness(3.0F)
             .setResistance(6.0F)
-            .setSoundType(SoundType.METAL)
             .setCreativeTab(ExampleMod.MACHINES_TAB);
 
     static {
