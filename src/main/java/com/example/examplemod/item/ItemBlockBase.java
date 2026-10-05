@@ -8,5 +8,6 @@ public class ItemBlockBase extends ItemBlock
     public ItemBlockBase(Block block)
     {
         super(block);
+        setTranslationKey(block.getTranslationKey());
     }
 }
