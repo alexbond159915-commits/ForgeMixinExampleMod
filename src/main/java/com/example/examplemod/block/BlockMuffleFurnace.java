@@ -2,40 +2,46 @@ package com.example.examplemod.block;
 
 import com.example.examplemod.ExampleMod;
 import com.example.examplemod.tileentity.TileEntityMuffleFurnace;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.block.properties.PropertyBool;
 
-public class BlockMuffleFurnace extends BlockContainer
+public class BlockMuffleFurnace extends BlockContainerBase
 {
     public static final PropertyDirection FACING =
-            PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
+            PropertyDirection.create(
+                    "facing",
+                    EnumFacing.Plane.HORIZONTAL
+            );
+
     public static final PropertyBool LIT =
             PropertyBool.create("lit");
 
     public BlockMuffleFurnace()
     {
-        super(Material.ROCK);
+        super(
+                Material.ROCK,
+                "muffle_furnace",
+                ExampleMod.CREATIVE_TAB
+        );
 
         setHardness(3.5F);
         setResistance(3.5F);
-        setTranslationKey(ExampleMod.MODID + ".muffle_furnace");
-        setRegistryName("muffle_furnace");
-        setCreativeTab(ExampleMod.CREATIVE_TAB);
 
-        setDefaultState(blockState.getBaseState()
-                .withProperty(FACING, EnumFacing.NORTH)
-                .withProperty(LIT, false));
+        setDefaultState(
+                blockState.getBaseState()
+                        .withProperty(FACING, EnumFacing.NORTH)
+                        .withProperty(LIT, false)
+        );
     }
 
     @Override
@@ -77,7 +83,10 @@ public class BlockMuffleFurnace extends BlockContainer
             EntityLivingBase placer)
     {
         return getDefaultState()
-                .withProperty(FACING, placer.getHorizontalFacing().getOpposite());
+                .withProperty(
+                        FACING,
+                        placer.getHorizontalFacing().getOpposite()
+                );
     }
 
     @Override
@@ -95,22 +104,18 @@ public class BlockMuffleFurnace extends BlockContainer
                 return getDefaultState()
                         .withProperty(FACING, EnumFacing.NORTH)
                         .withProperty(LIT, false);
-
             case 1:
                 return getDefaultState()
                         .withProperty(FACING, EnumFacing.SOUTH)
                         .withProperty(LIT, false);
-
             case 2:
                 return getDefaultState()
                         .withProperty(FACING, EnumFacing.WEST)
                         .withProperty(LIT, false);
-
             case 3:
                 return getDefaultState()
                         .withProperty(FACING, EnumFacing.EAST)
                         .withProperty(LIT, false);
-
             default:
                 return getDefaultState()
                         .withProperty(FACING, EnumFacing.NORTH)
@@ -131,6 +136,7 @@ public class BlockMuffleFurnace extends BlockContainer
     {
         return new TileEntityMuffleFurnace();
     }
+
     @Override
     public EnumBlockRenderType getRenderType(IBlockState state)
     {
