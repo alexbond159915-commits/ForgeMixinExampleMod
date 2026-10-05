@@ -1,3 +1,6 @@
 {
-  "parent": "examplemod:block/ferrite_magnet_blank"
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "examplemod:items/ferrite_magnet_blank"
+  }
 }
