@@ -1,7 +1,9 @@
 package com.example.examplemod.client;
 
 import com.example.examplemod.ExampleMod;
+import com.example.examplemod.init.ModBlocks;
 import com.example.examplemod.init.ModItems;
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -25,14 +27,29 @@ public final class ClientEventSubscriber
     {
         for (Item item : ModItems.ALL_ITEMS)
         {
-            ModelLoader.setCustomModelResourceLocation(
-                    item,
-                    0,
-                    new ModelResourceLocation(
-                            item.getRegistryName(),
-                            "inventory"
-                    )
-            );
+            registerItemModel(item);
         }
+
+        for (Block block : ModBlocks.ALL_BLOCKS)
+        {
+            Item item = Item.getItemFromBlock(block);
+
+            if (item != null)
+            {
+                registerItemModel(item);
+            }
+        }
+    }
+
+    private static void registerItemModel(Item item)
+    {
+        ModelLoader.setCustomModelResourceLocation(
+                item,
+                0,
+                new ModelResourceLocation(
+                        item.getRegistryName(),
+                        "inventory"
+                )
+        );
     }
 }
