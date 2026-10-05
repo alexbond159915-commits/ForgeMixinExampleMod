@@ -7,6 +7,7 @@ public class ItemBlockBase extends ItemBlock
 {
     public ItemBlockBase(Block block)
     {
+        // Forge 1.12.2 handles the ItemBlock translation key natively.
         super(block);
     }
 }
