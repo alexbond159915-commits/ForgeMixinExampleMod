@@ -5,3 +5,5 @@ itemGroup.examplemod=Химия
 tile.examplemod.muffle_furnace.name=Муфельная печь
 item.examplemod.copper_ingot.name=Медный слиток
 tile.examplemod.steam_engine_casing.name=Обшивка парового двигателя
+itemGroup.examplemod.machines=Машины
+item.examplemod.flywheel.name=Маховик
