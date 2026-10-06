@@ -19,7 +19,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.client.model.obj.OBJLoader;
+import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import com.example.examplemod.recipe.MuffleFurnaceRecipes;
@@ -42,6 +42,12 @@ public class ExampleMod
 
     @Mod.Instance(MODID)
     public static ExampleMod INSTANCE;
+
+    @SidedProxy(
+            clientSide = "com.example.examplemod.client.ClientProxy",
+            serverSide = "com.example.examplemod.CommonProxy"
+    )
+    public static CommonProxy PROXY;
 
     public static final CreativeTabs CREATIVE_TAB =
             new CreativeTabs("examplemod")
@@ -79,8 +85,7 @@ public class ExampleMod
     {
         logger = event.getModLog();
 
-        // OBJ models must register their resource domain before model loading.
-        OBJLoader.INSTANCE.addDomain(MODID);
+        PROXY.preInit(event);
 
         ModFluids.registerFluids();
 
