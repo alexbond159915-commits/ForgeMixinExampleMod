@@ -61,6 +61,19 @@ public final class ClientEventSubscriber
 
     private static void registerItemModel(Item item)
     {
+        if (item == Item.getItemFromBlock(ModBlocks.FLUID_PIPE))
+        {
+            ModelLoader.setCustomModelResourceLocation(
+                    item,
+                    0,
+                    new ModelResourceLocation(
+                            ExampleMod.MODID + ":models/block/pipe.obj",
+                            "inventory"
+                    )
+            );
+            return;
+        }
+
         ModelLoader.setCustomModelResourceLocation(
                 item,
                 0,
