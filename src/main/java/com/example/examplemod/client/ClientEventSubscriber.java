@@ -10,6 +10,9 @@ import net.minecraft.item.Item;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -22,6 +25,14 @@ public final class ClientEventSubscriber
 {
     private ClientEventSubscriber()
     {
+    }
+
+    @SubscribeEvent
+    public static void registerPipeTextures(TextureStitchEvent.Pre event)
+    {
+        TextureMap map = event.getMap();
+        map.registerSprite(new ResourceLocation(ExampleMod.MODID, "blocks/fluid_pipe"));
+        map.registerSprite(new ResourceLocation(ExampleMod.MODID, "blocks/fluid_pipe_end"));
     }
 
     @SubscribeEvent
