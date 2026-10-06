@@ -9,3 +9,8 @@ item.examplemod.steam_engine_casing.name=Обшивка парового дви�
 tile.examplemod.fluid_pipe.name=Жидкостная труба
 tile.examplemod.fluid_tank.name=Жидкостный бак
 fluid.examplemod.process_water=Технологическая вода
+
+tile.examplemod.steam_engine.name=Паровой двигатель
+tile.examplemod.steam_engine_power_port.name=Силовой порт парового двигателя
+fluid.examplemod.steam=Пар
+fluid.examplemod.condensate=Конденсат
