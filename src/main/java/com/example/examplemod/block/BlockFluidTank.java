@@ -1,18 +1,16 @@
 package com.example.examplemod.block;
 
 import com.example.examplemod.ExampleMod;
-import com.example.examplemod.fluid.ModFluids;
-import com.example.examplemod.fluid.ModFluidTank;
 import com.example.examplemod.tileentity.TileEntityFluidTank;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidUtil;
 
 public class BlockFluidTank
         extends BlockContainerBase
@@ -61,12 +59,11 @@ public class BlockFluidTank
 
         if (!world.isRemote)
         {
-            ItemStack held = player.getHeldItem(hand);
-
-            if (!held.isEmpty())
-            {
-                tank.handleContainer(player, hand);
-            }
+            FluidUtil.interactWithFluidHandler(
+                    player,
+                    hand,
+                    tank.getCapabilityHandler()
+            );
         }
 
         return true;
