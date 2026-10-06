@@ -62,34 +62,12 @@ public final class ModBlocks
                     .setHardness(3.0F)
                     .setResistance(3.0F);
 
-    public static final Block FERRITE_MAGNET_BLANK =
-            new BlockBase(
-                    Material.IRON,
-                    "ferrite_magnet_blank",
-                    ExampleMod.MACHINES_TAB
-            )
-                    .setSoundType(SoundType.METAL)
-                    .setHardness(4.0F)
-                    .setResistance(6.0F);
-
-    public static final Block FERRITE_MAGNET =
-            new BlockBase(
-                    Material.IRON,
-                    "ferrite_magnet",
-                    ExampleMod.MACHINES_TAB
-            )
-                    .setSoundType(SoundType.METAL)
-                    .setHardness(4.0F)
-                    .setResistance(6.0F);
-
     static
     {
         COPPER_ORE.setHarvestLevel("pickaxe", 1);
         STEAM_ENGINE_CASING.setHarvestLevel("pickaxe", 1);
         RAW_IRON_BLOCK.setHarvestLevel("pickaxe", 1);
         WITHERITE_ORE.setHarvestLevel("pickaxe", 1);
-        FERRITE_MAGNET_BLANK.setHarvestLevel("pickaxe", 1);
-        FERRITE_MAGNET.setHarvestLevel("pickaxe", 1);
     }
 
     private ModBlocks()

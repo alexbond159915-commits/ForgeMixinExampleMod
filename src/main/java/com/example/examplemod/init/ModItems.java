@@ -4,7 +4,6 @@ import com.example.examplemod.ExampleMod;
 import com.example.examplemod.item.ItemBase;
 import com.example.examplemod.item.ItemBlockBase;
 import net.minecraft.block.Block;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -33,6 +32,12 @@ public final class ModItems
 
     public static final Item WITHERITE =
             new ItemBase("witherite", ExampleMod.CREATIVE_TAB);
+
+    public static final Item FERRITE_MAGNET_BLANK =
+            new ItemBase("ferrite_magnet_blank", ExampleMod.MACHINES_TAB);
+
+    public static final Item FERRITE_MAGNET =
+            new ItemBase("ferrite_magnet", ExampleMod.MACHINES_TAB);
 
     private ModItems()
     {
