@@ -1,0 +1,14 @@
+# Based on HBM's Nuclear Tech CE pipe_framed.mtl.
+# The copied pipe.obj only uses these two materials.
+
+newmtl SideMTL
+d 1.0
+Ka 0.000000 0.000000 0.000000
+Kd 1.000000 1.000000 1.000000
+map_Kd examplemod:blocks/fluid_pipe
+
+newmtl TopMTL
+d 1.0
+Ka 0.000000 0.000000 0.000000
+Kd 1.000000 1.000000 1.000000
+map_Kd examplemod:blocks/fluid_pipe_end
