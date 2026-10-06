@@ -8,7 +8,7 @@
     "custom": {
       "flip-v": true
     },
-    "model": "examplemod:pipe.obj"
+    "model": "examplemod:block/pipe.obj"
   },
   "variants": {
     "normal": [{}]
