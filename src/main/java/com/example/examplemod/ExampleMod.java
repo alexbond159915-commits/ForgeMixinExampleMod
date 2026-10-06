@@ -4,6 +4,8 @@ import com.example.examplemod.client.GuiHandler;
 import com.example.examplemod.fluid.ModFluids;
 import com.example.examplemod.init.ModItems;
 import com.example.examplemod.tileentity.TileEntityMuffleFurnace;
+import com.example.examplemod.fluid.TileEntityFluidPipe;
+import com.example.examplemod.tileentity.TileEntityFluidTank;
 import com.example.examplemod.world.CopperOreWorldGenerator;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
@@ -73,6 +75,16 @@ public class ExampleMod
                 new ResourceLocation(MODID, "muffle_furnace")
         );
 
+        GameRegistry.registerTileEntity(
+                TileEntityFluidPipe.class,
+                new ResourceLocation(MODID, "fluid_pipe")
+        );
+
+        GameRegistry.registerTileEntity(
+                TileEntityFluidTank.class,
+                new ResourceLocation(MODID, "fluid_tank")
+        );
+
         GameRegistry.registerWorldGenerator(
                 new CopperOreWorldGenerator(),
                 0
@@ -114,6 +126,28 @@ public class ExampleMod
                 "MM",
                 "MM",
                 'M', ModItems.COPPER_INGOT
+        );
+
+        // Fluid pipe: a simple industrial pipe block.
+        GameRegistry.addShapedRecipe(
+                new ResourceLocation(MODID, "fluid_pipe"),
+                null,
+                new ItemStack(ModBlocks.FLUID_PIPE, 8),
+                "I I",
+                " I ",
+                "I I",
+                'I', Items.IRON_INGOT
+        );
+
+        // Fluid tank: 16,000 mB universal storage endpoint.
+        GameRegistry.addShapedRecipe(
+                new ResourceLocation(MODID, "fluid_tank"),
+                null,
+                new ItemStack(ModBlocks.FLUID_TANK),
+                "III",
+                "I I",
+                "III",
+                'I', Items.IRON_INGOT
         );
 
         // Same recipe rotated: 3x2 rectangle of copper ingots.
