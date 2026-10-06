@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "examplemod:steam_engine",
+      "y": 180
+    },
+    "facing=south": {
+      "model": "examplemod:steam_engine"
+    },
+    "facing=west": {
+      "model": "examplemod:steam_engine",
+      "y": 90
+    },
+    "facing=east": {
+      "model": "examplemod:steam_engine",
+      "y": 270
+    }
+  }
+}
