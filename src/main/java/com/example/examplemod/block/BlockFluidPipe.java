@@ -34,7 +34,7 @@ public class BlockFluidPipe
     }
 
     @Override
-    public BlockRenderLayer getRenderLayer()
+    public BlockRenderLayer getBlockLayer()
     {
         return BlockRenderLayer.CUTOUT_MIPPED;
     }
