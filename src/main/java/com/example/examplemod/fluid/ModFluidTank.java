@@ -48,7 +48,8 @@ public class ModFluidTank extends FluidTank
     public boolean canFillFluidType(FluidStack fluid)
     {
         return fluid != null
-                && fluid.getFluid() == allowedFluid;
+                && (allowedFluid == null
+                || fluid.getFluid() == allowedFluid);
     }
 
     @Override
