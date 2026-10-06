@@ -260,6 +260,15 @@ public class TileEntitySteamEngine
     }
 
     @Override
+    public int getFluidPriority()
+    {
+        /*
+         * Resolve the same Java 8 default-method conflict for priority.
+         */
+        return 0;
+    }
+
+    @Override
     public int getFluidInputRate()
     {
         return 200;
