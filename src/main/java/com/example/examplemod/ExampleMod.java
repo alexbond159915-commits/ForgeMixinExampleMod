@@ -1,6 +1,7 @@
 package com.example.examplemod;
 
 import com.example.examplemod.client.GuiHandler;
+import com.example.examplemod.fluid.ModFluids;
 import com.example.examplemod.init.ModItems;
 import com.example.examplemod.tileentity.TileEntityMuffleFurnace;
 import com.example.examplemod.world.CopperOreWorldGenerator;
@@ -9,6 +10,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -62,6 +64,9 @@ public class ExampleMod
     public void preInit(FMLPreInitializationEvent event)
     {
         logger = event.getModLog();
+
+        FluidRegistry.enableUniversalBucket();
+        ModFluids.registerFluids();
 
         GameRegistry.registerTileEntity(
                 TileEntityMuffleFurnace.class,
