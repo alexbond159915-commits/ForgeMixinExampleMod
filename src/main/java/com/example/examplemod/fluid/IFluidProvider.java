@@ -21,4 +21,13 @@ public interface IFluidProvider
     {
         return 0;
     }
+
+    /**
+     * HBM-style pressure channel. Forge FluidStack itself does not carry
+     * pressure, so the network keeps it as endpoint metadata.
+     */
+    default int getFluidPressure()
+    {
+        return 0;
+    }
 }
