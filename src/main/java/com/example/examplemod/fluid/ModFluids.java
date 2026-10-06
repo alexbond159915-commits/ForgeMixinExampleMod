@@ -24,20 +24,39 @@ public final class ModFluids
     {
     }
 
+    public static final ModFluidType STEAM =
+            new ModFluidType(
+                    "steam",
+                    0xFFFFFFFF,
+                    373
+            );
+
+    public static final ModFluidType CONDENSATE =
+            new ModFluidType(
+                    "condensate",
+                    0xFF4A90E2,
+                    300
+            );
+
     public static void registerFluids()
     {
-        registerProcessWater();
+        registerFluid(PROCESS_WATER, "process_water", 300);
+        registerFluid(STEAM, "steam", 373);
+        registerFluid(CONDENSATE, "condensate", 300);
     }
 
-    private static void registerProcessWater()
+    private static void registerFluid(
+            ModFluidType type,
+            String translationName,
+            int temperature)
     {
-        if (FluidRegistry.getFluid(PROCESS_WATER.getName()) != null)
+        if (FluidRegistry.getFluid(type.getName()) != null)
         {
             return;
         }
 
         Fluid fluid = new Fluid(
-                PROCESS_WATER.getName(),
+                type.getName(),
                 new ResourceLocation(
                         "minecraft",
                         "blocks/water_still"
@@ -48,19 +67,15 @@ public final class ModFluids
                 )
         )
                 .setUnlocalizedName(
-                        ExampleMod.MODID + ".process_water"
+                        ExampleMod.MODID + "." + translationName
                 )
-                .setColor(PROCESS_WATER.getColor())
-                .setTemperature(PROCESS_WATER.getTemperature())
+                .setColor(type.getColor())
+                .setTemperature(temperature)
                 .setDensity(1000)
                 .setViscosity(1000);
 
         if (FluidRegistry.registerFluid(fluid))
         {
-            /*
-             * Universal bucket support is enabled from ExampleMod before
-             * fluid registration.
-             */
             FluidRegistry.addBucketForFluid(fluid);
         }
     }
