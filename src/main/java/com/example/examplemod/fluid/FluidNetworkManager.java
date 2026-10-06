@@ -70,7 +70,7 @@ public final class FluidNetworkManager
     {
         NetworkComponent component = new NetworkComponent();
         ArrayDeque<BlockPos> queue = new ArrayDeque<BlockPos>();
-        Set<TileEntity> seenHandlers = new HashSet<TileEntity>();
+        Set<HandlerKey> seenHandlers = new HashSet<HandlerKey>();
 
         queue.add(start);
 
@@ -95,7 +95,13 @@ public final class FluidNetworkManager
                 IFluidHandler handler =
                         getFluidHandler(tile, facing.getOpposite());
 
-                if (handler != null && seenHandlers.add(tile))
+                HandlerKey key =
+                        new HandlerKey(
+                                tile,
+                                facing.getOpposite()
+                        );
+
+                if (handler != null && seenHandlers.add(key))
                 {
                     component.handlers.add(
                             new HandlerEndpoint(
@@ -341,6 +347,57 @@ public final class FluidNetworkManager
     {
         private final List<HandlerEndpoint> handlers =
                 new ArrayList<HandlerEndpoint>();
+    }
+
+    /**
+     * A single TileEntity can expose multiple independent fluid ports.
+     * Keep the side in the identity so a steam input and condensate output
+     * on the same machine remain separate endpoints.
+     */
+    private static final class HandlerKey
+    {
+        private final TileEntity tile;
+        private final EnumFacing side;
+
+        private HandlerKey(
+                TileEntity tile,
+                EnumFacing side)
+        {
+            this.tile = tile;
+            this.side = side;
+        }
+
+        @Override
+        public boolean equals(Object object)
+        {
+            if (this == object)
+            {
+                return true;
+            }
+
+            if (!(object instanceof HandlerKey))
+            {
+                return false;
+            }
+
+            HandlerKey other =
+                    (HandlerKey) object;
+
+            return tile == other.tile
+                    && side == other.side;
+        }
+
+        @Override
+        public int hashCode()
+        {
+            int result =
+                    System.identityHashCode(tile);
+
+            result =
+                    31 * result + side.hashCode();
+
+            return result;
+        }
     }
 
     private static final class HandlerEndpoint
