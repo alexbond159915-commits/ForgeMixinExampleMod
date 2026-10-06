@@ -11,18 +11,26 @@ import net.minecraft.item.Item;
 import java.util.Random;
 import java.util.function.Supplier;
 
-public class BlockOreBase extends BlockOre
+public class BlockOreBase extends BlockOre implements ICreativeTabBlock
 {
     private final Supplier<Item> drop;
+    private final CreativeTabs creativeTab;
 
     public BlockOreBase(String name, CreativeTabs tab, Supplier<Item> drop)
     {
         super();
         this.drop = drop;
+        this.creativeTab = tab;
         setTranslationKey(ExampleMod.MODID + "." + name);
         setRegistryName(ExampleMod.MODID, name);
         setCreativeTab(tab);
         ModBlocks.ALL_BLOCKS.add(this);
+    }
+
+    @Override
+    public CreativeTabs getBlockCreativeTab()
+    {
+        return creativeTab;
     }
 
     public BlockOreBase setSoundType(SoundType soundType)

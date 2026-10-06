@@ -1,5 +1,6 @@
 package com.example.examplemod.item;
 
+import com.example.examplemod.block.ICreativeTabBlock;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 
@@ -9,6 +10,12 @@ public class ItemBlockBase extends ItemBlock
     {
         super(block);
         setRegistryName(block.getRegistryName());
-        setCreativeTab(block.getCreativeTabToDisplayOn());
+
+        if (block instanceof ICreativeTabBlock)
+        {
+            setCreativeTab(
+                    ((ICreativeTabBlock) block).getBlockCreativeTab()
+            );
+        }
     }
 }
