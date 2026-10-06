@@ -1,16 +1,7 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "textures": {
-      "side": "examplemod:blocks/fluid_pipe",
-      "end": "examplemod:blocks/fluid_pipe_end"
-    },
-    "custom": {
-      "flip-v": true
-    },
-    "model": "examplemod:block/pipe.obj"
-  },
   "variants": {
-    "normal": [{}]
+    "normal": {
+      "model": "examplemod:block/fluid_pipe"
+    }
   }
 }
