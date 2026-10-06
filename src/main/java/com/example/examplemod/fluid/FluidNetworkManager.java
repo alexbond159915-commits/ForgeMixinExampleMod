@@ -163,6 +163,13 @@ public final class FluidNetworkManager
                         continue;
                     }
 
+                    if (!pressureMatches(
+                            source.tile,
+                            target.tile))
+                    {
+                        continue;
+                    }
+
                     if (remaining <= 0)
                     {
                         break;
@@ -288,6 +295,20 @@ public final class FluidNetworkManager
         }
 
         return fluids;
+    }
+
+    private static boolean pressureMatches(
+            TileEntity source,
+            TileEntity target)
+    {
+        if (source instanceof IFluidProvider
+                && target instanceof IFluidReceiver)
+        {
+            return ((IFluidProvider) source).getFluidPressure()
+                    == ((IFluidReceiver) target).getFluidPressure();
+        }
+
+        return true;
     }
 
     private static int getOutputRate(TileEntity tile)
