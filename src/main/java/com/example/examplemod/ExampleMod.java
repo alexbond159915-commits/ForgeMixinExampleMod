@@ -62,12 +62,20 @@ public class ExampleMod
 
     private static Logger logger;
 
+    /*
+     * Forge's Universal Bucket must be enabled before fluid/bucket
+     * registration begins. Static initialization guarantees that timing.
+     */
+    static
+    {
+        FluidRegistry.enableUniversalBucket();
+    }
+
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
         logger = event.getModLog();
 
-        FluidRegistry.enableUniversalBucket();
         ModFluids.registerFluids();
 
         GameRegistry.registerTileEntity(
