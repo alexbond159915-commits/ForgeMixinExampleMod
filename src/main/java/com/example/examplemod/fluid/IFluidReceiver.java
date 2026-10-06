@@ -18,4 +18,9 @@ public interface IFluidReceiver
     {
         return 0;
     }
+
+    default int getFluidPressure()
+    {
+        return 0;
+    }
 }
