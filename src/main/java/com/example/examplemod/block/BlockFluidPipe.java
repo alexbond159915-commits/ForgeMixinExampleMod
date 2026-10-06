@@ -5,6 +5,7 @@ import com.example.examplemod.fluid.IFluidPipe;
 import com.example.examplemod.fluid.TileEntityFluidPipe;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -33,13 +34,43 @@ public class BlockFluidPipe
     }
 
     @Override
+    public BlockRenderLayer getRenderLayer()
+    {
+        return BlockRenderLayer.CUTOUT_MIPPED;
+    }
+
+    @Override
     public boolean isOpaqueCube(IBlockState state)
     {
         return false;
     }
 
     @Override
+    public boolean isBlockNormalCube(IBlockState state)
+    {
+        return false;
+    }
+
+    @Override
     public boolean isFullCube(IBlockState state)
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isNormalCube(IBlockState state)
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isNormalCube(IBlockState state, net.minecraft.world.IBlockAccess world, net.minecraft.util.math.BlockPos pos)
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isFullBlock(IBlockState state)
     {
         return false;
     }
