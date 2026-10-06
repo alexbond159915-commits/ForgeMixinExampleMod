@@ -59,8 +59,8 @@ public final class ClientEventSubscriber
                 )
         );
     }
-}
-@net.minecraftforge.fml.relauncher.SideOnly(
+
+    @net.minecraftforge.fml.relauncher.SideOnly(
             net.minecraftforge.fml.relauncher.Side.CLIENT
     )
     private static final class TileEntitySteamEngineRenderer
