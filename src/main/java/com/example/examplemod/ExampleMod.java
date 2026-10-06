@@ -4,6 +4,8 @@ import com.example.examplemod.client.GuiHandler;
 import com.example.examplemod.fluid.ModFluids;
 import com.example.examplemod.init.ModItems;
 import com.example.examplemod.tileentity.TileEntityMuffleFurnace;
+import com.example.examplemod.tileentity.TileEntitySteamEngine;
+import com.example.examplemod.tileentity.TileEntitySteamEnginePowerPort;
 import com.example.examplemod.fluid.TileEntityFluidPipe;
 import com.example.examplemod.tileentity.TileEntityFluidTank;
 import com.example.examplemod.world.CopperOreWorldGenerator;
@@ -93,6 +95,16 @@ public class ExampleMod
                 new ResourceLocation(MODID, "fluid_tank")
         );
 
+        GameRegistry.registerTileEntity(
+                TileEntitySteamEngine.class,
+                new ResourceLocation(MODID, "steam_engine")
+        );
+
+        GameRegistry.registerTileEntity(
+                TileEntitySteamEnginePowerPort.class,
+                new ResourceLocation(MODID, "steam_engine_power_port")
+        );
+
         GameRegistry.registerWorldGenerator(
                 new CopperOreWorldGenerator(),
                 0
@@ -134,6 +146,18 @@ public class ExampleMod
                 "MM",
                 "MM",
                 'M', ModItems.COPPER_INGOT
+        );
+
+        GameRegistry.addShapedRecipe(
+                new ResourceLocation(MODID, "steam_engine"),
+                null,
+                new ItemStack(ModBlocks.STEAM_ENGINE),
+                "MMM",
+                "MFM",
+                "III",
+                'M', ModBlocks.STEAM_ENGINE_CASING,
+                'F', ModItems.FLYWHEEL,
+                'I', ModItems.COPPER_INGOT
         );
 
         // Fluid pipe: a simple industrial pipe block.
