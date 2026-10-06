@@ -34,9 +34,11 @@ public class BlockFluidPipe
     }
 
     @Override
-    public BlockRenderLayer getBlockLayer()
+    public boolean canRenderInLayer(
+            IBlockState state,
+            BlockRenderLayer layer)
     {
-        return BlockRenderLayer.CUTOUT_MIPPED;
+        return layer == BlockRenderLayer.CUTOUT_MIPPED;
     }
 
     @Override
