@@ -12,3 +12,6 @@ item.examplemod.witherite.name=Witherite
 tile.examplemod.witherite_ore.name=Witherite Ore
 tile.examplemod.ferrite_magnet_blank.name=Ferrite Magnet Blank
 tile.examplemod.ferrite_magnet.name=Ferrite Magnet
+tile.examplemod.fluid_pipe.name=Fluid Pipe
+tile.examplemod.fluid_tank.name=Fluid Tank
+fluid.examplemod.process_water=Process Water
