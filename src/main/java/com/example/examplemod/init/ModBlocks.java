@@ -5,6 +5,8 @@ import com.example.examplemod.block.BlockBase;
 import com.example.examplemod.block.BlockMuffleFurnace;
 import com.example.examplemod.block.BlockFluidPipe;
 import com.example.examplemod.block.BlockFluidTank;
+import com.example.examplemod.block.BlockSteamEngine;
+import com.example.examplemod.block.BlockSteamEnginePowerPort;
 import com.example.examplemod.block.BlockOreBase;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -30,6 +32,15 @@ public final class ModBlocks
 
     public static final Block FLUID_TANK =
             new BlockFluidTank();
+
+    public static final Block STEAM_ENGINE =
+            new BlockSteamEngine();
+
+    /*
+     * Internal structural energy port of the 2x2x3 steam engine.
+     */
+    public static final Block STEAM_ENGINE_POWER_PORT =
+            new BlockSteamEnginePowerPort();
 
     public static final Block COPPER_ORE =
             new BlockOreBase(
