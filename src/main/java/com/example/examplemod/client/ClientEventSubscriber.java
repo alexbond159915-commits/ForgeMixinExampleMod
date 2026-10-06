@@ -27,10 +27,6 @@ public final class ClientEventSubscriber
     @SubscribeEvent
     public static void registerModels(ModelRegistryEvent event)
     {
-        net.minecraftforge.client.model.obj.OBJLoader.INSTANCE.addDomain(
-                ExampleMod.MODID
-        );
-
         for (Item item : ModItems.ALL_ITEMS)
         {
             registerItemModel(item);
