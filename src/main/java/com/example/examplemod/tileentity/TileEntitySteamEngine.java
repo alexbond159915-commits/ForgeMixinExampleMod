@@ -63,7 +63,7 @@ public class TileEntitySteamEngine
 
     /*
      * HBM-style separate fluid connections:
-     * top = steam input, bottom = condensate output.
+     * front = steam input, left = condensate output.
      */
     private final DirectionalFluidHandler steamHandler =
             new DirectionalFluidHandler(
@@ -318,14 +318,16 @@ public class TileEntitySteamEngine
             TileEntitySteamEngine engine,
             EnumFacing side)
     {
-        return side == EnumFacing.UP;
+        return engine.getFacing() == side;
     }
 
     public static boolean isCondensateOutputSide(
             TileEntitySteamEngine engine,
             EnumFacing side)
     {
-        return side == EnumFacing.DOWN;
+        return engine.getFacing()
+                .rotateYCCW()
+                == side;
     }
 
     @Override
