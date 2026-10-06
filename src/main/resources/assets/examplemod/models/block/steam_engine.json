@@ -1,6 +1,11 @@
 {
-  "parent": "block/cube_all",
+  "parent": "block/cube",
   "textures": {
-    "all": "examplemod:blocks/steam_engine_casing"
+    "down": "examplemod:blocks/steam_engine_casing",
+    "up": "examplemod:blocks/steam_engine_casing",
+    "north": "examplemod:blocks/steam_engine_casing",
+    "south": "examplemod:blocks/steam_engine_steam_input",
+    "west": "examplemod:blocks/steam_engine_casing",
+    "east": "examplemod:blocks/steam_engine_condensate_output"
   }
 }
