@@ -1,6 +1,9 @@
 package com.example.examplemod.tileentity;
 
 import com.example.examplemod.block.BlockMuffleFurnace;
+import com.example.examplemod.fluid.IFluidReceiver;
+import com.example.examplemod.fluid.ModFluidTank;
+import com.example.examplemod.fluid.ModFluids;
 import com.example.examplemod.init.ModBlocks;
 import com.example.examplemod.recipe.MuffleFurnaceRecipe;
 import com.example.examplemod.recipe.MuffleFurnaceRecipes;
@@ -17,11 +20,14 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 public class TileEntityMuffleFurnace
         extends TileEntity
-        implements IInventory, ITickable
+        implements IInventory, ITickable, IFluidReceiver
 {
     private final NonNullList<ItemStack> inventory =
             NonNullList.withSize(4, ItemStack.EMPTY);
@@ -29,6 +35,18 @@ public class TileEntityMuffleFurnace
     private int burnTime = 0;
     private int currentItemBurnTime = 0;
     private int cookTime = 0;
+
+    /*
+     * Additive fluid tank. Existing item slots remain unchanged.
+     * This tank is a Forge IFluidHandler and therefore works with the
+     * fluid network, buckets and compatible external pipes.
+     */
+    private final ModFluidTank processWaterTank =
+            new ModFluidTank(
+                    this,
+                    4000,
+                    ModFluids.PROCESS_WATER.getForgeFluid()
+            );
 
     private final int totalCookTime = 200;
     @Override
@@ -301,6 +319,53 @@ public class TileEntityMuffleFurnace
         }
 
         markDirty();
+    }
+
+    @Override
+    public IFluidHandler getFluidReceiver()
+    {
+        return processWaterTank;
+    }
+
+    @Override
+    public int getFluidInputRate()
+    {
+        return 200;
+    }
+
+    public ModFluidTank getProcessWaterTank()
+    {
+        return processWaterTank;
+    }
+
+    @Override
+    public boolean hasCapability(
+            Capability<?> capability,
+            net.minecraft.util.EnumFacing facing)
+    {
+        if (capability ==
+                CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+        {
+            return true;
+        }
+
+        return super.hasCapability(capability, facing);
+    }
+
+    @Override
+    public <T> T getCapability(
+            Capability<T> capability,
+            net.minecraft.util.EnumFacing facing)
+    {
+        if (capability ==
+                CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+        {
+            return CapabilityFluidHandler
+                    .FLUID_HANDLER_CAPABILITY
+                    .cast(processWaterTank);
+        }
+
+        return super.getCapability(capability, facing);
     }
 
     public boolean isBurning()
@@ -584,6 +649,10 @@ public class TileEntityMuffleFurnace
     {
         super.writeToNBT(compound);
 
+        processWaterTank.writeToNBTWithPressure(
+                compound
+        );
+
         ItemStackHelper.saveAllItems(
                 compound,
                 inventory
@@ -612,6 +681,10 @@ public class TileEntityMuffleFurnace
             NBTTagCompound compound)
     {
         super.readFromNBT(compound);
+
+        processWaterTank.readFromNBTWithPressure(
+                compound
+        );
 
         ItemStackHelper.loadAllItems(
                 compound,
