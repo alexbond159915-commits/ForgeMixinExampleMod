@@ -5,10 +5,10 @@ newmtl SideMTL
 d 1.0
 Ka 0.000000 0.000000 0.000000
 Kd 1.000000 1.000000 1.000000
-map_Kd #side
+map_Kd examplemod:blocks/fluid_pipe
 
 newmtl TopMTL
 d 1.0
 Ka 0.000000 0.000000 0.000000
 Kd 1.000000 1.000000 1.000000
-map_Kd #end
+map_Kd examplemod:blocks/fluid_pipe_end
