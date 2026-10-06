@@ -45,6 +45,25 @@ public class TileEntityFluidTank
     }
 
     @Override
+    public int getFluidPressure()
+    {
+        /*
+         * Resolve the Java 8 default-method conflict between
+         * IFluidProvider and IFluidReceiver.
+         */
+        return 0;
+    }
+
+    @Override
+    public int getFluidPriority()
+    {
+        /*
+         * Resolve the same conflict for endpoint priority.
+         */
+        return 0;
+    }
+
+    @Override
     public int getFluidOutputRate()
     {
         return 500;
