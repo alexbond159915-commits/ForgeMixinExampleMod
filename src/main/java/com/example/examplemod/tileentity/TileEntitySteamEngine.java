@@ -32,7 +32,7 @@ public class TileEntitySteamEngine
         implements ITickable, IFluidReceiver, IFluidProvider
 {
     private static final int STEAM_CAPACITY = 2000;
-    private static final int CONDENSATE_CAPACITY = 2000;
+    private static final int CONDENSATE_CAPACITY = 20;
 
     private static final int STEAM_PER_OPERATION = 100;
     private static final int CONDENSATE_PER_OPERATION = 1;
