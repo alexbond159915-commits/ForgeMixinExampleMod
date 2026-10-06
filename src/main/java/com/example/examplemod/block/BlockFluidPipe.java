@@ -5,7 +5,6 @@ import com.example.examplemod.fluid.IFluidPipe;
 import com.example.examplemod.fluid.TileEntityFluidPipe;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -31,14 +30,6 @@ public class BlockFluidPipe
             int meta)
     {
         return new TileEntityFluidPipe();
-    }
-
-    @Override
-    public boolean canRenderInLayer(
-            IBlockState state,
-            BlockRenderLayer layer)
-    {
-        return layer == BlockRenderLayer.CUTOUT_MIPPED;
     }
 
     @Override
