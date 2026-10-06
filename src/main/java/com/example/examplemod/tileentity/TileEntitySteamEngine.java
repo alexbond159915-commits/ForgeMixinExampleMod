@@ -249,6 +249,17 @@ public class TileEntitySteamEngine
     }
 
     @Override
+    public int getFluidPressure()
+    {
+        /*
+         * Both IFluidReceiver and IFluidProvider define this default
+         * method, so the machine must resolve the interface conflict
+         * explicitly. Pressure 0 is the normal base network channel.
+         */
+        return 0;
+    }
+
+    @Override
     public int getFluidInputRate()
     {
         return 200;
