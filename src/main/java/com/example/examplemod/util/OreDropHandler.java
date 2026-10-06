@@ -1,6 +1,7 @@
 package com.example.examplemod.util;
 
 import com.example.examplemod.ExampleMod;
+import com.example.examplemod.init.ModBlocks;
 import com.example.examplemod.init.ModItems;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -20,6 +21,12 @@ public final class OreDropHandler {
         int fortune = event.getFortuneLevel();
         int amount = 1 + (fortune > 0 ? event.getWorld().rand.nextInt(fortune + 1) : 0);
         event.getDrops().add(new ItemStack(ModItems.RAW_IRON, amount));
+        event.setDropChance(1.0F);
+
+        if (event.getState().getBlock() != ModBlocks.WITHERITE_ORE || event.isSilkTouching()) return;
+
+        event.getDrops().clear();
+        event.getDrops().add(new ItemStack(ModItems.WITHERITE, amount));
         event.setDropChance(1.0F);
 
 

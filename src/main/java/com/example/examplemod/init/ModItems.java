@@ -33,6 +33,7 @@ public final class ModItems
 
     public static final Item WITHERITE =
             new ItemBase("witherite", ExampleMod.CREATIVE_TAB);
+    
 
     private ModItems()
     {
