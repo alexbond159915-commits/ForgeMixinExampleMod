@@ -19,6 +19,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import com.example.examplemod.recipe.MuffleFurnaceRecipes;
@@ -77,6 +78,9 @@ public class ExampleMod
     public void preInit(FMLPreInitializationEvent event)
     {
         logger = event.getModLog();
+
+        // OBJ models must register their resource domain before model loading.
+        OBJLoader.INSTANCE.addDomain(MODID);
 
         ModFluids.registerFluids();
 
