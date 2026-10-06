@@ -32,14 +32,15 @@ public final class ModItems
 
     public static final Item WITHERITE =
             new ItemBase("witherite", ExampleMod.CREATIVE_TAB);
+
+    public static final Item FERRITE_MAGNET =
+            new ItemBase("ferrite_magnet", ExampleMod.CREATIVE_TAB);
+
+    public static final Item FERRITE_MAGNET_BLANK =
+            new ItemBase("ferrite_magnet_blank", ExampleMod.CREATIVE_TAB);
     
 
     // ItemBlock representations of the ferrite magnet blocks.
-    public static final Item FERRITE_MAGNET_BLANK =
-            new ItemBlockBase(ModBlocks.FERRITE_MAGNET_BLANK);
-
-    public static final Item FERRITE_MAGNET =
-            new ItemBlockBase(ModBlocks.FERRITE_MAGNET);
 
     private ModItems()
     {
@@ -51,18 +52,10 @@ public final class ModItems
         for (Block block : ModBlocks.ALL_BLOCKS)
         {
             // These two blocks have explicit ItemBlock registrations below.
-            if (block == ModBlocks.FERRITE_MAGNET_BLANK ||
-                block == ModBlocks.FERRITE_MAGNET)
-            {
-                continue;
-            }
 
             ItemBlockBase itemBlock = new ItemBlockBase(block);
             event.getRegistry().register(itemBlock);
         }
-
-        event.getRegistry().register(FERRITE_MAGNET_BLANK);
-        event.getRegistry().register(FERRITE_MAGNET);
 
         for (Item item : ALL_ITEMS)
         {

@@ -8,6 +8,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -62,12 +63,33 @@ public final class ModBlocks
                     .setHardness(3.0F)
                     .setResistance(3.0F);
 
+    public static final Block FERRITE_MAGNET_BLOCK =
+            new BlockBase(
+                    Material.IRON,
+                    "ferrite_magnet_block",
+                    ExampleMod.CREATIVE_TAB
+            )
+                    .setSoundType(SoundType.METAL)
+                    .setHardness(5.0F)
+                    .setResistance(6.0F);
+
+    public static final Block FERRITE_MAGNET_BLANK_BLOCK =
+            new BlockBase(
+                    Material.IRON,
+                    "ferrite_magnet_blank_block",
+                    ExampleMod.CREATIVE_TAB
+            )
+                    .setSoundType(SoundType.METAL)
+                    .setHardness(5.0F)
+                    .setResistance(6.0F);
     static
     {
         COPPER_ORE.setHarvestLevel("pickaxe", 1);
         STEAM_ENGINE_CASING.setHarvestLevel("pickaxe", 1);
         RAW_IRON_BLOCK.setHarvestLevel("pickaxe", 1);
         WITHERITE_ORE.setHarvestLevel("pickaxe", 1);
+        FERRITE_MAGNET_BLANK_BLOCK.setHarvestLevel("pickaxe", 1);
+        FERRITE_MAGNET_BLOCK.setHarvestLevel("pickaxe",1);
     }
 
     private ModBlocks()
