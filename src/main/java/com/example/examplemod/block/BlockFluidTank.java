@@ -10,7 +10,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidUtil;
 
 public class BlockFluidTank
         extends BlockContainerBase
@@ -59,11 +58,7 @@ public class BlockFluidTank
 
         if (!world.isRemote)
         {
-            FluidUtil.interactWithFluidHandler(
-                    player,
-                    hand,
-                    tank.getCapabilityHandler()
-            );
+            tank.handleContainer(player, hand);
         }
 
         return true;
