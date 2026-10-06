@@ -8,7 +8,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -82,6 +81,7 @@ public final class ModBlocks
                     .setSoundType(SoundType.METAL)
                     .setHardness(5.0F)
                     .setResistance(6.0F);
+
     static
     {
         COPPER_ORE.setHarvestLevel("pickaxe", 1);
@@ -89,7 +89,7 @@ public final class ModBlocks
         RAW_IRON_BLOCK.setHarvestLevel("pickaxe", 1);
         WITHERITE_ORE.setHarvestLevel("pickaxe", 1);
         FERRITE_MAGNET_BLANK_BLOCK.setHarvestLevel("pickaxe", 1);
-        FERRITE_MAGNET_BLOCK.setHarvestLevel("pickaxe",1);
+        FERRITE_MAGNET_BLOCK.setHarvestLevel("pickaxe", 1);
     }
 
     private ModBlocks()
@@ -102,6 +102,26 @@ public final class ModBlocks
         for (Block block : ALL_BLOCKS)
         {
             event.getRegistry().register(block);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onMissingBlockMappings(
+            RegistryEvent.MissingMappings<Block> event)
+    {
+        for (RegistryEvent.MissingMappings.Mapping<Block> mapping : event.getAllMappings())
+        {
+            if (mapping.key.getNamespace().equals(ExampleMod.MODID))
+            {
+                if (mapping.key.getPath().equals("ferrite_magnet"))
+                {
+                    mapping.remap(FERRITE_MAGNET_BLOCK);
+                }
+                else if (mapping.key.getPath().equals("ferrite_magnet_blank"))
+                {
+                    mapping.remap(FERRITE_MAGNET_BLANK_BLOCK);
+                }
+            }
         }
     }
 }
