@@ -35,6 +35,12 @@ public class BlockFluidPipe
     @Override
     public boolean isOpaqueCube(IBlockState state)
     {
-        return true;
+        return false;
+    }
+
+    @Override
+    public boolean isFullCube(IBlockState state)
+    {
+        return false;
     }
 }

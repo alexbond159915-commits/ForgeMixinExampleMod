@@ -236,10 +236,11 @@ public class BlockSteamEngine extends BlockContainerBase
                             );
 
                     /*
-                     * Energy output block sits above the controller and
-                     * forwards Forge Energy from the core.
+                     * Energy output block sits above the front-right casing
+                     * so the top of the controller remains available for
+                     * the steam input port.
                      */
-                    if (width == 0
+                    if (width == 1
                             && height == 1
                             && depth == 0)
                     {
