@@ -3,6 +3,8 @@ package com.example.examplemod.init;
 import com.example.examplemod.ExampleMod;
 import com.example.examplemod.block.BlockBase;
 import com.example.examplemod.block.BlockMuffleFurnace;
+import com.example.examplemod.block.BlockFluidPipe;
+import com.example.examplemod.block.BlockFluidTank;
 import com.example.examplemod.block.BlockOreBase;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -22,6 +24,12 @@ public final class ModBlocks
 
     public static final Block MUFFLE_FURNACE =
             new BlockMuffleFurnace();
+
+    public static final Block FLUID_PIPE =
+            new BlockFluidPipe();
+
+    public static final Block FLUID_TANK =
+            new BlockFluidTank();
 
     public static final Block COPPER_ORE =
             new BlockOreBase(
