@@ -61,7 +61,6 @@ public final class ClientEventSubscriber
     }
 }
 
-
     @net.minecraftforge.fml.relauncher.SideOnly(
             net.minecraftforge.fml.relauncher.Side.CLIENT
     )
@@ -106,28 +105,21 @@ public final class ClientEventSubscriber
                             180F, 0F, 1F, 0F
                     );
                     break;
-
                 case WEST:
                     net.minecraft.client.renderer.GlStateManager.rotate(
                             -90F, 0F, 1F, 0F
                     );
                     break;
-
                 case EAST:
                     net.minecraft.client.renderer.GlStateManager.rotate(
                             90F, 0F, 1F, 0F
                     );
                     break;
-
                 case SOUTH:
                 default:
                     break;
             }
 
-            /*
-             * Placeholder rotor position. The final HBM-style model can
-             * replace this item render without changing the machine logic.
-             */
             net.minecraft.client.renderer.GlStateManager.translate(
                     0D,
                     0D,
