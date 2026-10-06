@@ -15,3 +15,8 @@ tile.examplemod.ferrite_magnet.name=Ferrite Magnet
 tile.examplemod.fluid_pipe.name=Fluid Pipe
 tile.examplemod.fluid_tank.name=Fluid Tank
 fluid.examplemod.process_water=Process Water
+
+tile.examplemod.steam_engine.name=Steam Engine
+tile.examplemod.steam_engine_power_port.name=Steam Engine Power Port
+fluid.examplemod.steam=Steam
+fluid.examplemod.condensate=Condensate
