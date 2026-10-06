@@ -9,7 +9,6 @@ public class ItemBlockBase extends ItemBlock
     {
         super(block);
         setRegistryName(block.getRegistryName());
-
-
+        setCreativeTab(block.getCreativeTabToDisplayOn());
     }
 }
