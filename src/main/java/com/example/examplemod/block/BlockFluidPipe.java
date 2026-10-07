@@ -42,6 +42,23 @@ public class BlockFluidPipe extends Block implements ITileEntityProvider, IFluid
     @Override public TileEntity createNewTileEntity(World world,int meta){return new TileEntityFluidPipe();}
     @Override public boolean hasTileEntity(IBlockState state){return true;}
 
+    @Override public void onBlockAdded(World world,BlockPos pos,IBlockState state){
+        super.onBlockAdded(world,pos,state);
+        if(!world.isRemote) updateConnections(world,pos);
+    }
+
+    @Override public void neighborChanged(IBlockState state,World world,BlockPos pos,Block block){
+        super.neighborChanged(state,world,pos,block);
+        if(!world.isRemote) updateConnections(world,pos);
+    }
+
+    private void updateConnections(World world,BlockPos pos){
+        IBlockState current=world.getBlockState(pos);
+        IBlockState connected=getConnectionState(world,pos);
+        if(current.getBlock()==this && !current.equals(connected))
+            world.setBlockState(pos,connected,2);
+    }
+
     public IBlockState getConnectionState(World world,BlockPos pos){
         IBlockState state=getDefaultState();
         for(EnumFacing side:EnumFacing.values()){
