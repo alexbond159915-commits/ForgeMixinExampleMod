@@ -21,8 +21,12 @@ public class TileEntityFluidPipe extends TileEntity implements IFluidPipe {
     }
     @Override public FluidType getPipeFluid(){return fluid;}
     public void setPipeFluid(FluidType type){
-        fluid=type==null?Fluids.NONE:type; markDirty();
-        if(world!=null&&!world.isRemote) FluidNetworkManager.rebuild(world);
+        fluid=type==null?Fluids.NONE:type;
+        markDirty();
+        if(world!=null&&!world.isRemote) {
+            FluidNetworkManager.updateNodeFluid(world,pos,fluid);
+            world.notifyBlockUpdate(pos,world.getBlockState(pos),world.getBlockState(pos),3);
+        }
     }
     @Override public boolean canConnect(EnumFacing side,FluidType type){return type==Fluids.NONE||fluid==Fluids.NONE||fluid==type;}
     @Override public NBTTagCompound writeToNBT(NBTTagCompound tag){
