@@ -1,0 +1,11 @@
+{
+  "multipart": [
+    { "when": { "pos_x": "true" }, "apply": { "model": "examplemod:block/fluid_pipe_arm", "uvlock": true } },
+    { "when": { "neg_x": "true" }, "apply": { "model": "examplemod:block/fluid_pipe_arm", "rotation": { "y": 180 }, "uvlock": true } },
+    { "when": { "pos_y": "true" }, "apply": { "model": "examplemod:block/fluid_pipe_arm", "rotation": { "x": 270 }, "uvlock": true } },
+    { "when": { "neg_y": "true" }, "apply": { "model": "examplemod:block/fluid_pipe_arm", "rotation": { "x": 90 }, "uvlock": true } },
+    { "when": { "pos_z": "true" }, "apply": { "model": "examplemod:block/fluid_pipe_arm", "rotation": { "y": 90 }, "uvlock": true } },
+    { "when": { "neg_z": "true" }, "apply": { "model": "examplemod:block/fluid_pipe_arm", "rotation": { "y": 270 }, "uvlock": true } },
+    { "apply": { "model": "examplemod:block/fluid_pipe_center" } }
+  ]
+}
