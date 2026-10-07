@@ -3,6 +3,7 @@ package com.example.examplemod.init;
 import com.example.examplemod.ExampleMod;
 import com.example.examplemod.item.ItemBase;
 import com.example.examplemod.item.ItemBlockBase;
+import com.example.examplemod.item.FluidIdentifierItem;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraftforge.event.RegistryEvent;
@@ -20,6 +21,9 @@ public final class ModItems
 
     public static final Item FLYWHEEL =
             new ItemBase("flywheel", ExampleMod.MACHINES_TAB);
+
+    public static final Item FLUID_IDENTIFIER =
+            new FluidIdentifierItem();
 
     public static final Item RAW_IRON =
             new ItemBase("raw_iron", ExampleMod.CREATIVE_TAB);
