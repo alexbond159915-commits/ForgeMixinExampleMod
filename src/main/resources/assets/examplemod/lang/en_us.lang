@@ -20,3 +20,5 @@ tile.examplemod.steam_engine.name=Steam Engine
 tile.examplemod.steam_engine_power_port.name=Steam Engine Power Port
 fluid.examplemod.steam=Steam
 fluid.examplemod.condensate=Condensate
+
+tile.examplemod.fluid_duct.name=Small Fluid Duct
