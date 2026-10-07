@@ -4,11 +4,10 @@ import com.example.examplemod.ExampleMod;
 import com.example.examplemod.fluid.FluidType;
 import com.example.examplemod.fluid.Fluids;
 import com.example.examplemod.tileentity.TileEntityFluidPipe;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
@@ -17,8 +16,9 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import java.util.ArrayList;
 
 public class FluidIdentifierItem extends ItemBase {
     private static final String NBT_FLUID = "Fluid";
@@ -38,6 +38,14 @@ public class FluidIdentifierItem extends ItemBase {
         if(!stack.hasTagCompound())
             stack.setTagCompound(new NBTTagCompound());
         stack.getTagCompound().setString(NBT_FLUID, fluid == null ? Fluids.NONE.getName() : fluid.getName());
+    }
+
+    @Override
+    public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
+        tooltip.add("Fluid: " + getFluid(stack).getName());
+        tooltip.add("Sneak + right click: change fluid");
+        tooltip.add("Right click pipe: set fluid");
+        tooltip.add("Sneak + right click pipe: copy fluid");
     }
 
     @Override
