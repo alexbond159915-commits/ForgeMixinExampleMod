@@ -16,7 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -80,7 +80,7 @@ public class ExampleMod
         FluidRegistry.enableUniversalBucket();
     }
 
-    @EventHandler
+    @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
         logger = event.getModLog();
@@ -125,7 +125,7 @@ public class ExampleMod
         );
     }
 
-    @EventHandler
+    @Mod.EventHandler
     public void init(FMLInitializationEvent event)
     {
         logger.info(
@@ -179,7 +179,6 @@ public class ExampleMod
                 'I', Items.IRON_INGOT
         );
 
-        // Fluid pipe: a simple industrial pipe block.
         GameRegistry.addShapedRecipe(
                 new ResourceLocation(MODID, "fluid_pipe"),
                 null,
@@ -190,7 +189,6 @@ public class ExampleMod
                 'I', Items.IRON_INGOT
         );
 
-        // Fluid tank: 16,000 mB universal storage endpoint.
         GameRegistry.addShapedRecipe(
                 new ResourceLocation(MODID, "fluid_tank"),
                 null,
@@ -201,7 +199,6 @@ public class ExampleMod
                 'I', Items.IRON_INGOT
         );
 
-        // Same recipe rotated: 3x2 rectangle of copper ingots.
         GameRegistry.addShapedRecipe(
                 new ResourceLocation(MODID, "steam_engine_casing_horizontal"),
                 null,
@@ -209,6 +206,19 @@ public class ExampleMod
                 "MMM",
                 "MMM",
                 'M', ModItems.COPPER_INGOT
+        );
+
+        // HBM-style universal fluid identifier.
+        GameRegistry.addShapedRecipe(
+                new ResourceLocation(MODID, "fluid_identifier"),
+                null,
+                new ItemStack(ModItems.FLUID_IDENTIFIER),
+                " I ",
+                "RGR",
+                " I ",
+                'I', Items.IRON_INGOT,
+                'R', Items.REDSTONE,
+                'G', Blocks.GLASS
         );
     }
 }

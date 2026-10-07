@@ -22,3 +22,4 @@ fluid.examplemod.steam=Steam
 fluid.examplemod.condensate=Condensate
 
 tile.examplemod.fluid_duct.name=Small Fluid Duct
+item.examplemod.fluid_identifier.name=Universal Fluid Identifier

@@ -3,6 +3,7 @@ package com.example.examplemod.init;
 import com.example.examplemod.ExampleMod;
 import com.example.examplemod.item.ItemBase;
 import com.example.examplemod.item.ItemBlockBase;
+import com.example.examplemod.item.ItemFluidIdentifier;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraftforge.event.RegistryEvent;
@@ -21,6 +22,9 @@ public final class ModItems
     public static final Item FLYWHEEL =
             new ItemBase("flywheel", ExampleMod.MACHINES_TAB);
 
+    public static final Item FLUID_IDENTIFIER =
+            new ItemFluidIdentifier();
+
     public static final Item RAW_IRON =
             new ItemBase("raw_iron", ExampleMod.CREATIVE_TAB);
 
@@ -38,9 +42,8 @@ public final class ModItems
 
     public static final Item FERRITE_MAGNET_BLANK =
             new ItemBase("ferrite_magnet_blank", ExampleMod.CREATIVE_TAB);
-    
 
-    // ItemBlock representations of the ferrite magnet blocks.
+    // ItemBlock representations of registered blocks.
 
     private ModItems()
     {
@@ -51,8 +54,6 @@ public final class ModItems
     {
         for (Block block : ModBlocks.ALL_BLOCKS)
         {
-            // These two blocks have explicit ItemBlock registrations below.
-
             ItemBlockBase itemBlock = new ItemBlockBase(block);
             event.getRegistry().register(itemBlock);
         }

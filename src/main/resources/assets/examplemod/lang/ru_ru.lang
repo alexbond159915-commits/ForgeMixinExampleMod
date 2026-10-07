@@ -4,8 +4,8 @@ tile.examplemod.copper_ore.name=Медная руда
 itemGroup.examplemod=Химия
 tile.examplemod.muffle_furnace.name=Муфельная печь
 item.examplemod.copper_ingot.name=Медный слиток
-tile.examplemod.steam_engine_casing.name=Обшивка парового двигателя
 item.examplemod.steam_engine_casing.name=Обшивка парового двигателя
+tile.examplemod.steam_engine_casing.name=Обшивка парового двигателя
 tile.examplemod.fluid_pipe.name=Жидкостная труба
 tile.examplemod.fluid_tank.name=Жидкостный бак
 fluid.examplemod.process_water=Технологическая вода
@@ -16,3 +16,4 @@ fluid.examplemod.steam=Пар
 fluid.examplemod.condensate=Конденсат
 
 tile.examplemod.fluid_duct.name=Малая жидкостная труба
+item.examplemod.fluid_identifier.name=Жидкостный идентификатор

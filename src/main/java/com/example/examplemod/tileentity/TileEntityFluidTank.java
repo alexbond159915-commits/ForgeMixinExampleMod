@@ -1,9 +1,9 @@
 package com.example.examplemod.tileentity;
 
+import com.example.examplemod.fluid.IFluidIdentifierTarget;
 import com.example.examplemod.fluid.IFluidProvider;
 import com.example.examplemod.fluid.IFluidReceiver;
 import com.example.examplemod.fluid.ModFluidTank;
-import com.example.examplemod.fluid.ModFluids;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -11,6 +11,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -19,11 +20,12 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 /**
  * Simple 16000 mB storage tank used as the first real network endpoint.
  *
- * Unlike the furnace's fixed process tank, this tank accepts any Forge fluid.
+ * Unlike the furnace's fixed process tank, this tank accepts any Forge fluid
+ * until a fluid identifier is applied.
  */
 public class TileEntityFluidTank
         extends TileEntity
-        implements IFluidProvider, IFluidReceiver
+        implements IFluidProvider, IFluidReceiver, IFluidIdentifierTarget
 {
     private final ModFluidTank tank =
             new ModFluidTank(
@@ -73,6 +75,18 @@ public class TileEntityFluidTank
     public int getFluidInputRate()
     {
         return 500;
+    }
+
+    @Override
+    public Fluid getIdentifiedFluid()
+    {
+        return tank.getAllowedFluid();
+    }
+
+    @Override
+    public boolean setIdentifiedFluid(Fluid fluid)
+    {
+        return tank.setAllowedFluid(fluid);
     }
 
     public ModFluidTank getTank()

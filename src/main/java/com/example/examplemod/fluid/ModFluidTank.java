@@ -5,15 +5,16 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidRegistry;
 
 /**
- * Forge FluidTank with two HBM-like additions:
- * 1) a fixed fluid filter;
+ * Forge FluidTank with HBM-like additions:
+ * 1) a mutable fluid filter/identifier;
  * 2) a pressure value reserved for the future fluid-network layer.
  */
 public class ModFluidTank extends FluidTank
 {
-    private final Fluid allowedFluid;
+    private Fluid allowedFluid;
     private int pressure;
 
     public ModFluidTank(
@@ -32,6 +33,43 @@ public class ModFluidTank extends FluidTank
     public Fluid getAllowedFluid()
     {
         return allowedFluid;
+    }
+
+    /**
+     * Identifies this tank for one fluid type.
+     *
+     * A tank may only change its identification while empty or while the
+     * new type matches its current contents.
+     */
+    public boolean setAllowedFluid(Fluid fluid)
+    {
+        if (fluid == null)
+        {
+            if (this.fluid != null && this.fluid.amount > 0)
+            {
+                return false;
+            }
+
+            this.allowedFluid = null;
+        }
+        else
+        {
+            if (this.fluid != null
+                    && this.fluid.amount > 0
+                    && this.fluid.getFluid() != fluid)
+            {
+                return false;
+            }
+
+            this.allowedFluid = fluid;
+        }
+
+        if (tile != null)
+        {
+            tile.markDirty();
+        }
+
+        return true;
     }
 
     public int getPressure()
@@ -80,6 +118,18 @@ public class ModFluidTank extends FluidTank
     {
         super.writeToNBT(nbt);
 
+        if (allowedFluid != null)
+        {
+            nbt.setString(
+                    "IdentifiedFluid",
+                    allowedFluid.getName()
+            );
+        }
+        else
+        {
+            nbt.removeTag("IdentifiedFluid");
+        }
+
         nbt.setInteger(
                 "Pressure",
                 pressure
@@ -92,6 +142,19 @@ public class ModFluidTank extends FluidTank
             NBTTagCompound nbt)
     {
         super.readFromNBT(nbt);
+
+        if (nbt.hasKey("IdentifiedFluid"))
+        {
+            Fluid identified =
+                    FluidRegistry.getFluid(
+                            nbt.getString("IdentifiedFluid")
+                    );
+
+            if (identified != null)
+            {
+                allowedFluid = identified;
+            }
+        }
 
         pressure = nbt.getInteger("Pressure");
 
