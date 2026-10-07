@@ -37,6 +37,14 @@ public final class FluidNetworkManager {
         }
     }
 
+    public static void updateNodeFluid(World world, BlockPos pos, FluidType type) {
+        FluidNode node = getNode(world, pos);
+        if (node != null) {
+            node.type = type == null ? Fluids.NONE : type;
+            rebuild(world);
+        }
+    }
+
     public static FluidNode getNode(World world, BlockPos pos) {
         Map<BlockPos, FluidNode> nodes = NODES.get(world);
         return nodes == null ? null : nodes.get(pos);
