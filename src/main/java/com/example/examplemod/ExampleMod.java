@@ -4,6 +4,7 @@ import com.example.examplemod.client.GuiHandler;
 import com.example.examplemod.fluid.Fluids;
 import com.example.examplemod.init.ModItems;
 import com.example.examplemod.tileentity.TileEntityMuffleFurnace;
+import com.example.examplemod.tileentity.TileEntityFluidPipe;
 import com.example.examplemod.world.CopperOreWorldGenerator;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
