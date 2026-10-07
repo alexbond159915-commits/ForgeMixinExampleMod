@@ -1,0 +1,31 @@
+{
+  "multipart": [
+    {
+      "model": "examplemod:fluid_duct_center"
+    },
+    {
+      "when": { "posx": "true" },
+      "apply": { "model": "examplemod:fluid_duct_arm_x_pos" }
+    },
+    {
+      "when": { "negx": "true" },
+      "apply": { "model": "examplemod:fluid_duct_arm_x_neg" }
+    },
+    {
+      "when": { "posy": "true" },
+      "apply": { "model": "examplemod:fluid_duct_arm_y_pos" }
+    },
+    {
+      "when": { "negy": "true" },
+      "apply": { "model": "examplemod:fluid_duct_arm_y_neg" }
+    },
+    {
+      "when": { "posz": "true" },
+      "apply": { "model": "examplemod:fluid_duct_arm_z_pos" }
+    },
+    {
+      "when": { "negz": "true" },
+      "apply": { "model": "examplemod:fluid_duct_arm_z_neg" }
+    }
+  ]
+}
