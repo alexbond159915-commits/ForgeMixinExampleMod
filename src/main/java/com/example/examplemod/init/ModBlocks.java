@@ -2,6 +2,7 @@ package com.example.examplemod.init;
 
 import com.example.examplemod.ExampleMod;
 import com.example.examplemod.block.BlockBase;
+import com.example.examplemod.block.BlockFluidPipe;
 import com.example.examplemod.block.BlockMuffleFurnace;
 import com.example.examplemod.block.BlockOreBase;
 import net.minecraft.block.Block;
