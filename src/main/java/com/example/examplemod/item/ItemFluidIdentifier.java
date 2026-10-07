@@ -1,8 +1,6 @@
 package com.example.examplemod.item;
 
 import com.example.examplemod.ExampleMod;
-import com.example.examplemod.fluid.IFluidIdentifierTarget;
-import com.example.examplemod.init.ModItems;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumActionResult;
@@ -15,6 +13,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
@@ -41,7 +41,7 @@ public class ItemFluidIdentifier extends ItemBase
     {
         TileEntity tile = world.getTileEntity(pos);
 
-        if (!(tile instanceof IFluidIdentifierTarget))
+        if (!(tile instanceof com.example.examplemod.fluid.IFluidIdentifierTarget))
         {
             return EnumActionResult.PASS;
         }
@@ -57,8 +57,8 @@ public class ItemFluidIdentifier extends ItemBase
         }
 
         ItemStack stack = player.getHeldItem(hand);
-        IFluidIdentifierTarget target =
-                (IFluidIdentifierTarget) tile;
+        com.example.examplemod.fluid.IFluidIdentifierTarget target =
+                (com.example.examplemod.fluid.IFluidIdentifierTarget) tile;
 
         Fluid selected = getStoredFluid(stack);
 
@@ -110,6 +110,7 @@ public class ItemFluidIdentifier extends ItemBase
         return EnumActionResult.SUCCESS;
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(
             ItemStack stack,

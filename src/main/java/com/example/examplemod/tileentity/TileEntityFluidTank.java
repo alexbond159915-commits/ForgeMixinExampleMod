@@ -49,19 +49,12 @@ public class TileEntityFluidTank
     @Override
     public int getFluidPressure()
     {
-        /*
-         * Resolve the Java 8 default-method conflict between
-         * IFluidProvider and IFluidReceiver.
-         */
         return 0;
     }
 
     @Override
     public int getFluidPriority()
     {
-        /*
-         * Resolve the same conflict for endpoint priority.
-         */
         return 0;
     }
 
@@ -80,7 +73,20 @@ public class TileEntityFluidTank
     @Override
     public Fluid getIdentifiedFluid()
     {
-        return tank.getAllowedFluid();
+        Fluid identified = tank.getAllowedFluid();
+
+        if (identified != null)
+        {
+            return identified;
+        }
+
+        if (tank.getFluid() != null
+                && tank.getFluid().amount > 0)
+        {
+            return tank.getFluid().getFluid();
+        }
+
+        return null;
     }
 
     @Override
