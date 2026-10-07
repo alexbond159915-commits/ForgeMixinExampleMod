@@ -5,6 +5,7 @@ import com.example.examplemod.block.BlockBase;
 import com.example.examplemod.block.BlockMuffleFurnace;
 import com.example.examplemod.block.BlockFluidPipe;
 import com.example.examplemod.block.BlockFluidTank;
+import com.example.examplemod.block.BlockFluidDuct;
 import com.example.examplemod.block.BlockSteamEngine;
 import com.example.examplemod.block.BlockSteamEnginePowerPort;
 import com.example.examplemod.block.BlockOreBase;
@@ -32,6 +33,12 @@ public final class ModBlocks
 
     public static final Block FLUID_TANK =
             new BlockFluidTank();
+
+    /*
+     * Small HBM-style fluid duct: 6 px core with dynamic connections.
+     */
+    public static final Block FLUID_DUCT =
+            new BlockFluidDuct();
 
     public static final Block STEAM_ENGINE =
             new BlockSteamEngine();
