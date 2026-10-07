@@ -169,6 +169,16 @@ public class ExampleMod
                 'I', ModItems.COPPER_INGOT
         );
 
+        GameRegistry.addShapedRecipe(
+                new ResourceLocation(MODID, "fluid_duct"),
+                null,
+                new ItemStack(ModBlocks.FLUID_DUCT, 8),
+                "I I",
+                " I ",
+                "I I",
+                'I', Items.IRON_INGOT
+        );
+
         // Fluid pipe: a simple industrial pipe block.
         GameRegistry.addShapedRecipe(
                 new ResourceLocation(MODID, "fluid_pipe"),
