@@ -14,3 +14,5 @@ tile.examplemod.steam_engine.name=Паровой двигатель
 tile.examplemod.steam_engine_power_port.name=Силовой порт парового двигателя
 fluid.examplemod.steam=Пар
 fluid.examplemod.condensate=Конденсат
+
+tile.examplemod.fluid_duct.name=Малая жидкостная труба
