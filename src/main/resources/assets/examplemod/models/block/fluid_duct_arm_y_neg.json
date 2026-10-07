@@ -1,0 +1,20 @@
+{
+  "textures": {
+    "body": "examplemod:blocks/fluid_pipe",
+    "end": "examplemod:blocks/fluid_pipe_end"
+  },
+  "elements": [
+    {
+      "from": [5, 0, 5],
+      "to": [11, 11, 11],
+      "faces": {
+        "north": { "texture": "#body" },
+        "south": { "texture": "#body" },
+        "west": { "texture": "#body" },
+        "east": { "texture": "#body" },
+        "up": { "texture": "#body" },
+        "down": { "texture": "#end" }
+      }
+    }
+  ]
+}
