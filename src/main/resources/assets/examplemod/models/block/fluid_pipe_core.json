@@ -1,6 +1,7 @@
 {
   "ambientocclusion": true,
   "textures": {
+    "particle": "examplemod:blocks/fluid_pipe",
     "core": "examplemod:blocks/fluid_pipe"
   },
   "elements": [
