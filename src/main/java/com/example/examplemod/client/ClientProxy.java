@@ -18,7 +18,6 @@ import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -33,26 +32,29 @@ public class ClientProxy
                     "models/block/pipe_neo.obj"
             );
 
+    /*
+     * Use the actual HBM standard fluid duct texture.
+     * The old fluid_pipe texture belongs to the separate legacy pipe.
+     */
     private static final ResourceLocation BASE_TEXTURE =
             new ResourceLocation(
                     ExampleMod.MODID,
-                    "blocks/fluid_pipe"
+                    "blocks/fluid_duct"
             );
 
+    /*
+     * HBM-style transparent overlay used for the colored fluid layer.
+     */
     private static final ResourceLocation OVERLAY_TEXTURE =
             new ResourceLocation(
                     ExampleMod.MODID,
-                    "blocks/fluid_pipe_overlay"
+                    "blocks/fluid_duct_overlay"
             );
 
     @Override
     public void preInit(
             FMLPreInitializationEvent event)
     {
-        OBJLoader.INSTANCE.addDomain(
-                ExampleMod.MODID
-        );
-
         MinecraftForge.EVENT_BUS.register(
                 this
         );
@@ -62,7 +64,7 @@ public class ClientProxy
     public void onModelRegistry(
             ModelRegistryEvent event)
     {
-        final ResourceLocation blockLocation =
+        final ResourceLocation ductLocation =
                 new ResourceLocation(
                         ExampleMod.MODID,
                         "fluid_duct"
@@ -78,25 +80,70 @@ public class ClientProxy
                             IBlockState state)
                     {
                         return new ModelResourceLocation(
-                                blockLocation,
+                                ductLocation,
                                 "normal"
                         );
                     }
                 }
         );
 
-        Item item =
+        Item ductItem =
                 Item.getItemFromBlock(
                         ModBlocks.FLUID_DUCT
                 );
 
-        if (item != null)
+        if (ductItem != null)
         {
             ModelLoader.setCustomModelResourceLocation(
-                    item,
+                    ductItem,
                     0,
                     new ModelResourceLocation(
-                            blockLocation,
+                            ductLocation,
+                            "inventory"
+                    )
+            );
+        }
+
+        /*
+         * Explicitly register the tank block/item model.
+         * This avoids relying on automatic state mapping for this
+         * TileEntity block.
+         */
+        final ResourceLocation tankLocation =
+                new ResourceLocation(
+                        ExampleMod.MODID,
+                        "fluid_tank"
+                );
+
+        ModelLoader.setCustomStateMapper(
+                ModBlocks.FLUID_TANK,
+                new StateMapperBase()
+                {
+                    @Override
+                    protected ModelResourceLocation
+                    getModelResourceLocation(
+                            IBlockState state)
+                    {
+                        return new ModelResourceLocation(
+                                tankLocation,
+                                "normal"
+                        );
+                    }
+                }
+        );
+
+        Item tankItem =
+                Item.getItemFromBlock(
+                        ModBlocks.FLUID_TANK
+                );
+
+        if (tankItem != null)
+        {
+            ModelLoader.setCustomModelResourceLocation(
+                    tankItem,
+                    0,
+                    new ModelResourceLocation(
+                            tankLocation,
                             "inventory"
                     )
             );
@@ -141,12 +188,15 @@ public class ClientProxy
                             PIPE_MODEL
                     );
 
+            ResourceLocation ductLocation =
+                    new ResourceLocation(
+                            ExampleMod.MODID,
+                            "fluid_duct"
+                    );
+
             event.getModelRegistry().putObject(
                     new ModelResourceLocation(
-                            new ResourceLocation(
-                                    ExampleMod.MODID,
-                                    "fluid_duct"
-                            ),
+                            ductLocation,
                             "normal"
                     ),
                     new FluidDuctBakedModel(
@@ -159,10 +209,7 @@ public class ClientProxy
 
             event.getModelRegistry().putObject(
                     new ModelResourceLocation(
-                            new ResourceLocation(
-                                    ExampleMod.MODID,
-                                    "fluid_duct"
-                            ),
+                            ductLocation,
                             "inventory"
                     ),
                     new FluidDuctBakedModel(

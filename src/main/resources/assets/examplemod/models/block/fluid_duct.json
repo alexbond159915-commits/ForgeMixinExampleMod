@@ -1,4 +1,6 @@
 {
-  "loader": "forge:obj",
-  "model": "examplemod:models/block/pipe_neo.obj"
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "examplemod:blocks/fluid_duct"
+  }
 }
