@@ -26,12 +26,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class ClientProxy
         extends CommonProxy
 {
-    private static final ResourceLocation PIPE_MODEL =
-            new ResourceLocation(
-                    ExampleMod.MODID,
-                    "models/block/pipe_neo.obj"
-            );
-
     /*
      * Use the actual HBM standard fluid duct texture.
      * The old fluid_pipe texture belongs to the separate legacy pipe.
@@ -160,6 +154,52 @@ public class ClientProxy
                     )
             );
         }
+
+
+        /*
+         * The fluid pipe is a simple fixed-shape block, so always map
+         * every block state to the custom baked "normal" model.
+         * This avoids any dependency on multipart/property state JSON.
+         */
+        final ResourceLocation pipeLocation =
+                new ResourceLocation(
+                        ExampleMod.MODID,
+                        "fluid_pipe"
+                );
+
+        ModelLoader.setCustomStateMapper(
+                ModBlocks.FLUID_PIPE,
+                new StateMapperBase()
+                {
+                    @Override
+                    protected ModelResourceLocation
+                    getModelResourceLocation(
+                            IBlockState state)
+                    {
+                        return new ModelResourceLocation(
+                                pipeLocation,
+                                "normal"
+                        );
+                    }
+                }
+        );
+
+        Item pipeItem =
+                Item.getItemFromBlock(
+                        ModBlocks.FLUID_PIPE
+                );
+
+        if (pipeItem != null)
+        {
+            ModelLoader.setCustomModelResourceLocation(
+                    pipeItem,
+                    0,
+                    new ModelResourceLocation(
+                            pipeLocation,
+                            "inventory"
+                    )
+            );
+        }
     }
 
     @SubscribeEvent
@@ -205,7 +245,10 @@ public class ClientProxy
 
             FluidDuctBakedModel.ObjModel obj =
                     FluidDuctBakedModel.load(
-                            PIPE_MODEL
+                            new ResourceLocation(
+                                    ExampleMod.MODID,
+                                    "models/block/pipe_neo.obj"
+                            )
                     );
 
             ResourceLocation ductLocation =
@@ -250,14 +293,6 @@ public class ClientProxy
                             PIPE_END_TEXTURE.toString()
                     );
 
-            FluidDuctBakedModel.ObjModel legacyPipe =
-                    FluidDuctBakedModel.load(
-                            new ResourceLocation(
-                                    ExampleMod.MODID,
-                                    "models/block/pipe.obj"
-                            )
-                    );
-
             ResourceLocation pipeLocation =
                     new ResourceLocation(
                             ExampleMod.MODID,
@@ -270,7 +305,7 @@ public class ClientProxy
                             "normal"
                     ),
                     FluidDuctBakedModel.forSimplePipe(
-                            legacyPipe,
+                            null,
                             pipeBase,
                             pipeEnd,
                             true
@@ -283,7 +318,7 @@ public class ClientProxy
                             "inventory"
                     ),
                     FluidDuctBakedModel.forSimplePipe(
-                            legacyPipe,
+                            null,
                             pipeBase,
                             pipeEnd,
                             false
