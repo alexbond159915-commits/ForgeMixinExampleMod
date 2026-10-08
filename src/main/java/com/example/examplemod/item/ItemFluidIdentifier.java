@@ -80,7 +80,7 @@ public class ItemFluidIdentifier extends ItemBase
 
             if (targetFluid == null)
             {
-                player.addChatMessage(
+                player.sendMessage(
                         new TextComponentString(
                                 TextFormatting.RED
                                         + "У объекта не выбрана жидкость."
@@ -95,7 +95,7 @@ public class ItemFluidIdentifier extends ItemBase
                     targetFluid
             );
 
-            player.addChatMessage(
+            player.sendMessage(
                     new TextComponentString(
                             TextFormatting.GRAY
                                     + "Жидкость скопирована: "
@@ -109,7 +109,7 @@ public class ItemFluidIdentifier extends ItemBase
 
         if (!target.setIdentifiedFluid(selected))
         {
-            player.addChatMessage(
+            player.sendMessage(
                     new TextComponentString(
                             TextFormatting.RED
                                     + "Не удалось изменить тип жидкости."
@@ -119,7 +119,7 @@ public class ItemFluidIdentifier extends ItemBase
             return EnumActionResult.FAIL;
         }
 
-        player.addChatMessage(
+        player.sendMessage(
                 new TextComponentString(
                         TextFormatting.GRAY
                                 + "Жидкость установлена: "
