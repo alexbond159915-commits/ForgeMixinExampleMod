@@ -55,6 +55,11 @@ public class ClientProxy
     public void preInit(
             FMLPreInitializationEvent event)
     {
+        // Required for Forge 1.12.2 to load the legacy fluid_pipe OBJ model.
+        OBJLoader.INSTANCE.addDomain(
+                ExampleMod.MODID
+        );
+
         MinecraftForge.EVENT_BUS.register(
                 this
         );
