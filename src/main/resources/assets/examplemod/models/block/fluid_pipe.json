@@ -1,6 +1,69 @@
 {
-  "parent": "block/cube_all",
+  "ambientocclusion": true,
   "textures": {
-    "all": "examplemod:blocks/fluid_pipe"
-  }
+    "side": "examplemod:blocks/fluid_pipe",
+    "end": "examplemod:blocks/fluid_pipe_end"
+  },
+  "elements": [
+    {
+      "from": [2, 0, 6],
+      "to": [14, 16, 10],
+      "faces": {
+        "down":  { "texture": "#end" },
+        "up":    { "texture": "#end" },
+        "north": { "texture": "#side" },
+        "south": { "texture": "#side" },
+        "west":  { "texture": "#side" },
+        "east":  { "texture": "#side" }
+      }
+    },
+    {
+      "from": [6, 0, 2],
+      "to": [10, 16, 14],
+      "faces": {
+        "down":  { "texture": "#end" },
+        "up":    { "texture": "#end" },
+        "north": { "texture": "#side" },
+        "south": { "texture": "#side" },
+        "west":  { "texture": "#side" },
+        "east":  { "texture": "#side" }
+      }
+    },
+    {
+      "from": [3.5, 0, 3.5],
+      "to": [12.5, 16, 6.5],
+      "rotation": {
+        "origin": [8, 8, 8],
+        "axis": "y",
+        "angle": 45,
+        "rescale": true
+      },
+      "faces": {
+        "down":  { "texture": "#end" },
+        "up":    { "texture": "#end" },
+        "north": { "texture": "#side" },
+        "south": { "texture": "#side" },
+        "west":  { "texture": "#side" },
+        "east":  { "texture": "#side" }
+      }
+    },
+    {
+      "from": [3.5, 0, 3.5],
+      "to": [12.5, 16, 6.5],
+      "rotation": {
+        "origin": [8, 8, 8],
+        "axis": "y",
+        "angle": -45,
+        "rescale": true
+      },
+      "faces": {
+        "down":  { "texture": "#end" },
+        "up":    { "texture": "#end" },
+        "north": { "texture": "#side" },
+        "south": { "texture": "#side" },
+        "west":  { "texture": "#side" },
+        "east":  { "texture": "#side" }
+      }
+    }
+  ]
 }
