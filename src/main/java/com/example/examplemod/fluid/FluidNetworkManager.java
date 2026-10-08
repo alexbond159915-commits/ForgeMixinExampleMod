@@ -13,20 +13,23 @@ import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 /**
- * Small, deterministic fluid network inspired by HBM's provider/receiver
- * model, but built on top of Forge's IFluidHandler capability.
+ * Typed fluid network inspired by HBM's FluidNetMK2.
  *
- * A network is a connected component of fluid pipes. Machines/tanks touching
- * any pipe in the component become endpoints of that network.
+ * Every connected component belongs to exactly one Forge Fluid. Pipes do not
+ * contain volume themselves; providers and receivers exchange fluid through
+ * the network.
  */
 public final class FluidNetworkManager
 {
-    private static final int MAX_TRANSFER_PER_ENDPOINT = 200;
+    private static final int DEFAULT_TRANSFER_RATE = 200;
+    private static final int PROBE_AMOUNT = 1000;
 
     private FluidNetworkManager()
     {
@@ -39,11 +42,23 @@ public final class FluidNetworkManager
             return;
         }
 
-        Set<BlockPos> visitedPipes = new HashSet<BlockPos>();
+        Set<BlockPos> visitedPipes =
+                new HashSet<BlockPos>();
 
         for (TileEntity tile : world.loadedTileEntityList)
         {
             if (!(tile instanceof TileEntityFluidPipe))
+            {
+                continue;
+            }
+
+            TileEntityFluidPipe pipe =
+                    (TileEntityFluidPipe) tile;
+
+            Fluid fluid =
+                    pipe.getPipeFluid();
+
+            if (fluid == null)
             {
                 continue;
             }
@@ -54,58 +69,89 @@ public final class FluidNetworkManager
             }
 
             NetworkComponent component =
-                    collectComponent(world, tile.getPos(), visitedPipes);
+                    collectComponent(
+                            world,
+                            tile.getPos(),
+                            fluid,
+                            visitedPipes
+                    );
 
-            if (component.handlers.size() >= 2)
-            {
-                transfer(component.handlers);
-            }
+            transfer(
+                    component,
+                    fluid
+            );
         }
     }
 
     private static NetworkComponent collectComponent(
             World world,
             BlockPos start,
+            Fluid fluid,
             Set<BlockPos> visitedPipes)
     {
-        NetworkComponent component = new NetworkComponent();
-        ArrayDeque<BlockPos> queue = new ArrayDeque<BlockPos>();
-        Set<HandlerKey> seenHandlers = new HashSet<HandlerKey>();
+        NetworkComponent component =
+                new NetworkComponent();
+
+        ArrayDeque<BlockPos> queue =
+                new ArrayDeque<BlockPos>();
+
+        Set<HandlerKey> seenHandlers =
+                new HashSet<HandlerKey>();
 
         queue.add(start);
 
         while (!queue.isEmpty())
         {
-            BlockPos current = queue.removeFirst();
+            BlockPos current =
+                    queue.removeFirst();
 
-            for (EnumFacing facing : EnumFacing.VALUES)
+            for (EnumFacing facing :
+                    EnumFacing.VALUES)
             {
-                BlockPos next = current.offset(facing);
-                TileEntity tile = world.getTileEntity(next);
+                BlockPos next =
+                        current.offset(facing);
 
-                if (tile instanceof TileEntityFluidPipe)
+                TileEntity adjacent =
+                        world.getTileEntity(next);
+
+                if (adjacent instanceof TileEntityFluidPipe)
                 {
-                    if (visitedPipes.add(next))
+                    Fluid adjacentFluid =
+                            ((TileEntityFluidPipe) adjacent)
+                                    .getPipeFluid();
+
+                    if (adjacentFluid == fluid
+                            && visitedPipes.add(next))
                     {
                         queue.addLast(next);
                     }
+
                     continue;
                 }
 
                 IFluidHandler handler =
-                        getFluidHandler(tile, facing.getOpposite());
-
-                HandlerKey key =
-                        new HandlerKey(
-                                tile,
+                        getFluidHandler(
+                                adjacent,
                                 facing.getOpposite()
                         );
 
-                if (handler != null && seenHandlers.add(key))
+                if (handler == null)
+                {
+                    continue;
+                }
+
+                HandlerKey key =
+                        new HandlerKey(
+                                adjacent,
+                                facing.getOpposite()
+                        );
+
+                if (seenHandlers.add(key))
                 {
                     component.handlers.add(
                             new HandlerEndpoint(
-                                    tile,
+                                    adjacent,
+                                    facing.getOpposite(),
                                     handler
                             )
                     );
@@ -128,162 +174,355 @@ public final class FluidNetworkManager
         Capability<IFluidHandler> capability =
                 CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
 
-        if (!tile.hasCapability(capability, side))
+        if (!tile.hasCapability(
+                capability,
+                side
+        ))
         {
             return null;
         }
 
-        return tile.getCapability(capability, side);
+        return tile.getCapability(
+                capability,
+                side
+        );
     }
 
     private static void transfer(
-            List<HandlerEndpoint> handlers)
+            NetworkComponent component,
+            Fluid fluid)
     {
-        for (HandlerEndpoint source : handlers)
+        List<ProviderState> providers =
+                new ArrayList<ProviderState>();
+
+        List<ReceiverState> receivers =
+                new ArrayList<ReceiverState>();
+
+        long totalAvailable = 0L;
+        long totalDemand = 0L;
+
+        for (HandlerEndpoint endpoint :
+                component.handlers)
         {
-            List<FluidStack> candidates =
-                    getCandidateFluids(source.handler);
+            int available =
+                    getAvailable(
+                            endpoint.handler,
+                            fluid
+                    );
 
-            for (FluidStack candidate : candidates)
+            if (available > 0)
             {
-                if (candidate == null || candidate.amount <= 0)
-                {
-                    continue;
-                }
-
-                int remaining =
+                int limited =
                         Math.min(
-                                candidate.amount,
-                                getOutputRate(source.tile)
+                                available,
+                                getOutputRate(endpoint.tile)
                         );
 
-                if (remaining <= 0)
+                if (limited > 0)
+                {
+                    providers.add(
+                            new ProviderState(
+                                    endpoint,
+                                    limited
+                            )
+                    );
+
+                    totalAvailable += limited;
+                }
+            }
+
+            int demand =
+                    getDemand(
+                            endpoint.handler,
+                            fluid
+                    );
+
+            if (demand > 0)
+            {
+                int limited =
+                        Math.min(
+                                demand,
+                                getInputRate(endpoint.tile)
+                        );
+
+                if (limited > 0)
+                {
+                    receivers.add(
+                            new ReceiverState(
+                                    endpoint,
+                                    limited
+                            )
+                    );
+
+                    totalDemand += limited;
+                }
+            }
+        }
+
+        if (providers.isEmpty()
+                || receivers.isEmpty()
+                || totalAvailable <= 0
+                || totalDemand <= 0)
+        {
+            return;
+        }
+
+        Collections.sort(
+                receivers,
+                new Comparator<ReceiverState>()
+                {
+                    @Override
+                    public int compare(
+                            ReceiverState a,
+                            ReceiverState b)
+                    {
+                        return Integer.compare(
+                                getPriority(b.endpoint.tile),
+                                getPriority(a.endpoint.tile)
+                        );
+                    }
+                }
+        );
+
+        long totalTransfer =
+                Math.min(
+                        totalAvailable,
+                        totalDemand
+                );
+
+        long remainingAllocation =
+                totalTransfer;
+
+        long accumulated =
+                0L;
+
+        for (int i = 0;
+             i < receivers.size();
+             i++)
+        {
+            ReceiverState receiver =
+                    receivers.get(i);
+
+            long allocation;
+
+            if (i == receivers.size() - 1)
+            {
+                allocation =
+                        remainingAllocation;
+            }
+            else
+            {
+                allocation =
+                        totalTransfer
+                                * receiver.demand
+                                / totalDemand;
+            }
+
+            allocation =
+                    Math.min(
+                            allocation,
+                            receiver.demand
+                    );
+
+            receiver.remaining =
+                    allocation;
+
+            remainingAllocation -=
+                    allocation;
+
+            accumulated +=
+                    allocation;
+        }
+
+        long leftovers =
+                totalTransfer - accumulated;
+
+        for (int i = 0;
+             leftovers > 0
+                     && !receivers.isEmpty();
+             i = (i + 1) % receivers.size())
+        {
+            ReceiverState receiver =
+                    receivers.get(i);
+
+            if (receiver.remaining
+                    < receiver.demand)
+            {
+                receiver.remaining++;
+                leftovers--;
+            }
+        }
+
+        int providerCursor = 0;
+
+        for (ReceiverState receiver :
+                receivers)
+        {
+            long needed =
+                    receiver.remaining;
+
+            if (needed <= 0)
+            {
+                continue;
+            }
+
+            int attempts =
+                    Math.max(
+                            providers.size() * 2,
+                            1
+                    );
+
+            while (needed > 0
+                    && attempts-- > 0
+                    && !providers.isEmpty())
+            {
+                ProviderState provider =
+                        providers.get(
+                                providerCursor
+                                        % providers.size()
+                        );
+
+                providerCursor =
+                        (providerCursor + 1)
+                                % providers.size();
+
+                if (provider.remaining <= 0)
                 {
                     continue;
                 }
 
-                for (HandlerEndpoint target : handlers)
+                if (provider.endpoint.tile ==
+                        receiver.endpoint.tile)
                 {
-                    if (target.tile == source.tile)
-                    {
-                        continue;
-                    }
-
-                    if (!pressureMatches(
-                            source.tile,
-                            target.tile))
-                    {
-                        continue;
-                    }
-
-                    if (remaining <= 0)
-                    {
-                        break;
-                    }
-
-                    int offerAmount =
-                            Math.min(
-                                    remaining,
-                                    getInputRate(target.tile)
-                            );
-
-                    if (offerAmount <= 0)
-                    {
-                        continue;
-                    }
-
-                    FluidStack offer =
-                            new FluidStack(
-                                    candidate.getFluid(),
-                                    offerAmount
-                            );
-
-                    FluidStack simulated =
-                            source.handler.drain(
-                                    offer,
-                                    false
-                            );
-
-                    if (simulated == null || simulated.amount <= 0)
-                    {
-                        continue;
-                    }
-
-                    int fillable =
-                            target.handler.fill(
-                                    new FluidStack(
-                                            candidate.getFluid(),
-                                            simulated.amount
-                                    ),
-                                    false
-                            );
-
-                    if (fillable <= 0)
-                    {
-                        continue;
-                    }
-
-                    int amount =
-                            Math.min(
-                                    simulated.amount,
-                                    fillable
-                            );
-
-                    FluidStack toTransfer =
-                            new FluidStack(
-                                    candidate.getFluid(),
-                                    amount
-                            );
-
-                    FluidStack drained =
-                            source.handler.drain(
-                                    toTransfer,
-                                    true
-                            );
-
-                    if (drained == null || drained.amount <= 0)
-                    {
-                        continue;
-                    }
-
-                    int accepted =
-                            target.handler.fill(
-                                    new FluidStack(
-                                            drained.getFluid(),
-                                            drained.amount
-                                    ),
-                                    true
-                            );
-
-                    /*
-                     * Forge handlers are expected to obey the simulation
-                     * contract. If a foreign handler behaves badly, never
-                     * try to manufacture the lost fluid here.
-                     */
-                    remaining -=
-                            Math.min(
-                                    drained.amount,
-                                    accepted
-                            );
+                    continue;
                 }
+
+                int offer =
+                        (int) Math.min(
+                                needed,
+                                provider.remaining
+                        );
+
+                FluidStack simulatedDrain =
+                        provider.endpoint.handler.drain(
+                                new FluidStack(
+                                        fluid,
+                                        offer
+                                ),
+                                false
+                        );
+
+                if (simulatedDrain == null
+                        || simulatedDrain.amount <= 0)
+                {
+                    provider.remaining = 0;
+                    continue;
+                }
+
+                int simulatedAccepted =
+                        receiver.endpoint.handler.fill(
+                                new FluidStack(
+                                        fluid,
+                                        simulatedDrain.amount
+                                ),
+                                false
+                        );
+
+                int amount =
+                        Math.min(
+                                simulatedDrain.amount,
+                                Math.max(
+                                        0,
+                                        simulatedAccepted
+                                )
+                        );
+
+                if (amount <= 0)
+                {
+                    continue;
+                }
+
+                FluidStack drained =
+                        provider.endpoint.handler.drain(
+                                new FluidStack(
+                                        fluid,
+                                        amount
+                                ),
+                                true
+                        );
+
+                if (drained == null
+                        || drained.amount <= 0)
+                {
+                    continue;
+                }
+
+                int accepted =
+                        receiver.endpoint.handler.fill(
+                                new FluidStack(
+                                        fluid,
+                                        drained.amount
+                                ),
+                                true
+                        );
+
+                if (accepted < drained.amount)
+                {
+                    int refund =
+                            drained.amount
+                                    - Math.max(
+                                            0,
+                                            accepted
+                                    );
+
+                    if (refund > 0)
+                    {
+                        provider.endpoint.handler.fill(
+                                new FluidStack(
+                                        fluid,
+                                        refund
+                                ),
+                                true
+                        );
+                    }
+                }
+
+                int actual =
+                        Math.min(
+                                drained.amount,
+                                Math.max(
+                                        0,
+                                        accepted
+                                )
+                        );
+
+                provider.remaining -=
+                        Math.min(
+                                provider.remaining,
+                                drained.amount
+                        );
+
+                needed -= actual;
             }
         }
     }
 
-    private static List<FluidStack> getCandidateFluids(
-            IFluidHandler handler)
+    private static int getAvailable(
+            IFluidHandler handler,
+            Fluid fluid)
     {
-        List<FluidStack> fluids = new ArrayList<FluidStack>();
-
         IFluidTankProperties[] properties =
                 handler.getTankProperties();
 
         if (properties == null)
         {
-            return fluids;
+            return 0;
         }
 
-        for (IFluidTankProperties property : properties)
+        int total = 0;
+
+        for (IFluidTankProperties property :
+                properties)
         {
             if (property == null)
             {
@@ -294,53 +533,76 @@ public final class FluidNetworkManager
                     property.getContents();
 
             if (contents != null
-                    && contents.amount > 0)
+                    && contents.amount > 0
+                    && contents.getFluid() == fluid)
             {
-                fluids.add(contents.copy());
+                total =
+                        Math.min(
+                                PROBE_AMOUNT,
+                                total + contents.amount
+                        );
             }
         }
 
-        return fluids;
+        return total;
     }
 
-    private static boolean pressureMatches(
-            TileEntity source,
-            TileEntity target)
+    private static int getDemand(
+            IFluidHandler handler,
+            Fluid fluid)
     {
-        if (source instanceof IFluidProvider
-                && target instanceof IFluidReceiver)
-        {
-            return ((IFluidProvider) source).getFluidPressure()
-                    == ((IFluidReceiver) target).getFluidPressure();
-        }
-
-        return true;
+        return Math.max(
+                0,
+                handler.fill(
+                        new FluidStack(
+                                fluid,
+                                PROBE_AMOUNT
+                        ),
+                        false
+                )
+        );
     }
 
-    private static int getOutputRate(TileEntity tile)
+    private static int getOutputRate(
+            TileEntity tile)
     {
         if (tile instanceof IFluidProvider)
         {
             return Math.max(
                     0,
-                    ((IFluidProvider) tile).getFluidOutputRate()
+                    ((IFluidProvider) tile)
+                            .getFluidOutputRate()
             );
         }
 
-        return MAX_TRANSFER_PER_ENDPOINT;
+        return DEFAULT_TRANSFER_RATE;
     }
 
-    private static int getInputRate(TileEntity tile)
+    private static int getInputRate(
+            TileEntity tile)
     {
         if (tile instanceof IFluidReceiver)
         {
             return Math.max(
                     0,
-                    ((IFluidReceiver) tile).getFluidInputRate()
+                    ((IFluidReceiver) tile)
+                            .getFluidInputRate()
             );
         }
 
-        return MAX_TRANSFER_PER_ENDPOINT;
+        return DEFAULT_TRANSFER_RATE;
+    }
+
+    private static int getPriority(
+            TileEntity tile)
+    {
+        if (tile instanceof IFluidReceiver)
+        {
+            return ((IFluidReceiver) tile)
+                    .getFluidPriority();
+        }
+
+        return 0;
     }
 
     private static final class NetworkComponent
@@ -349,11 +611,52 @@ public final class FluidNetworkManager
                 new ArrayList<HandlerEndpoint>();
     }
 
-    /**
-     * A single TileEntity can expose multiple independent fluid ports.
-     * Keep the side in the identity so a steam input and condensate output
-     * on the same machine remain separate endpoints.
-     */
+    private static final class HandlerEndpoint
+    {
+        private final TileEntity tile;
+        private final EnumFacing side;
+        private final IFluidHandler handler;
+
+        private HandlerEndpoint(
+                TileEntity tile,
+                EnumFacing side,
+                IFluidHandler handler)
+        {
+            this.tile = tile;
+            this.side = side;
+            this.handler = handler;
+        }
+    }
+
+    private static final class ProviderState
+    {
+        private final HandlerEndpoint endpoint;
+        private int remaining;
+
+        private ProviderState(
+                HandlerEndpoint endpoint,
+                int remaining)
+        {
+            this.endpoint = endpoint;
+            this.remaining = remaining;
+        }
+    }
+
+    private static final class ReceiverState
+    {
+        private final HandlerEndpoint endpoint;
+        private final int demand;
+        private long remaining;
+
+        private ReceiverState(
+                HandlerEndpoint endpoint,
+                int demand)
+        {
+            this.endpoint = endpoint;
+            this.demand = demand;
+        }
+    }
+
     private static final class HandlerKey
     {
         private final TileEntity tile;
@@ -368,7 +671,8 @@ public final class FluidNetworkManager
         }
 
         @Override
-        public boolean equals(Object object)
+        public boolean equals(
+                Object object)
         {
             if (this == object)
             {
@@ -394,23 +698,10 @@ public final class FluidNetworkManager
                     System.identityHashCode(tile);
 
             result =
-                    31 * result + side.hashCode();
+                    31 * result
+                            + side.hashCode();
 
             return result;
-        }
-    }
-
-    private static final class HandlerEndpoint
-    {
-        private final TileEntity tile;
-        private final IFluidHandler handler;
-
-        private HandlerEndpoint(
-                TileEntity tile,
-                IFluidHandler handler)
-        {
-            this.tile = tile;
-            this.handler = handler;
         }
     }
 }

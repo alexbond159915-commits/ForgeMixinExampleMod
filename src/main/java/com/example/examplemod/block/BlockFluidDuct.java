@@ -1,8 +1,11 @@
 package com.example.examplemod.block;
 
 import com.example.examplemod.ExampleMod;
+import com.example.examplemod.fluid.DirectionalFluidHandler;
 import com.example.examplemod.fluid.IFluidPipe;
+import com.example.examplemod.fluid.ModFluidTank;
 import com.example.examplemod.fluid.TileEntityFluidPipe;
+import com.example.examplemod.init.ModBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -19,14 +22,18 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
 /**
- * Small HBM-style fluid duct.
+ * HBM-style typed fluid duct.
  *
- * The center is 6x6x6 px and each connected direction gets a 6x6 px arm.
- * Connectivity is calculated from nearby ducts/pipes and Forge fluid
- * capabilities, so the model changes automatically as machines are attached.
+ * A duct only connects to another duct/pipe when both sides have the same
+ * fluid type. The type is stored in TileEntityFluidPipe and is written by
+ * the fluid identifier.
  */
 public class BlockFluidDuct
         extends BlockContainerBase
@@ -47,9 +54,6 @@ public class BlockFluidDuct
 
     private static final double MIN = 5D / 16D;
     private static final double MAX = 11D / 16D;
-
-    private static final AxisAlignedBB CENTER =
-            new AxisAlignedBB(MIN, MIN, MIN, MAX, MAX, MAX);
 
     public BlockFluidDuct()
     {
@@ -128,27 +132,46 @@ public class BlockFluidDuct
             BlockPos pos,
             EnumFacing side)
     {
-        BlockPos adjacent = pos.offset(side);
+        TileEntity selfTile =
+                world.getTileEntity(pos);
+
+        if (!(selfTile instanceof TileEntityFluidPipe))
+        {
+            return false;
+        }
+
+        Fluid fluid =
+                ((TileEntityFluidPipe) selfTile)
+                        .getPipeFluid();
+
+        if (fluid == null)
+        {
+            return false;
+        }
+
+        BlockPos adjacent =
+                pos.offset(side);
+
         IBlockState adjacentState =
                 world.getBlockState(adjacent);
 
-        Block block = adjacentState.getBlock();
+        Block block =
+                adjacentState.getBlock();
 
-        /*
-         * Both the new small duct and the existing network pipe
-         * are direct pipe-to-pipe connections.
-         */
-        if (block instanceof BlockFluidDuct)
+        if (block instanceof BlockFluidDuct
+                || block == ModBlocks.FLUID_PIPE)
         {
-            return true;
-        }
+            TileEntity adjacentTile =
+                    world.getTileEntity(adjacent);
 
-        /*
-         * Existing large/basic fluid pipe uses the same network TE.
-         */
-        if (block == com.example.examplemod.init.ModBlocks.FLUID_PIPE)
-        {
-            return true;
+            if (adjacentTile instanceof TileEntityFluidPipe)
+            {
+                return fluid ==
+                        ((TileEntityFluidPipe) adjacentTile)
+                                .getPipeFluid();
+            }
+
+            return false;
         }
 
         TileEntity tile =
@@ -159,13 +182,82 @@ public class BlockFluidDuct
             return false;
         }
 
-        Capability<net.minecraftforge.fluids.capability.IFluidHandler> capability =
+        Capability<IFluidHandler> capability =
                 CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
 
-        return tile.hasCapability(
+        if (!tile.hasCapability(
                 capability,
-                side.getOpposite()
-        );
+                side.getOpposite()))
+        {
+            return false;
+        }
+
+        IFluidHandler handler =
+                tile.getCapability(
+                        capability,
+                        side.getOpposite()
+                );
+
+        if (handler == null)
+        {
+            return false;
+        }
+
+        Fluid declared =
+                getDeclaredFluid(handler);
+
+        if (declared != null)
+        {
+            return declared == fluid;
+        }
+
+        IFluidTankProperties[] properties =
+                handler.getTankProperties();
+
+        if (properties != null)
+        {
+            for (IFluidTankProperties property :
+                    properties)
+            {
+                if (property == null)
+                {
+                    continue;
+                }
+
+                FluidStack contents =
+                        property.getContents();
+
+                if (contents != null
+                        && contents.amount > 0)
+                {
+                    return contents.getFluid() == fluid;
+                }
+            }
+        }
+
+        return handler.fill(
+                new FluidStack(fluid, 1),
+                false
+        ) > 0;
+    }
+
+    private Fluid getDeclaredFluid(
+            IFluidHandler handler)
+    {
+        if (handler instanceof DirectionalFluidHandler)
+        {
+            return ((DirectionalFluidHandler) handler)
+                    .getTank()
+                    .getAllowedFluid();
+        }
+
+        if (handler instanceof ModFluidTank)
+        {
+            return ((ModFluidTank) handler)
+                    .getAllowedFluid();
+        }
+
+        return null;
     }
 
     @Override
@@ -174,12 +266,41 @@ public class BlockFluidDuct
             IBlockAccess world,
             BlockPos pos)
     {
-        boolean px = canConnect(world, pos, EnumFacing.EAST);
-        boolean nx = canConnect(world, pos, EnumFacing.WEST);
-        boolean py = canConnect(world, pos, EnumFacing.UP);
-        boolean ny = canConnect(world, pos, EnumFacing.DOWN);
-        boolean pz = canConnect(world, pos, EnumFacing.SOUTH);
-        boolean nz = canConnect(world, pos, EnumFacing.NORTH);
+        boolean px = canConnect(
+                world,
+                pos,
+                EnumFacing.EAST
+        );
+
+        boolean nx = canConnect(
+                world,
+                pos,
+                EnumFacing.WEST
+        );
+
+        boolean py = canConnect(
+                world,
+                pos,
+                EnumFacing.UP
+        );
+
+        boolean ny = canConnect(
+                world,
+                pos,
+                EnumFacing.DOWN
+        );
+
+        boolean pz = canConnect(
+                world,
+                pos,
+                EnumFacing.SOUTH
+        );
+
+        boolean nz = canConnect(
+                world,
+                pos,
+                EnumFacing.NORTH
+        );
 
         return new AxisAlignedBB(
                 nx ? 0D : MIN,
@@ -197,7 +318,11 @@ public class BlockFluidDuct
             IBlockAccess world,
             BlockPos pos)
     {
-        return getBoundingBox(state, world, pos);
+        return getBoundingBox(
+                state,
+                world,
+                pos
+        );
     }
 
     @Override
@@ -235,7 +360,8 @@ public class BlockFluidDuct
     }
 
     @Override
-    public EnumBlockRenderType getRenderType(IBlockState state)
+    public EnumBlockRenderType getRenderType(
+            IBlockState state)
     {
         return EnumBlockRenderType.MODEL;
     }
@@ -249,13 +375,15 @@ public class BlockFluidDuct
     }
 
     @Override
-    public int getMetaFromState(IBlockState state)
+    public int getMetaFromState(
+            IBlockState state)
     {
         return 0;
     }
 
     @Override
-    public IBlockState getStateFromMeta(int meta)
+    public IBlockState getStateFromMeta(
+            int meta)
     {
         return getDefaultState();
     }

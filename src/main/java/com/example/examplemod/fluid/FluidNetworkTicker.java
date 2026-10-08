@@ -6,7 +6,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 /**
- * Runs the network on the server thread.
+ * Runs the typed fluid networks every server tick.
  */
 @Mod.EventBusSubscriber(modid = ExampleMod.MODID)
 public final class FluidNetworkTicker
@@ -29,11 +29,8 @@ public final class FluidNetworkTicker
             return;
         }
 
-        if ((event.world.getTotalWorldTime() % 5L) != 0L)
-        {
-            return;
-        }
-
-        FluidNetworkManager.tickWorld(event.world);
+        FluidNetworkManager.tickWorld(
+                event.world
+        );
     }
 }

@@ -1,6 +1,7 @@
 package com.example.examplemod.item;
 
 import com.example.examplemod.ExampleMod;
+import com.example.examplemod.fluid.IFluidIdentifierTarget;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumActionResult;
@@ -18,13 +19,24 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
+/**
+ * HBM-style reusable fluid identifier.
+ *
+ * Empty identifier: copies the fluid type from a pipe/tank.
+ * Filled identifier: writes that fluid type to a pipe/tank.
+ */
 public class ItemFluidIdentifier extends ItemBase
 {
-    private static final String FLUID_ID_TAG = "FluidId";
+    private static final String FLUID_ID_TAG =
+            "FluidId";
 
     public ItemFluidIdentifier()
     {
-        super("fluid_identifier", ExampleMod.MACHINES_TAB);
+        super(
+                "fluid_identifier",
+                ExampleMod.MACHINES_TAB
+        );
+
         setMaxStackSize(1);
     }
 
@@ -39,14 +51,10 @@ public class ItemFluidIdentifier extends ItemBase
             float hitZ,
             EnumHand hand)
     {
-        TileEntity tile = world.getTileEntity(pos);
+        TileEntity tile =
+                world.getTileEntity(pos);
 
-        if (!(tile instanceof com.example.examplemod.fluid.IFluidIdentifierTarget))
-        {
-            return EnumActionResult.PASS;
-        }
-
-        if (!player.isSneaking())
+        if (!(tile instanceof IFluidIdentifierTarget))
         {
             return EnumActionResult.PASS;
         }
@@ -56,22 +64,36 @@ public class ItemFluidIdentifier extends ItemBase
             return EnumActionResult.SUCCESS;
         }
 
-        ItemStack stack = player.getHeldItem(hand);
-        com.example.examplemod.fluid.IFluidIdentifierTarget target =
-                (com.example.examplemod.fluid.IFluidIdentifierTarget) tile;
+        ItemStack stack =
+                player.getHeldItem(hand);
 
-        Fluid selected = getStoredFluid(stack);
+        IFluidIdentifierTarget target =
+                (IFluidIdentifierTarget) tile;
+
+        Fluid selected =
+                getStoredFluid(stack);
 
         if (selected == null)
         {
-            Fluid targetFluid = target.getIdentifiedFluid();
+            Fluid targetFluid =
+                    target.getIdentifiedFluid();
 
             if (targetFluid == null)
             {
-                return EnumActionResult.PASS;
+                player.addChatMessage(
+                        new TextComponentString(
+                                TextFormatting.RED
+                                        + "У объекта не выбрана жидкость."
+                        )
+                );
+
+                return EnumActionResult.FAIL;
             }
 
-            storeFluid(stack, targetFluid);
+            storeFluid(
+                    stack,
+                    targetFluid
+            );
 
             player.addChatMessage(
                     new TextComponentString(
@@ -90,8 +112,7 @@ public class ItemFluidIdentifier extends ItemBase
             player.addChatMessage(
                     new TextComponentString(
                             TextFormatting.RED
-                                    + "Нельзя идентифицировать бак: "
-                                    + "внутри находится другая жидкость."
+                                    + "Не удалось изменить тип жидкости."
                     )
             );
 
@@ -101,7 +122,7 @@ public class ItemFluidIdentifier extends ItemBase
         player.addChatMessage(
                 new TextComponentString(
                         TextFormatting.GRAY
-                                + "Бак идентифицирован под жидкость: "
+                                + "Жидкость установлена: "
                                 + TextFormatting.WHITE
                                 + selected.getName()
                 )
@@ -118,7 +139,8 @@ public class ItemFluidIdentifier extends ItemBase
             List<String> tooltip,
             net.minecraft.client.util.ITooltipFlag flagIn)
     {
-        Fluid fluid = getStoredFluid(stack);
+        Fluid fluid =
+                getStoredFluid(stack);
 
         if (fluid == null)
         {
@@ -139,27 +161,33 @@ public class ItemFluidIdentifier extends ItemBase
 
         tooltip.add(
                 TextFormatting.DARK_GRAY
-                        + "Shift + ПКМ по жидкостному баку"
+                        + "ПКМ по трубе или жидкостному баку"
         );
     }
 
-    private static Fluid getStoredFluid(ItemStack stack)
+    private static Fluid getStoredFluid(
+            ItemStack stack)
     {
         if (!stack.hasTagCompound()
-                || !stack.getTagCompound().hasKey(FLUID_ID_TAG))
+                || !stack.getTagCompound()
+                        .hasKey(FLUID_ID_TAG))
         {
             return null;
         }
 
         String fluidName =
-                stack.getTagCompound().getString(FLUID_ID_TAG);
+                stack.getTagCompound()
+                        .getString(FLUID_ID_TAG);
 
-        if (fluidName == null || fluidName.isEmpty())
+        if (fluidName == null
+                || fluidName.isEmpty())
         {
             return null;
         }
 
-        return FluidRegistry.getFluid(fluidName);
+        return FluidRegistry.getFluid(
+                fluidName
+        );
     }
 
     private static void storeFluid(
