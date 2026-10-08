@@ -114,15 +114,6 @@ public class BlockFluidPipe
             return false;
         }
 
-        Fluid fluid =
-                ((TileEntityFluidPipe) selfTile)
-                        .getPipeFluid();
-
-        if (fluid == null)
-        {
-            return false;
-        }
-
         BlockPos adjacentPos =
                 pos.offset(side);
 
@@ -132,20 +123,28 @@ public class BlockFluidPipe
         Block adjacentBlock =
                 adjacentState.getBlock();
 
+        /*
+         * The geometry of the pipe is based on the physical connection
+         * between pipe blocks, not on whether the fluid identifier has
+         * already been assigned. The network layer still decides whether
+         * fluids are actually allowed to pass.
+         */
         if (adjacentBlock == this
                 || adjacentBlock == ModBlocks.FLUID_DUCT)
         {
             TileEntity adjacentTile =
                     world.getTileEntity(adjacentPos);
 
-            if (!(adjacentTile instanceof TileEntityFluidPipe))
-            {
-                return false;
-            }
+            return adjacentTile instanceof TileEntityFluidPipe;
+        }
 
-            return fluid ==
-                    ((TileEntityFluidPipe) adjacentTile)
-                            .getPipeFluid();
+        Fluid fluid =
+                ((TileEntityFluidPipe) selfTile)
+                        .getPipeFluid();
+
+        if (fluid == null)
+        {
+            return false;
         }
 
         TileEntity adjacentTile =
@@ -516,11 +515,18 @@ public class BlockFluidPipe
 
         if (!world.isRemote)
         {
-            world.markBlockRangeForRenderUpdate(
-                    pos.add(-1, -1, -1),
-                    pos.add(1, 1, 1)
+            world.notifyBlockUpdate(
+                    pos,
+                    state,
+                    state,
+                    3
             );
         }
+
+        world.markBlockRangeForRenderUpdate(
+                pos.add(-1, -1, -1),
+                pos.add(1, 1, 1)
+        );
     }
 
     @Override
