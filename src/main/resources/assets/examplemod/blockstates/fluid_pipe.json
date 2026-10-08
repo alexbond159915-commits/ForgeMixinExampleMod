@@ -7,7 +7,7 @@
     },
     {
       "when": {
-        "posx": true
+        "posx": "true"
       },
       "apply": {
         "model": "examplemod:fluid_pipe_arm_pos_x"
@@ -15,7 +15,7 @@
     },
     {
       "when": {
-        "negx": true
+        "negx": "true"
       },
       "apply": {
         "model": "examplemod:fluid_pipe_arm_neg_x"
@@ -23,7 +23,7 @@
     },
     {
       "when": {
-        "posy": true
+        "posy": "true"
       },
       "apply": {
         "model": "examplemod:fluid_pipe_arm_pos_y"
@@ -31,7 +31,7 @@
     },
     {
       "when": {
-        "negy": true
+        "negy": "true"
       },
       "apply": {
         "model": "examplemod:fluid_pipe_arm_neg_y"
@@ -39,7 +39,7 @@
     },
     {
       "when": {
-        "posz": true
+        "posz": "true"
       },
       "apply": {
         "model": "examplemod:fluid_pipe_arm_pos_z"
@@ -47,7 +47,7 @@
     },
     {
       "when": {
-        "negz": true
+        "negz": "true"
       },
       "apply": {
         "model": "examplemod:fluid_pipe_arm_neg_z"
