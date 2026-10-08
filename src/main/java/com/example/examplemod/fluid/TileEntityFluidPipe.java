@@ -70,8 +70,8 @@ public class TileEntityFluidPipe
         );
 
         world.markBlockRangeForRenderUpdate(
-                pos,
-                pos
+                pos.add(-1, -1, -1),
+                pos.add(1, 1, 1)
         );
     }
 
