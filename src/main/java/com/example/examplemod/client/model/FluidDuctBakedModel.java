@@ -77,8 +77,13 @@ public final class FluidDuctBakedModel
             TextureAtlasSprite endSprite,
             boolean forBlock)
     {
+        /*
+         * The legacy OBJ file was unreliable in the 1.12.2 resource
+         * pipeline, so the simple pipe geometry is generated directly
+         * below. Keep the old parameter for source compatibility.
+         */
         return new FluidDuctBakedModel(
-                model,
+                null,
                 baseSprite,
                 endSprite,
                 forBlock,
@@ -338,38 +343,225 @@ public final class FluidDuctBakedModel
         List<BakedQuad> result =
                 new ArrayList<BakedQuad>();
 
-        for (ObjGroup group : model.groups)
+        final int sides = 8;
+        final float center = 0.5F;
+        final float radius = 0.375F;
+        final float bottomY = 0.0F;
+        final float topY = 1.0F;
+
+        /*
+         * Octagonal vertical pipe body.
+         * This matches the proportions of the old pipe.obj:
+         * 12 px outside diameter inside a 16x16 block.
+         */
+        for (int i = 0; i < sides; i++)
         {
-            TextureAtlasSprite sprite;
+            double a0 =
+                    (Math.PI * 2.0D * i) / sides;
+            double a1 =
+                    (Math.PI * 2.0D * (i + 1)) / sides;
 
-            if ("Side".equalsIgnoreCase(group.name))
-            {
-                sprite = baseSprite;
-            }
-            else if ("Top".equalsIgnoreCase(group.name))
-            {
-                sprite = overlaySprite;
-            }
-            else
-            {
-                continue;
-            }
+            float x0 =
+                    center
+                            + (float) Math.cos(a0) * radius;
+            float z0 =
+                    center
+                            + (float) Math.sin(a0) * radius;
 
-            for (ObjFace face : group.faces)
-            {
-                result.add(
-                        buildQuad(
-                                face,
-                                format,
-                                false,
-                                sprite,
-                                -1
-                        )
+            float x1 =
+                    center
+                            + (float) Math.cos(a1) * radius;
+            float z1 =
+                    center
+                            + (float) Math.sin(a1) * radius;
+
+            float nx =
+                    (float) Math.cos(
+                            (a0 + a1) * 0.5D
+                    );
+
+            float nz =
+                    (float) Math.sin(
+                            (a0 + a1) * 0.5D
+                    );
+
+            Vector3f normal =
+                    new Vector3f(
+                            nx,
+                            0.0F,
+                            nz
+                    );
+
+            normal.normalize();
+
+            result.add(
+                    buildRawQuad(
+                            format,
+                            x0, bottomY, z0,
+                            x0, topY, z0,
+                            x1, topY, z1,
+                            x1, bottomY, z1,
+                            16.0F * i / sides,
+                            16.0F,
+                            16.0F * (i + 1) / sides,
+                            0.0F,
+                            normal,
+                            baseSprite
+                    )
+            );
+        }
+
+        /*
+         * Top cap.
+         */
+        Vector3f topNormal =
+                new Vector3f(
+                        0.0F,
+                        1.0F,
+                        0.0F
                 );
-            }
+
+        /*
+         * Bottom cap.
+         */
+        Vector3f bottomNormal =
+                new Vector3f(
+                        0.0F,
+                        -1.0F,
+                        0.0F
+                );
+
+        for (int i = 0; i < sides; i++)
+        {
+            double a0 =
+                    (Math.PI * 2.0D * i) / sides;
+            double a1 =
+                    (Math.PI * 2.0D * (i + 1)) / sides;
+
+            float x0 =
+                    center
+                            + (float) Math.cos(a0) * radius;
+            float z0 =
+                    center
+                            + (float) Math.sin(a0) * radius;
+
+            float x1 =
+                    center
+                            + (float) Math.cos(a1) * radius;
+            float z1 =
+                    center
+                            + (float) Math.sin(a1) * radius;
+
+            float u0 =
+                    8.0F
+                            + (float) Math.cos(a0) * 6.0F;
+            float v0 =
+                    8.0F
+                            + (float) Math.sin(a0) * 6.0F;
+
+            float u1 =
+                    8.0F
+                            + (float) Math.cos(a1) * 6.0F;
+            float v1 =
+                    8.0F
+                            + (float) Math.sin(a1) * 6.0F;
+
+            result.add(
+                    buildRawQuad(
+                            format,
+                            center, topY, center,
+                            x1, topY, z1,
+                            x0, topY, z0,
+                            center, topY, center,
+                            8.0F, 8.0F,
+                            u1, v1,
+                            topNormal,
+                            overlaySprite
+                    )
+            );
+
+            result.add(
+                    buildRawQuad(
+                            format,
+                            center, bottomY, center,
+                            x0, bottomY, z0,
+                            x1, bottomY, z1,
+                            center, bottomY, center,
+                            8.0F, 8.0F,
+                            u0, v0,
+                            bottomNormal,
+                            overlaySprite
+                    )
+            );
         }
 
         return result;
+    }
+
+    private BakedQuad buildRawQuad(
+            VertexFormat format,
+            float x0, float y0, float z0,
+            float x1, float y1, float z1,
+            float x2, float y2, float z2,
+            float x3, float y3, float z3,
+            float u0, float v0,
+            float u1, float v1,
+            Vector3f normal,
+            TextureAtlasSprite sprite)
+    {
+        UnpackedBakedQuad.Builder builder =
+                new UnpackedBakedQuad.Builder(
+                        format
+                );
+
+        builder.setQuadOrientation(
+                EnumFacing.getFacingFromVector(
+                        normal.x,
+                        normal.y,
+                        normal.z
+                )
+        );
+
+        builder.setTexture(sprite);
+        builder.setApplyDiffuseLighting(true);
+
+        putVertex(
+                builder,
+                format,
+                x0, y0, z0,
+                u0, v0,
+                normal,
+                sprite
+        );
+
+        putVertex(
+                builder,
+                format,
+                x1, y1, z1,
+                u1, v1,
+                normal,
+                sprite
+        );
+
+        putVertex(
+                builder,
+                format,
+                x2, y2, z2,
+                u1, v1,
+                normal,
+                sprite
+        );
+
+        putVertex(
+                builder,
+                format,
+                x3, y3, z3,
+                u0, v0,
+                normal,
+                sprite
+        );
+
+        return builder.build();
     }
 
     private List<BakedQuad> bakeParts(
