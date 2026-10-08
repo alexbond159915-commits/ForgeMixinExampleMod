@@ -166,25 +166,6 @@ public class ClientProxy
                         "fluid_pipe"
                 );
 
-        ModelLoader.setCustomStateMapper(
-                ModBlocks.FLUID_PIPE,
-                new StateMapperBase()
-                {
-                    @Override
-                    protected ModelResourceLocation
-                    getModelResourceLocation(
-                            IBlockState state)
-                    {
-                        return new ModelResourceLocation(
-                                pipeLocation,
-                                "facing=" + state.getValue(
-                                        com.example.examplemod.block.BlockFluidPipe.FACING
-                                ).getName()
-                        );
-                    }
-                }
-        );
-
         Item pipeItem =
                 Item.getItemFromBlock(
                         ModBlocks.FLUID_PIPE
