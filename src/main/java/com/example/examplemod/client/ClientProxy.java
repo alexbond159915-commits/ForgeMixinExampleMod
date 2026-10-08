@@ -156,50 +156,6 @@ public class ClientProxy
         }
 
 
-        /*
-         * The fluid pipe is a simple fixed-shape block, so always map
-         * every block state to the custom baked "normal" model.
-         * This avoids any dependency on multipart/property state JSON.
-         */
-        final ResourceLocation pipeLocation =
-                new ResourceLocation(
-                        ExampleMod.MODID,
-                        "fluid_pipe"
-                );
-
-        ModelLoader.setCustomStateMapper(
-                ModBlocks.FLUID_PIPE,
-                new StateMapperBase()
-                {
-                    @Override
-                    protected ModelResourceLocation
-                    getModelResourceLocation(
-                            IBlockState state)
-                    {
-                        return new ModelResourceLocation(
-                                pipeLocation,
-                                "normal"
-                        );
-                    }
-                }
-        );
-
-        Item pipeItem =
-                Item.getItemFromBlock(
-                        ModBlocks.FLUID_PIPE
-                );
-
-        if (pipeItem != null)
-        {
-            ModelLoader.setCustomModelResourceLocation(
-                    pipeItem,
-                    0,
-                    new ModelResourceLocation(
-                            pipeLocation,
-                            "inventory"
-                    )
-            );
-        }
     }
 
     @SubscribeEvent
@@ -283,48 +239,7 @@ public class ClientProxy
                     )
             );
 
-            TextureAtlasSprite pipeBase =
-                    map.getAtlasSprite(
-                            PIPE_TEXTURE.toString()
-                    );
-
-            TextureAtlasSprite pipeEnd =
-                    map.getAtlasSprite(
-                            PIPE_END_TEXTURE.toString()
-                    );
-
-            ResourceLocation pipeLocation =
-                    new ResourceLocation(
-                            ExampleMod.MODID,
-                            "fluid_pipe"
-                    );
-
-            event.getModelRegistry().putObject(
-                    new ModelResourceLocation(
-                            pipeLocation,
-                            "normal"
-                    ),
-                    FluidDuctBakedModel.forSimplePipe(
-                            null,
-                            pipeBase,
-                            pipeEnd,
-                            true
-                    )
-            );
-
-            event.getModelRegistry().putObject(
-                    new ModelResourceLocation(
-                            pipeLocation,
-                            "inventory"
-                    ),
-                    FluidDuctBakedModel.forSimplePipe(
-                            null,
-                            pipeBase,
-                            pipeEnd,
-                            false
-                    )
-            );
-        }
+                }
         catch (Exception exception)
         {
             throw new RuntimeException(
