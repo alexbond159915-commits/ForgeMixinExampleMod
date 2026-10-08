@@ -1,9 +1,3 @@
 {
-  "loader": "forge:obj",
-  "model": "examplemod:block/pipe.obj",
-  "flip_v": true,
-  "textures": {
-    "side": "examplemod:blocks/fluid_pipe",
-    "end": "examplemod:blocks/fluid_pipe_end"
-  }
+  "parent": "examplemod:block/fluid_pipe"
 }
