@@ -1,5 +1,6 @@
 {
   "textures": {
+    "particle": "examplemod:blocks/fluid_pipe",
     "side": "examplemod:blocks/fluid_pipe",
     "end": "examplemod:blocks/fluid_pipe_end"
   },
