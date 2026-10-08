@@ -1,27 +1,57 @@
 {
-  "variants": {
-    "facing=north": {
-      "model": "examplemod:fluid_pipe"
+  "multipart": [
+    {
+      "apply": {
+        "model": "examplemod:fluid_pipe_core"
+      }
     },
-    "facing=south": {
-      "model": "examplemod:fluid_pipe",
-      "y": 180
+    {
+      "when": {
+        "posx": true
+      },
+      "apply": {
+        "model": "examplemod:fluid_pipe_arm_pos_x"
+      }
     },
-    "facing=east": {
-      "model": "examplemod:fluid_pipe",
-      "y": 90
+    {
+      "when": {
+        "negx": true
+      },
+      "apply": {
+        "model": "examplemod:fluid_pipe_arm_neg_x"
+      }
     },
-    "facing=west": {
-      "model": "examplemod:fluid_pipe",
-      "y": 270
+    {
+      "when": {
+        "posy": true
+      },
+      "apply": {
+        "model": "examplemod:fluid_pipe_arm_pos_y"
+      }
     },
-    "facing=up": {
-      "model": "examplemod:fluid_pipe",
-      "x": 270
+    {
+      "when": {
+        "negy": true
+      },
+      "apply": {
+        "model": "examplemod:fluid_pipe_arm_neg_y"
+      }
     },
-    "facing=down": {
-      "model": "examplemod:fluid_pipe",
-      "x": 90
+    {
+      "when": {
+        "posz": true
+      },
+      "apply": {
+        "model": "examplemod:fluid_pipe_arm_pos_z"
+      }
+    },
+    {
+      "when": {
+        "negz": true
+      },
+      "apply": {
+        "model": "examplemod:fluid_pipe_arm_neg_z"
+      }
     }
-  }
+  ]
 }
