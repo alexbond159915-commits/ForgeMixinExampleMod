@@ -155,6 +155,53 @@ public class ClientProxy
             );
         }
 
+        /*
+         * Explicit ItemBlock model registration for the legacy fluid pipe.
+         * The pipe has a custom facing property, so do not rely on the
+         * automatic item model lookup here.
+         */
+        final ResourceLocation pipeLocation =
+                new ResourceLocation(
+                        ExampleMod.MODID,
+                        "fluid_pipe"
+                );
+
+        ModelLoader.setCustomStateMapper(
+                ModBlocks.FLUID_PIPE,
+                new StateMapperBase()
+                {
+                    @Override
+                    protected ModelResourceLocation
+                    getModelResourceLocation(
+                            IBlockState state)
+                    {
+                        return new ModelResourceLocation(
+                                pipeLocation,
+                                "facing=" + state.getValue(
+                                        com.example.examplemod.block.BlockFluidPipe.FACING
+                                ).getName()
+                        );
+                    }
+                }
+        );
+
+        Item pipeItem =
+                Item.getItemFromBlock(
+                        ModBlocks.FLUID_PIPE
+                );
+
+        if (pipeItem != null)
+        {
+            ModelLoader.setCustomModelResourceLocation(
+                    pipeItem,
+                    0,
+                    new ModelResourceLocation(
+                            pipeLocation,
+                            "inventory"
+                    )
+            );
+        }
+
 
     }
 
