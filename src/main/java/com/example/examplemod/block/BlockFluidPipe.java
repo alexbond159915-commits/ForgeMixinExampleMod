@@ -3,7 +3,7 @@ package com.example.examplemod.block;
 import com.example.examplemod.ExampleMod;
 import com.example.examplemod.fluid.IFluidPipe;
 import com.example.examplemod.fluid.TileEntityFluidPipe;
-import net.minecraft.block.EnumBlockRenderType;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
