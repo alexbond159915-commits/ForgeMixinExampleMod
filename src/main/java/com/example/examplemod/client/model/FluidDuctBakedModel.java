@@ -332,6 +332,46 @@ public final class FluidDuctBakedModel
         );
     }
 
+    private List<BakedQuad> buildSimplePipeQuads(
+            VertexFormat format)
+    {
+        List<BakedQuad> result =
+                new ArrayList<BakedQuad>();
+
+        for (ObjGroup group : model.groups)
+        {
+            TextureAtlasSprite sprite;
+
+            if ("Side".equalsIgnoreCase(group.name))
+            {
+                sprite = baseSprite;
+            }
+            else if ("Top".equalsIgnoreCase(group.name))
+            {
+                sprite = overlaySprite;
+            }
+            else
+            {
+                continue;
+            }
+
+            for (ObjFace face : group.faces)
+            {
+                result.add(
+                        buildQuad(
+                                face,
+                                format,
+                                false,
+                                sprite,
+                                -1
+                        )
+                );
+            }
+        }
+
+        return result;
+    }
+
     private List<BakedQuad> bakeParts(
             Collection<String> partNames,
             VertexFormat format,
