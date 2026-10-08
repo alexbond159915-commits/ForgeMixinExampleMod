@@ -36,6 +36,7 @@ public final class FluidDuctBakedModel
     private final TextureAtlasSprite baseSprite;
     private final TextureAtlasSprite overlaySprite;
     private final boolean forBlock;
+    private final boolean simplePipe;
 
     @SuppressWarnings("unchecked")
     private final List<BakedQuad>[] cache =
@@ -53,6 +54,36 @@ public final class FluidDuctBakedModel
         this.baseSprite = baseSprite;
         this.overlaySprite = overlaySprite;
         this.forBlock = forBlock;
+        this.simplePipe = false;
+    }
+
+    private FluidDuctBakedModel(
+            ObjModel model,
+            TextureAtlasSprite baseSprite,
+            TextureAtlasSprite overlaySprite,
+            boolean forBlock,
+            boolean simplePipe)
+    {
+        this.model = model;
+        this.baseSprite = baseSprite;
+        this.overlaySprite = overlaySprite;
+        this.forBlock = forBlock;
+        this.simplePipe = simplePipe;
+    }
+
+    public static FluidDuctBakedModel forSimplePipe(
+            ObjModel model,
+            TextureAtlasSprite baseSprite,
+            TextureAtlasSprite endSprite,
+            boolean forBlock)
+    {
+        return new FluidDuctBakedModel(
+                model,
+                baseSprite,
+                endSprite,
+                forBlock,
+                true
+        );
     }
 
     public static ObjModel load(
@@ -85,6 +116,25 @@ public final class FluidDuctBakedModel
         if (side != null)
         {
             return Collections.emptyList();
+        }
+
+        if (simplePipe)
+        {
+            if (!forBlock)
+            {
+                if (itemQuads == null)
+                {
+                    itemQuads = buildSimplePipeQuads(
+                            DefaultVertexFormats.ITEM
+                    );
+                }
+
+                return itemQuads;
+            }
+
+            return buildSimplePipeQuads(
+                    DefaultVertexFormats.BLOCK
+            );
         }
 
         if (!forBlock)
