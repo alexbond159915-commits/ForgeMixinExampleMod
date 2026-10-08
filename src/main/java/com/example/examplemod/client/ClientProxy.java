@@ -18,7 +18,6 @@ import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -52,15 +51,22 @@ public class ClientProxy
                     "blocks/fluid_duct_overlay"
             );
 
+    private static final ResourceLocation PIPE_TEXTURE =
+            new ResourceLocation(
+                    ExampleMod.MODID,
+                    "blocks/fluid_pipe"
+            );
+
+    private static final ResourceLocation PIPE_END_TEXTURE =
+            new ResourceLocation(
+                    ExampleMod.MODID,
+                    "blocks/fluid_pipe_end"
+            );
+
     @Override
     public void preInit(
             FMLPreInitializationEvent event)
     {
-        // Required for Forge 1.12.2 to load the legacy fluid_pipe OBJ model.
-        OBJLoader.INSTANCE.addDomain(
-                ExampleMod.MODID
-        );
-
         MinecraftForge.EVENT_BUS.register(
                 this
         );
@@ -167,6 +173,14 @@ public class ClientProxy
         event.getMap().registerSprite(
                 OVERLAY_TEXTURE
         );
+
+        event.getMap().registerSprite(
+                PIPE_TEXTURE
+        );
+
+        event.getMap().registerSprite(
+                PIPE_END_TEXTURE
+        );
     }
 
     @SubscribeEvent
@@ -222,6 +236,56 @@ public class ClientProxy
                             obj,
                             base,
                             overlay,
+                            false
+                    )
+            );
+
+            TextureAtlasSprite pipeBase =
+                    map.getAtlasSprite(
+                            PIPE_TEXTURE.toString()
+                    );
+
+            TextureAtlasSprite pipeEnd =
+                    map.getAtlasSprite(
+                            PIPE_END_TEXTURE.toString()
+                    );
+
+            FluidDuctBakedModel.ObjModel legacyPipe =
+                    FluidDuctBakedModel.load(
+                            new ResourceLocation(
+                                    ExampleMod.MODID,
+                                    "models/block/pipe.obj"
+                            )
+                    );
+
+            ResourceLocation pipeLocation =
+                    new ResourceLocation(
+                            ExampleMod.MODID,
+                            "fluid_pipe"
+                    );
+
+            event.getModelRegistry().putObject(
+                    new ModelResourceLocation(
+                            pipeLocation,
+                            "normal"
+                    ),
+                    FluidDuctBakedModel.forSimplePipe(
+                            legacyPipe,
+                            pipeBase,
+                            pipeEnd,
+                            true
+                    )
+            );
+
+            event.getModelRegistry().putObject(
+                    new ModelResourceLocation(
+                            pipeLocation,
+                            "inventory"
+                    ),
+                    FluidDuctBakedModel.forSimplePipe(
+                            legacyPipe,
+                            pipeBase,
+                            pipeEnd,
                             false
                     )
             );
