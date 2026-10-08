@@ -80,7 +80,7 @@ public class BlockFluidPipe
             int meta)
     {
         EnumFacing facing =
-                EnumFacing.getFront(meta);
+                EnumFacing.byIndex(meta);
 
         if (facing == null)
         {
