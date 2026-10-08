@@ -12,6 +12,7 @@ import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumBlockRenderType;
@@ -20,6 +21,8 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+
+import java.util.List;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -275,6 +278,149 @@ public class BlockFluidPipe
                 maxY,
                 maxZ
         );
+    }
+
+    @Override
+    public void addCollisionBoxToList(
+            IBlockState state,
+            World world,
+            BlockPos pos,
+            AxisAlignedBB entityBox,
+            List<AxisAlignedBB> collidingBoxes,
+            Entity entity,
+            boolean isActualState)
+    {
+        boolean posX =
+                canConnect(world, pos, EnumFacing.EAST);
+        boolean negX =
+                canConnect(world, pos, EnumFacing.WEST);
+        boolean posY =
+                canConnect(world, pos, EnumFacing.UP);
+        boolean negY =
+                canConnect(world, pos, EnumFacing.DOWN);
+        boolean posZ =
+                canConnect(world, pos, EnumFacing.SOUTH);
+        boolean negZ =
+                canConnect(world, pos, EnumFacing.NORTH);
+
+        // The central six-pixel core.
+        addCollisionBoxToList(
+                pos,
+                entityBox,
+                collidingBoxes,
+                new AxisAlignedBB(
+                        CORE_MIN,
+                        CORE_MIN,
+                        CORE_MIN,
+                        CORE_MAX,
+                        CORE_MAX,
+                        CORE_MAX
+                )
+        );
+
+        // Every connection gets its own collision box. This keeps L/T/cross
+        // shapes from creating collision in the empty corners between arms.
+        if (posX)
+        {
+            addCollisionBoxToList(
+                    pos,
+                    entityBox,
+                    collidingBoxes,
+                    new AxisAlignedBB(
+                            CORE_MIN,
+                            CORE_MIN,
+                            CORE_MIN,
+                            1D,
+                            CORE_MAX,
+                            CORE_MAX
+                    )
+            );
+        }
+
+        if (negX)
+        {
+            addCollisionBoxToList(
+                    pos,
+                    entityBox,
+                    collidingBoxes,
+                    new AxisAlignedBB(
+                            0D,
+                            CORE_MIN,
+                            CORE_MIN,
+                            CORE_MAX,
+                            CORE_MAX,
+                            CORE_MAX
+                    )
+            );
+        }
+
+        if (posY)
+        {
+            addCollisionBoxToList(
+                    pos,
+                    entityBox,
+                    collidingBoxes,
+                    new AxisAlignedBB(
+                            CORE_MIN,
+                            CORE_MIN,
+                            CORE_MIN,
+                            CORE_MAX,
+                            1D,
+                            CORE_MAX
+                    )
+            );
+        }
+
+        if (negY)
+        {
+            addCollisionBoxToList(
+                    pos,
+                    entityBox,
+                    collidingBoxes,
+                    new AxisAlignedBB(
+                            CORE_MIN,
+                            0D,
+                            CORE_MIN,
+                            CORE_MAX,
+                            CORE_MAX,
+                            CORE_MAX
+                    )
+            );
+        }
+
+        if (posZ)
+        {
+            addCollisionBoxToList(
+                    pos,
+                    entityBox,
+                    collidingBoxes,
+                    new AxisAlignedBB(
+                            CORE_MIN,
+                            CORE_MIN,
+                            CORE_MIN,
+                            CORE_MAX,
+                            CORE_MAX,
+                            1D
+                    )
+            );
+        }
+
+        if (negZ)
+        {
+            addCollisionBoxToList(
+                    pos,
+                    entityBox,
+                    collidingBoxes,
+                    new AxisAlignedBB(
+                            CORE_MIN,
+                            CORE_MIN,
+                            0D,
+                            CORE_MAX,
+                            CORE_MAX,
+                            CORE_MAX
+                    )
+            );
+        }
     }
 
     @Override
