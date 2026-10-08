@@ -1,7 +1,27 @@
 {
   "variants": {
-    "normal": {
+    "facing=north": {
       "model": "examplemod:fluid_pipe"
+    },
+    "facing=south": {
+      "model": "examplemod:fluid_pipe",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "examplemod:fluid_pipe",
+      "y": 90
+    },
+    "facing=west": {
+      "model": "examplemod:fluid_pipe",
+      "y": 270
+    },
+    "facing=up": {
+      "model": "examplemod:fluid_pipe",
+      "x": 270
+    },
+    "facing=down": {
+      "model": "examplemod:fluid_pipe",
+      "x": 90
     }
   }
 }
