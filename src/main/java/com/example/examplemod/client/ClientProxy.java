@@ -1,6 +1,7 @@
 package com.example.examplemod.client;
 
 import com.example.examplemod.CommonProxy;
+import net.minecraft.util.EnumHand;
 import com.example.examplemod.ExampleMod;
 import com.example.examplemod.client.model.FluidDuctBakedModel;
 import com.example.examplemod.fluid.TileEntityFluidPipe;
@@ -56,6 +57,12 @@ public class ClientProxy
                     ExampleMod.MODID,
                     "blocks/fluid_pipe_end"
             );
+
+    @Override
+    public void openFluidIdentifierGui(EnumHand hand)
+    {
+        Minecraft.getMinecraft().displayGuiScreen(new GuiFluidIdentifier(hand));
+    }
 
     @Override
     public void preInit(
