@@ -1,6 +1,9 @@
 package com.example.examplemod;
 
 import com.example.examplemod.client.GuiHandler;
+import com.example.examplemod.network.PacketFluidIdentifierSelection;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraftforge.fml.relauncher.Side;
 import com.example.examplemod.fluid.ModFluids;
 import com.example.examplemod.init.ModItems;
 import com.example.examplemod.tileentity.TileEntityMuffleFurnace;
@@ -39,6 +42,9 @@ public class ExampleMod
     public static final String VERSION = "1.0";
 
     public static final int GUI_MUFFLE_FURNACE = 1;
+
+    public static final SimpleNetworkWrapper NETWORK =
+            NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
 
     @Mod.Instance(MODID)
     public static ExampleMod INSTANCE;
@@ -84,6 +90,13 @@ public class ExampleMod
     public void preInit(FMLPreInitializationEvent event)
     {
         logger = event.getModLog();
+
+        NETWORK.registerMessage(
+                PacketFluidIdentifierSelection.Handler.class,
+                PacketFluidIdentifierSelection.class,
+                0,
+                Side.SERVER
+        );
 
         PROXY.preInit(event);
 
