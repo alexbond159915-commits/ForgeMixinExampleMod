@@ -140,15 +140,6 @@ public class BlockFluidDuct
             return false;
         }
 
-        Fluid fluid =
-                ((TileEntityFluidPipe) selfTile)
-                        .getPipeFluid();
-
-        if (fluid == null)
-        {
-            return false;
-        }
-
         BlockPos adjacent =
                 pos.offset(side);
 
@@ -158,19 +149,20 @@ public class BlockFluidDuct
         Block block =
                 adjacentState.getBlock();
 
+        // Match the visual connection rules of BlockFluidPipe.
+        // The transport network still checks fluid compatibility.
         if (block instanceof BlockFluidDuct
                 || block == ModBlocks.FLUID_PIPE)
         {
-            TileEntity adjacentTile =
-                    world.getTileEntity(adjacent);
+            return world.getTileEntity(adjacent) instanceof TileEntityFluidPipe;
+        }
 
-            if (adjacentTile instanceof TileEntityFluidPipe)
-            {
-                return fluid ==
-                        ((TileEntityFluidPipe) adjacentTile)
-                                .getPipeFluid();
-            }
+        Fluid fluid =
+                ((TileEntityFluidPipe) selfTile)
+                        .getPipeFluid();
 
+        if (fluid == null)
+        {
             return false;
         }
 
