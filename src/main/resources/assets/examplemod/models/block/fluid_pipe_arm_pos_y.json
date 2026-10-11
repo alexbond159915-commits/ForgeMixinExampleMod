@@ -2,19 +2,70 @@
   "textures": {
     "particle": "examplemod:blocks/fluid_pipe",
     "side": "examplemod:blocks/fluid_pipe",
-    "end": "examplemod:blocks/fluid_pipe_end"
+    "end": "examplemod:blocks/fluid_pipe_end",
+    "overlay": "examplemod:blocks/fluid_pipe_overlay"
   },
   "elements": [
     {
-      "from": [5, 5, 5],
-      "to": [11, 16, 11],
+      "from": [
+        5,
+        5,
+        5
+      ],
+      "to": [
+        11,
+        16,
+        11
+      ],
       "faces": {
-        "down":  { "texture": "#side" },
-        "up":    { "texture": "#end" },
-        "north": { "texture": "#side" },
-        "south": { "texture": "#side" },
-        "west":  { "texture": "#side" },
-        "east":  { "texture": "#side" }
+        "down": {
+          "texture": "#side"
+        },
+        "up": {
+          "texture": "#end"
+        },
+        "north": {
+          "texture": "#side"
+        },
+        "south": {
+          "texture": "#side"
+        },
+        "west": {
+          "texture": "#side"
+        },
+        "east": {
+          "texture": "#side"
+        }
+      }
+    },
+    {
+      "from": [
+        4.94,
+        13.5,
+        4.94
+      ],
+      "to": [
+        11.06,
+        15.72,
+        11.06
+      ],
+      "faces": {
+        "north": {
+          "texture": "#overlay",
+          "tintindex": 1
+        },
+        "south": {
+          "texture": "#overlay",
+          "tintindex": 1
+        },
+        "east": {
+          "texture": "#overlay",
+          "tintindex": 1
+        },
+        "west": {
+          "texture": "#overlay",
+          "tintindex": 1
+        }
       }
     }
   ]
