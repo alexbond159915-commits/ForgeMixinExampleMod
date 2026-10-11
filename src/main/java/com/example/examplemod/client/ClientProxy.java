@@ -58,6 +58,12 @@ public class ClientProxy
                     "blocks/fluid_pipe_end"
             );
 
+    private static final ResourceLocation PIPE_OVERLAY_TEXTURE =
+            new ResourceLocation(
+                    ExampleMod.MODID,
+                    "blocks/fluid_pipe_overlay"
+            );
+
     @Override
     public void openFluidIdentifierGui(EnumHand hand)
     {
@@ -212,6 +218,10 @@ public class ClientProxy
         event.getMap().registerSprite(
                 PIPE_END_TEXTURE
         );
+
+        event.getMap().registerSprite(
+                PIPE_OVERLAY_TEXTURE
+        );
     }
 
     @SubscribeEvent
@@ -329,7 +339,8 @@ public class ClientProxy
 
         event.getBlockColors().registerBlockColorHandler(
                 colorHandler,
-                ModBlocks.FLUID_DUCT
+                ModBlocks.FLUID_DUCT,
+                ModBlocks.FLUID_PIPE
         );
     }
 }
