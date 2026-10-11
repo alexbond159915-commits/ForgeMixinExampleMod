@@ -367,6 +367,25 @@ public class BlockFluidDuct
     }
 
     @Override
+    public void neighborChanged(IBlockState state,
+                                World world,
+                                BlockPos pos,
+                                Block blockIn,
+                                BlockPos fromPos)
+    {
+        super.neighborChanged(state, world, pos, blockIn, fromPos);
+
+        if (!world.isRemote)
+        {
+            world.notifyBlockUpdate(pos, state, state, 3);
+        }
+
+        world.markBlockRangeForRenderUpdate(
+                pos.add(-1, -1, -1),
+                pos.add(1, 1, 1));
+    }
+
+    @Override
     public int getMetaFromState(
             IBlockState state)
     {
