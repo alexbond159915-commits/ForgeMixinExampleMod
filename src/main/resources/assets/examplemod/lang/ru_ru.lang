@@ -17,3 +17,6 @@ fluid.examplemod.condensate=Конденсат
 
 tile.examplemod.fluid_duct.name=Малая жидкостная труба
 item.examplemod.fluid_identifier.name=Жидкостный идентификатор
+
+itemGroup.examplemod.machines=Механизмы
+item.examplemod.flywheel.name=Маховик
