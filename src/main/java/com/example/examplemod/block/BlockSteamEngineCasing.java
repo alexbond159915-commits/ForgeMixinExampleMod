@@ -31,6 +31,26 @@ public final class BlockSteamEngineCasing extends BlockBase
     }
 
     @Override
+    public boolean isOpaqueCube(IBlockState state)
+    {
+        return !state.getValue(ASSEMBLED);
+    }
+
+    @Override
+    public boolean isFullCube(IBlockState state)
+    {
+        return !state.getValue(ASSEMBLED);
+    }
+
+    @Override
+    public int getLightOpacity(IBlockState state,
+            IBlockAccess world, BlockPos pos)
+    {
+        return state.getValue(ASSEMBLED) ? 0 :
+                super.getLightOpacity(state, world, pos);
+    }
+
+    @Override
     protected BlockStateContainer createBlockState()
     {
         return new BlockStateContainer(this, ASSEMBLED);
