@@ -60,7 +60,8 @@ public final class SteamEngineModel
     {
         ensureLoaded();
         Minecraft.getMinecraft().getTextureManager().bindTexture(TEXTURE);
-        GlStateManager.color(1F, 1F, 1F, 1F);
+        // Slightly darker finish; preserve mechanical shape, baked palette and lighting.
+        GlStateManager.color(0.82F, 0.83F, 0.85F, 1F);
 
         renderPart("Base");
 
