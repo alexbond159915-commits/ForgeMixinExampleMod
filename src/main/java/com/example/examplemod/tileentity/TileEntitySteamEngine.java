@@ -100,6 +100,9 @@ public class TileEntitySteamEngine
     private float synchronizedRotor;
     private float acceleration;
 
+    // Existing pre-redesign multiblocks get the new ports on first server tick.
+    private boolean portLayoutChecked;
+
     @Override
     public void update()
     {
@@ -136,6 +139,12 @@ public class TileEntitySteamEngine
             }
 
             return;
+        }
+
+        if (!portLayoutChecked)
+        {
+            portLayoutChecked = true;
+            upgradeLegacyPorts();
         }
 
         int availableOperations =
@@ -233,6 +242,68 @@ public class TileEntitySteamEngine
                     state,
                     3
             );
+        }
+    }
+
+    /**
+     * Keep previously placed 2x2x3 engines working after upgrading the mod.
+     * Only replaces known casing blocks; never overwrites arbitrary blocks.
+     */
+    private void upgradeLegacyPorts()
+    {
+        EnumFacing front = getFacing();
+
+        net.minecraft.util.math.BlockPos steamPos =
+                BlockSteamEngine.getStructurePos(pos, front, 0, 1, 0);
+        net.minecraft.util.math.BlockPos condensatePos =
+                BlockSteamEngine.getStructurePos(pos, front, 0, 0, 1);
+        net.minecraft.util.math.BlockPos powerPos =
+                BlockSteamEngine.getStructurePos(pos, front, 1, 1, 0);
+
+        if (world.getBlockState(steamPos).getBlock()
+                == com.example.examplemod.init.ModBlocks.STEAM_ENGINE_CASING)
+        {
+            world.setBlockState(
+                    steamPos,
+                    com.example.examplemod.init.ModBlocks.STEAM_ENGINE_FLUID_PORT
+                            .getDefaultState()
+                            .withProperty(
+                                    com.example.examplemod.block.BlockSteamEngineFluidPort.FACING,
+                                    front)
+                            .withProperty(
+                                    com.example.examplemod.block.BlockSteamEngineFluidPort.OUTPUT,
+                                    false),
+                    3);
+        }
+
+        if (world.getBlockState(condensatePos).getBlock()
+                == com.example.examplemod.init.ModBlocks.STEAM_ENGINE_CASING)
+        {
+            world.setBlockState(
+                    condensatePos,
+                    com.example.examplemod.init.ModBlocks.STEAM_ENGINE_FLUID_PORT
+                            .getDefaultState()
+                            .withProperty(
+                                    com.example.examplemod.block.BlockSteamEngineFluidPort.FACING,
+                                    front)
+                            .withProperty(
+                                    com.example.examplemod.block.BlockSteamEngineFluidPort.OUTPUT,
+                                    true),
+                    3);
+        }
+
+        IBlockState powerState = world.getBlockState(powerPos);
+        if (powerState.getBlock()
+                == com.example.examplemod.init.ModBlocks.STEAM_ENGINE_POWER_PORT
+                && powerState.getValue(
+                        com.example.examplemod.block.BlockSteamEnginePowerPort.FACING)
+                != front)
+        {
+            world.setBlockState(powerPos,
+                    powerState.withProperty(
+                            com.example.examplemod.block.BlockSteamEnginePowerPort.FACING,
+                            front),
+                    3);
         }
     }
 
