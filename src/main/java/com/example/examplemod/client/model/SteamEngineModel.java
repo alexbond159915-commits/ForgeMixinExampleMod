@@ -45,6 +45,16 @@ public final class SteamEngineModel
             new ResourceLocation(ExampleMod.MODID,
                     "textures/blocks/steam_engine_materials.png");
 
+    // OBJ UV columns map to the four tiles in steam_engine_materials.png.
+    // Dark industrial palette: gunmetal steel, aged copper, muted brass,
+    // and nearly-black ventilation. The pixel texture itself stays intact.
+    private static final float[][] MATERIAL_TINT = {
+            {0.63F, 0.66F, 0.69F}, // dark gunmetal / frame / boiler
+            {0.83F, 0.74F, 0.61F}, // aged copper piping
+            {0.83F, 0.77F, 0.62F}, // worn brass / flywheel
+            {0.58F, 0.61F, 0.64F}  // dark grilles / vents
+    };
+
     // Mathematically exact crank-slider linkage in the front X/Y plane.
     private static final float WHEEL_X = -1.01F;
     private static final float WHEEL_Y = -0.08F;
@@ -60,8 +70,9 @@ public final class SteamEngineModel
     {
         ensureLoaded();
         Minecraft.getMinecraft().getTextureManager().bindTexture(TEXTURE);
-        // Slightly darker finish; preserve mechanical shape, baked palette and lighting.
-        GlStateManager.color(0.82F, 0.83F, 0.85F, 1F);
+        // Material-specific color is applied per OBJ triangle vertex below.
+        // Keep the global GL tint neutral so copper/brass don't turn gray.
+        GlStateManager.color(1F, 1F, 1F, 1F);
 
         renderPart("Base");
 
@@ -109,12 +120,27 @@ public final class SteamEngineModel
 
         Tessellator tess = Tessellator.getInstance();
         BufferBuilder builder = tess.getBuffer();
-        builder.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX_NORMAL);
+        builder.begin(GL11.GL_TRIANGLES,
+                DefaultVertexFormats.POSITION_TEX_COLOR_NORMAL);
 
         for (float[] v : vertices)
         {
+            // The OBJ texture uses the first four 32px-wide atlas tiles.
+            // Material selection is based on UV, not moving part group:
+            // a wheel can retain both steel spokes and brass hub details.
+            int material = Math.max(0,
+                    Math.min(MATERIAL_TINT.length - 1, (int)(v[3] * 4F)));
+            float[] tint = MATERIAL_TINT[material];
+
+            // Subtle directional shading improves the heavy industrial
+            // silhouette without altering normals or rotor animation.
+            float light = v[6] > 0.4F ? 1.0F :
+                    (v[6] < -0.4F ? 0.80F : 0.89F);
+
             builder.pos(v[0], v[1], v[2])
                     .tex(v[3], v[4])
+                    .color(tint[0] * light, tint[1] * light,
+                            tint[2] * light, 1F)
                     .normal(v[5], v[6], v[7])
                     .endVertex();
         }
