@@ -7,6 +7,7 @@ import com.example.examplemod.block.BlockFluidPipe;
 import com.example.examplemod.block.BlockFluidTank;
 import com.example.examplemod.block.BlockFluidDuct;
 import com.example.examplemod.block.BlockSteamEngine;
+import com.example.examplemod.block.BlockSteamEngineFluidPort;
 import com.example.examplemod.block.BlockSteamEnginePowerPort;
 import com.example.examplemod.block.BlockOreBase;
 import net.minecraft.block.Block;
@@ -42,6 +43,10 @@ public final class ModBlocks
 
     public static final Block STEAM_ENGINE =
             new BlockSteamEngine();
+
+    /** Structural input/output ports assembled with the 2x2x3 engine. */
+    public static final Block STEAM_ENGINE_FLUID_PORT =
+            new BlockSteamEngineFluidPort();
 
     /*
      * Internal structural energy port of the 2x2x3 steam engine.

@@ -9,6 +9,7 @@ import com.example.examplemod.init.ModItems;
 import com.example.examplemod.tileentity.TileEntityMuffleFurnace;
 import com.example.examplemod.tileentity.TileEntitySteamEngine;
 import com.example.examplemod.tileentity.TileEntitySteamEnginePowerPort;
+import com.example.examplemod.tileentity.TileEntitySteamEngineFluidPort;
 import com.example.examplemod.fluid.TileEntityFluidPipe;
 import com.example.examplemod.tileentity.TileEntityFluidTank;
 import com.example.examplemod.world.CopperOreWorldGenerator;
@@ -125,6 +126,11 @@ public class ExampleMod
         GameRegistry.registerTileEntity(
                 TileEntitySteamEnginePowerPort.class,
                 new ResourceLocation(MODID, "steam_engine_power_port")
+        );
+
+        GameRegistry.registerTileEntity(
+                TileEntitySteamEngineFluidPort.class,
+                new ResourceLocation(MODID, "steam_engine_fluid_port")
         );
 
         GameRegistry.registerWorldGenerator(

@@ -240,23 +240,43 @@ public class BlockSteamEngine extends BlockContainerBase
                      * so the top of the controller remains available for
                      * the steam input port.
                      */
-                    if (width == 1
-                            && height == 1
-                            && depth == 0)
+                    if (width == 1 && height == 1 && depth == 0)
                     {
+                        // Front-right upper block: FE output.
                         world.setBlockState(
                                 target,
-                                ModBlocks.STEAM_ENGINE_POWER_PORT
-                                        .getDefaultState(),
-                                2
+                                ModBlocks.STEAM_ENGINE_POWER_PORT.getDefaultState()
+                                        .withProperty(BlockSteamEnginePowerPort.FACING, facing),
+                                3
+                        );
+                    }
+                    else if (width == 0 && height == 1 && depth == 0)
+                    {
+                        // Upper front-left block: steam inlet.
+                        world.setBlockState(
+                                target,
+                                ModBlocks.STEAM_ENGINE_FLUID_PORT.getDefaultState()
+                                        .withProperty(BlockSteamEngineFluidPort.FACING, facing)
+                                        .withProperty(BlockSteamEngineFluidPort.OUTPUT, false),
+                                3
+                        );
+                    }
+                    else if (width == 0 && height == 0 && depth == 1)
+                    {
+                        // Lower left-hand side: condensate outlet.
+                        world.setBlockState(
+                                target,
+                                ModBlocks.STEAM_ENGINE_FLUID_PORT.getDefaultState()
+                                        .withProperty(BlockSteamEngineFluidPort.FACING, facing)
+                                        .withProperty(BlockSteamEngineFluidPort.OUTPUT, true),
+                                3
                         );
                     }
                     else
                     {
                         world.setBlockState(
                                 target,
-                                ModBlocks.STEAM_ENGINE_CASING
-                                        .getDefaultState(),
+                                ModBlocks.STEAM_ENGINE_CASING.getDefaultState(),
                                 2
                         );
                     }
@@ -296,7 +316,8 @@ public class BlockSteamEngine extends BlockContainerBase
                             world.getBlockState(target).getBlock();
 
                     if (block == ModBlocks.STEAM_ENGINE_CASING
-                            || block == ModBlocks.STEAM_ENGINE_POWER_PORT)
+                            || block == ModBlocks.STEAM_ENGINE_POWER_PORT
+                            || block == ModBlocks.STEAM_ENGINE_FLUID_PORT)
                     {
                         world.setBlockToAir(target);
                     }

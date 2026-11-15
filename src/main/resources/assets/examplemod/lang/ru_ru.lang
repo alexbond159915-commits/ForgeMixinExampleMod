@@ -20,3 +20,8 @@ item.examplemod.fluid_identifier.name=Жидкостный идентифика�
 
 itemGroup.examplemod.machines=Механизмы
 item.examplemod.flywheel.name=Маховик
+
+tile.examplemod.steam_engine_fluid_port.name=Жидкостный порт парового двигателя
+message.examplemod.steam_input=Вход пара: %s / %s мБ
+message.examplemod.condensate_output=Выход конденсата: %s / %s мБ
+message.examplemod.energy_output=Выход энергии: %s / %s FE

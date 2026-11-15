@@ -412,8 +412,11 @@ public class TileEntitySteamEngine
     {
         super.writeToNBT(compound);
 
-        steamTank.writeToNBTWithPressure(compound);
-        condensateTank.writeToNBTWithPressure(compound);
+        // Separate NBT compounds: the old code overwrote steam with condensate.
+        compound.setTag("SteamTank",
+                steamTank.writeToNBTWithPressure(new NBTTagCompound()));
+        compound.setTag("CondensateTank",
+                condensateTank.writeToNBTWithPressure(new NBTTagCompound()));
         energyStorage.writeToNBTCustom(compound);
 
         compound.setFloat(
@@ -435,8 +438,22 @@ public class TileEntitySteamEngine
     {
         super.readFromNBT(compound);
 
-        steamTank.readFromNBTWithPressure(compound);
-        condensateTank.readFromNBTWithPressure(compound);
+        if (compound.hasKey("SteamTank", 10))
+        {
+            steamTank.readFromNBTWithPressure(
+                    compound.getCompoundTag("SteamTank"));
+        }
+        if (compound.hasKey("CondensateTank", 10))
+        {
+            condensateTank.readFromNBTWithPressure(
+                    compound.getCompoundTag("CondensateTank"));
+        }
+        else
+        {
+            // Legacy saves stored only one tank in root NBT. The last
+            // write was condensate; preserve it when possible.
+            condensateTank.readFromNBTWithPressure(compound);
+        }
         energyStorage.readFromNBTCustom(compound);
 
         rotor =
