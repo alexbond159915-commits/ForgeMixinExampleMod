@@ -61,7 +61,7 @@ public class BlockSteamEngineFluidPort extends BlockContainerBase
     public IBlockState getStateFromMeta(int meta)
     {
         return getDefaultState()
-                .withProperty(FACING, EnumFacing.byHorizontalIndex(meta & 3))
+                .withProperty(FACING, EnumFacing.getHorizontal(meta & 3))
                 .withProperty(OUTPUT, (meta & 4) != 0);
     }
 
