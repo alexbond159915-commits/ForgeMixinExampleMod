@@ -1,7 +1,19 @@
 {
   "variants": {
-    "normal": {
+    "facing=south": {
       "model": "examplemod:steam_engine_power_port"
+    },
+    "facing=west": {
+      "model": "examplemod:steam_engine_power_port",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "examplemod:steam_engine_power_port",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "examplemod:steam_engine_power_port",
+      "y": 270
     }
   }
 }

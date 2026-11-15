@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=south,output=false": {
+      "model": "examplemod:steam_engine_steam_port"
+    },
+    "facing=south,output=true": {
+      "model": "examplemod:steam_engine_condensate_port"
+    },
+    "facing=west,output=false": {
+      "model": "examplemod:steam_engine_steam_port",
+      "y": 90
+    },
+    "facing=west,output=true": {
+      "model": "examplemod:steam_engine_condensate_port",
+      "y": 90
+    },
+    "facing=north,output=false": {
+      "model": "examplemod:steam_engine_steam_port",
+      "y": 180
+    },
+    "facing=north,output=true": {
+      "model": "examplemod:steam_engine_condensate_port",
+      "y": 180
+    },
+    "facing=east,output=false": {
+      "model": "examplemod:steam_engine_steam_port",
+      "y": 270
+    },
+    "facing=east,output=true": {
+      "model": "examplemod:steam_engine_condensate_port",
+      "y": 270
+    }
+  }
+}
