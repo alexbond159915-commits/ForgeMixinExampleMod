@@ -78,6 +78,38 @@ public class BlockSteamEngineFluidPort extends BlockContainerBase
     }
 
     @Override
+    public boolean removedByPlayer(
+            IBlockState state, World world, BlockPos pos,
+            EntityPlayer player, boolean willHarvest)
+    {
+        if (!world.isRemote &&
+                SteamEngineStructure.removePartByPlayer(world, pos, player))
+        {
+            return false;
+        }
+        return super.removedByPlayer(state, world, pos, player, willHarvest);
+    }
+
+    @Override
+    public void breakBlock(World world, BlockPos pos, IBlockState state)
+    {
+        if (!world.isRemote)
+        {
+            SteamEngineStructure.removePart(world, pos, true);
+        }
+        super.breakBlock(world, pos, state);
+    }
+
+    @Override
+    public void getDrops(
+            net.minecraft.util.NonNullList<ItemStack> drops,
+            net.minecraft.world.IBlockAccess world,
+            BlockPos pos, IBlockState state, int fortune)
+    {
+        // Internal ports never drop independently from the controller.
+    }
+
+    @Override
     public boolean onBlockActivated(
             World world, BlockPos pos, IBlockState state,
             EntityPlayer player, EnumHand hand, EnumFacing face,
