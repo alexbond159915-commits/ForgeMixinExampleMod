@@ -273,7 +273,8 @@ public class BlockSteamEngine extends BlockContainerBase
                     {
                         world.setBlockState(
                                 target,
-                                ModBlocks.STEAM_ENGINE_CASING.getDefaultState(),
+                                ModBlocks.STEAM_ENGINE_CASING.getDefaultState()
+                                        .withProperty(BlockSteamEngineCasing.ASSEMBLED, true),
                                 2
                         );
                     }
