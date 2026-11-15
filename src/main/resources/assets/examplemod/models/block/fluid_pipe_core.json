@@ -19,22 +19,58 @@
       ],
       "faces": {
         "down": {
-          "texture": "#core"
+          "texture": "#core",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
         },
         "up": {
-          "texture": "#core"
+          "texture": "#core",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
         },
         "north": {
-          "texture": "#core"
+          "texture": "#core",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
         },
         "south": {
-          "texture": "#core"
+          "texture": "#core",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
         },
         "west": {
-          "texture": "#core"
+          "texture": "#core",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
         },
         "east": {
-          "texture": "#core"
+          "texture": "#core",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
         }
       }
     },
@@ -52,27 +88,63 @@
       "faces": {
         "up": {
           "texture": "#overlay",
-          "tintindex": 1
+          "tintindex": 1,
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
         },
         "down": {
           "texture": "#overlay",
-          "tintindex": 1
+          "tintindex": 1,
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
         },
         "north": {
           "texture": "#overlay",
-          "tintindex": 1
+          "tintindex": 1,
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
         },
         "south": {
           "texture": "#overlay",
-          "tintindex": 1
+          "tintindex": 1,
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
         },
         "east": {
           "texture": "#overlay",
-          "tintindex": 1
+          "tintindex": 1,
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
         },
         "west": {
           "texture": "#overlay",
-          "tintindex": 1
+          "tintindex": 1,
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
         }
       }
     }
