@@ -48,10 +48,10 @@
         },
         "south": {
           "uv": [
-            0,
-            0,
+            8,
             4,
-            4
+            12,
+            8
           ],
           "texture": "#atlas",
           "cullface": "south"

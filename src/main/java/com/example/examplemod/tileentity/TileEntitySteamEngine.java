@@ -97,6 +97,23 @@ public class TileEntitySteamEngine
     public float rotor;
     public float lastRotor;
 
+    /*
+     * The TESR draws the flywheel and linkage across the 2x2 front
+     * and two copper rails over the long boiler.
+     * Make sure Forge does not cull the renderer when the controller
+     * alone is outside the camera frustum.
+     */
+    @net.minecraftforge.fml.relauncher.SideOnly(
+            net.minecraftforge.fml.relauncher.Side.CLIENT)
+    @Override
+    public net.minecraft.util.math.AxisAlignedBB getRenderBoundingBox()
+    {
+        return new net.minecraft.util.math.AxisAlignedBB(
+                pos.add(-3, -1, -3),
+                pos.add(3, 4, 3)
+        );
+    }
+
     private float synchronizedRotor;
     private float acceleration;
 
