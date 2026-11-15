@@ -3,6 +3,8 @@ package com.example.examplemod.client;
 import com.example.examplemod.client.model.SteamEngineModel;
 import com.example.examplemod.tileentity.TileEntitySteamEngine;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
+import org.lwjgl.opengl.GL11;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -70,7 +72,21 @@ public final class SteamEngineTileRenderer
                     break;
             }
 
-            GlStateManager.enableRescaleNormal();
+            /*
+             * Blockmodel quads receive Minecraft's baked light. Our
+             * TESR previously used OpenGL's directional lighting without
+             * matching normals/materials and turned almost pitch-black.
+             * Use the actual block lightmap and the palette's baked
+             * pixel shading. This keeps copper/brass clearly readable.
+             */
+            int packed = engine.getWorld().getCombinedLight(
+                    engine.getPos().up(), 0);
+            int blockLight = packed & 0xFFFF;
+            int skyLight = (packed >>> 16) & 0xFFFF;
+            OpenGlHelper.setLightmapTextureCoords(
+                    OpenGlHelper.lightmapTexUnit, blockLight, skyLight);
+
+            GlStateManager.disableLighting();
             GlStateManager.disableCull();
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             model.render(this, angle);
@@ -78,7 +94,7 @@ public final class SteamEngineTileRenderer
         finally
         {
             GlStateManager.enableCull();
-            GlStateManager.disableRescaleNormal();
+            GlStateManager.enableLighting();
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             GlStateManager.popMatrix();
         }

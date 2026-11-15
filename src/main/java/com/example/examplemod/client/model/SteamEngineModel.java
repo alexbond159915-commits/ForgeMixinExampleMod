@@ -37,13 +37,13 @@ public final class SteamEngineModel
     private static final ResourceLocation TEXTURE =
             new ResourceLocation(
                     ExampleMod.MODID,
-                    "textures/blocks/steam_engine_atlas.png");
+                    "textures/blocks/steam_engine_materials.png");
 
-    // Slots in the existing 4x4 / 256x256 industrial machine atlas.
-    private static final int COPPER = 2;
-    private static final int STEEL = 6;
-    private static final int BRASS = 9;
-    private static final int VENT = 1;
+    // Dedicated four-material tiles: no dark full-block/port borders.
+    private static final int STEEL = 0;
+    private static final int COPPER = 1;
+    private static final int BRASS = 2;
+    private static final int VENT = 3;
 
     private static final float FRONT = 0.51F;
     private static final float WHEEL_X = -1.00F;
@@ -65,69 +65,64 @@ public final class SteamEngineModel
 
     private void renderBase()
     {
-        // Thick raised front bezel over both front-facing machine blocks.
-        box(-1.50F, -0.50F, FRONT,
-             0.50F, -0.395F, 0.66F, STEEL);
-        box(-1.50F, 1.395F, FRONT,
-             0.50F, 1.50F, 0.66F, STEEL);
-        box(-1.50F, -0.50F, FRONT,
-            -1.395F, 1.50F, 0.66F, STEEL);
-        box(0.395F, -0.50F, FRONT,
-            0.50F, 1.50F, 0.66F, STEEL);
-        box(-0.545F, -0.50F, FRONT,
-            -0.455F, 1.50F, 0.615F, STEEL);
-        box(-1.50F, 0.465F, FRONT,
-             0.50F, 0.54F, 0.605F, STEEL);
+        /*
+         * Low-profile front mechanical foundation. Keep the upper two
+         * blocks open: those are the real steam inlet and FE output.
+         * The previous huge front bezel obscured their connector faces.
+         */
+        final float face = 0.525F;
+        box(-1.485F, -0.485F, face,
+             0.485F, -0.405F, 0.60F, STEEL);
+        box(-1.485F, 0.405F, face,
+             0.485F, 0.485F, 0.60F, STEEL);
+        box(-1.485F, -0.485F, face,
+            -1.405F, 0.485F, 0.60F, STEEL);
+        box(0.405F, -0.485F, face,
+            0.485F, 0.485F, 0.60F, STEEL);
 
-        // Upper front copper/steel couplings: the top-left is the steam
-        // port, the top-right the electrical port.
-        box(-0.10F, 0.79F, 0.64F,
-             0.12F, 1.30F, 0.72F, COPPER);
-        box(-0.23F, 1.22F, 0.63F,
-             0.23F, 1.33F, 0.76F, COPPER);
-        box(-1.22F, 1.23F, 0.63F,
-            -0.78F, 1.34F, 0.74F, BRASS);
+        // Central support only on the lower course of machine blocks.
+        box(-0.542F, -0.485F, face,
+            -0.458F, 0.485F, 0.610F, STEEL);
 
-        // Pipework over the roof of the three-block-deep boiler.
-        // Above y=1.5 so it remains visible over the casing.
-        box(-1.16F, 1.53F, -2.34F,
-            -0.99F, 1.70F, 0.36F, COPPER);
-        box(-0.09F, 1.53F, -2.34F,
-             0.08F, 1.70F, 0.36F, COPPER);
+        // Two polished copper feed pipes on the roof.
+        box(-1.13F, 1.51F, -2.26F,
+            -1.01F, 1.65F, 0.27F, COPPER);
+        box(-0.13F, 1.51F, -2.26F,
+            -0.01F, 1.65F, 0.27F, COPPER);
 
-        // Copper clamps and reinforcement on the roof.
+        // Supporting brass collars, visible over each seam.
         for (int i = 0; i < 3; ++i)
         {
-            float z = -1.95F + i * 0.93F;
-            box(-1.21F, 1.53F, z,
-                -0.94F, 1.73F, z + 0.10F, BRASS);
-            box(-0.15F, 1.53F, z,
-                 0.14F, 1.73F, z + 0.10F, BRASS);
+            float z = -1.92F + i * 0.95F;
+            box(-1.17F, 1.50F, z,
+                -0.97F, 1.675F, z + 0.09F, BRASS);
+            box(-0.17F, 1.50F, z,
+                 0.03F, 1.675F, z + 0.09F, BRASS);
         }
 
-        // Physical wheel socket and four heavy square mounting plates.
-        ring(WHEEL_X, WHEEL_Y, 0.475F, 0.370F,
-             0.670F, 0.725F, STEEL);
+        // Recessed, non-rotating flywheel bearing.
+        ring(WHEEL_X, WHEEL_Y, 0.455F, 0.365F,
+             0.585F, 0.665F, STEEL);
         for (int dx = -1; dx <= 1; dx += 2)
         {
             for (int dy = -1; dy <= 1; dy += 2)
             {
-                float x = WHEEL_X + dx * 0.445F;
-                float y = WHEEL_Y + dy * 0.33F;
-                box(x - 0.050F, y - 0.050F, 0.605F,
-                    x + 0.050F, y + 0.050F, 0.745F, BRASS);
+                float x = WHEEL_X + dx * 0.415F;
+                float y = WHEEL_Y + dy * 0.330F;
+                box(x - 0.043F, y - 0.043F, 0.61F,
+                    x + 0.043F, y + 0.043F, 0.675F, BRASS);
             }
         }
 
-        // Right-hand mechanical piston cylinder, with a dark recessed bay.
-        box(-0.435F, -0.32F, 0.58F,
-             0.345F, 0.25F, 0.685F, STEEL);
-        box(-0.40F, -0.23F, 0.686F,
-             0.32F, 0.17F, 0.715F, VENT);
-        box(-0.455F, -0.32F, 0.69F,
-            -0.365F, 0.27F, 0.775F, BRASS);
-        box(0.265F, -0.32F, 0.69F,
-            0.355F, 0.27F, 0.775F, BRASS);
+        // Fixed cylinder housing behind the sliding piston.
+        box(-0.410F, -0.275F, 0.565F,
+             0.318F, 0.245F, 0.625F, STEEL);
+        box(-0.390F, -0.200F, 0.626F,
+             0.292F, 0.165F, 0.670F, VENT);
+        box(-0.420F, -0.28F, 0.650F,
+            -0.360F, 0.245F, 0.720F, BRASS);
+        box(0.278F, -0.28F, 0.650F,
+            0.340F, 0.245F, 0.720F, BRASS);
     }
 
     private void renderFlywheel(float angle)
@@ -141,7 +136,7 @@ public final class SteamEngineModel
             // Thick ring: 16 actual polygon segments (front, back,
             // outer and inner walls), rather than a flat sprite.
             ring(0, 0, WHEEL_R, 0.310F,
-                 -0.052F, 0.050F, COPPER);
+                 -0.052F, 0.050F, BRASS);
 
             // Eight dimensional radial spokes.
             for (int i = 0; i < 8; ++i)
@@ -150,6 +145,16 @@ public final class SteamEngineModel
                 GlStateManager.rotate(i * 45.0F, 0, 0, 1);
                 box(0.075F, -0.039F, -0.058F,
                     0.345F, 0.039F, 0.064F, STEEL);
+                GlStateManager.popMatrix();
+            }
+
+            // Four small copper drive-rim plates for contrast.
+            for (int i = 0; i < 4; ++i)
+            {
+                GlStateManager.pushMatrix();
+                GlStateManager.rotate(i * 90.0F, 0, 0, 1);
+                box(0.315F, -0.027F, 0.05F,
+                    0.395F, 0.027F, 0.084F, COPPER);
                 GlStateManager.popMatrix();
             }
 
@@ -244,7 +249,7 @@ public final class SteamEngineModel
 
     /**
      * Cube prism using vanilla BufferBuilder quads and the stitched
-     * 4x4 industrial texture atlas. No OBJLoader or third-party mod
+     * 4x4 material texture atlas. No OBJLoader or third-party mod
      * is needed for this model.
      */
     private void box(float x0, float y0, float z0,
