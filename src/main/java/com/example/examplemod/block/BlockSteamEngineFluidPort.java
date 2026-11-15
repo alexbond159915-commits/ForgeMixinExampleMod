@@ -72,6 +72,25 @@ public class BlockSteamEngineFluidPort extends BlockContainerBase
     }
 
     @Override
+    public boolean isOpaqueCube(IBlockState state)
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isFullCube(IBlockState state)
+    {
+        return false;
+    }
+
+    @Override
+    public int getLightOpacity(IBlockState state,
+            net.minecraft.world.IBlockAccess world, BlockPos pos)
+    {
+        return 0;
+    }
+
+    @Override
     public EnumBlockRenderType getRenderType(IBlockState state)
     {
         return EnumBlockRenderType.MODEL;
