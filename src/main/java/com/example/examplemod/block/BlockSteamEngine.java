@@ -144,11 +144,8 @@ public class BlockSteamEngine extends BlockContainerBase
     {
         if (!world.isRemote)
         {
-            removeStructureParts(
-                    world,
-                    pos,
-                    state.getValue(FACING)
-            );
+            SteamEngineStructure.removeController(
+                    world, pos, state.getValue(FACING));
         }
 
         super.breakBlock(world, pos, state);
@@ -279,47 +276,6 @@ public class BlockSteamEngine extends BlockContainerBase
                                 ModBlocks.STEAM_ENGINE_CASING.getDefaultState(),
                                 2
                         );
-                    }
-                }
-            }
-        }
-    }
-
-    private void removeStructureParts(
-            World world,
-            BlockPos core,
-            EnumFacing facing)
-    {
-        for (int depth = 0; depth < DEPTH; depth++)
-        {
-            for (int height = 0; height < HEIGHT; height++)
-            {
-                for (int width = 0; width < WIDTH; width++)
-                {
-                    if (width == 0
-                            && height == 0
-                            && depth == 0)
-                    {
-                        continue;
-                    }
-
-                    BlockPos target =
-                            getStructurePos(
-                                    core,
-                                    facing,
-                                    width,
-                                    height,
-                                    depth
-                            );
-
-                    net.minecraft.block.Block block =
-                            world.getBlockState(target).getBlock();
-
-                    if (block == ModBlocks.STEAM_ENGINE_CASING
-                            || block == ModBlocks.STEAM_ENGINE_POWER_PORT
-                            || block == ModBlocks.STEAM_ENGINE_FLUID_PORT)
-                    {
-                        world.setBlockToAir(target);
                     }
                 }
             }
