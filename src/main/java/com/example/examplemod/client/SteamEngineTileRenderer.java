@@ -79,10 +79,33 @@ public final class SteamEngineTileRenderer
              * Use the actual block lightmap and the palette's baked
              * pixel shading. This keeps copper/brass clearly readable.
              */
-            int packed = engine.getWorld().getCombinedLight(
-                    engine.getPos().up(), 0);
-            int blockLight = packed & 0xFFFF;
-            int skyLight = (packed >>> 16) & 0xFFFF;
+            // Sample light OUTSIDE the multiblock. pos.up() is an
+            // occupied steam port and is dark while the engine is intact.
+            net.minecraft.util.EnumFacing front = engine.getFacing();
+            net.minecraft.util.math.BlockPos core = engine.getPos();
+            net.minecraft.util.math.BlockPos right =
+                    core.offset(front.rotateY());
+            net.minecraft.util.math.BlockPos[] exterior = {
+                    core.offset(front),
+                    core.up().offset(front),
+                    right.offset(front),
+                    right.up().offset(front),
+                    core.up(2),
+                    right.up(2),
+                    core.up(2).offset(front.getOpposite())
+            };
+            int blockLight = 0;
+            int skyLight = 0;
+            for (net.minecraft.util.math.BlockPos candidate : exterior)
+            {
+                if (!engine.getWorld().isBlockLoaded(candidate))
+                {
+                    continue;
+                }
+                int packed = engine.getWorld().getCombinedLight(candidate, 0);
+                blockLight = Math.max(blockLight, packed & 0xFFFF);
+                skyLight = Math.max(skyLight, (packed >>> 16) & 0xFFFF);
+            }
             OpenGlHelper.setLightmapTextureCoords(
                     OpenGlHelper.lightmapTexUnit, blockLight, skyLight);
 
