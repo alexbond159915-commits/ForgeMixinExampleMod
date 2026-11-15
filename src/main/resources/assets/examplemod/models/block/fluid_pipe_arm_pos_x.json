@@ -1,5 +1,5 @@
 {
-  "ambientocclusion": true,
+  "ambientocclusion": false,
   "textures": {
     "particle": "examplemod:blocks/fluid_pipe",
     "side": "examplemod:blocks/fluid_pipe",
@@ -9,7 +9,7 @@
   "elements": [
     {
       "from": [
-        5,
+        11,
         5,
         5
       ],
@@ -19,91 +19,82 @@
         11
       ],
       "faces": {
-        "up": {
-          "texture": "#side",
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
-        },
         "down": {
           "texture": "#side",
           "uv": [
-            0,
-            0,
+            11,
+            5,
             16,
-            16
+            11
+          ]
+        },
+        "up": {
+          "texture": "#side",
+          "uv": [
+            11,
+            5,
+            16,
+            11
           ]
         },
         "north": {
           "texture": "#side",
           "uv": [
             0,
-            0,
-            16,
-            16
+            5,
+            5,
+            11
           ]
         },
         "south": {
           "texture": "#side",
           "uv": [
-            0,
-            0,
+            11,
+            5,
             16,
-            16
+            11
           ]
         },
         "east": {
           "texture": "#end",
           "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
-        },
-        "west": {
-          "texture": "#side",
-          "uv": [
-            0,
-            0,
-            16,
-            16
+            5,
+            5,
+            11,
+            11
           ]
         }
       }
     },
     {
       "from": [
-        5,
-        4.945,
-        4.945
+        11.02,
+        4.98,
+        4.98
       ],
       "to": [
         16,
-        11.055,
-        11.055
+        11.02,
+        11.02
       ],
       "faces": {
-        "up": {
-          "texture": "#overlay",
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ],
-          "tintindex": 1
-        },
         "down": {
           "texture": "#overlay",
           "uv": [
-            0,
-            0,
+            11.02,
+            4.98,
             16,
-            16
+            11.02
+          ],
+          "tintindex": 1
+        },
+        "up": {
+          "texture": "#overlay",
+          "uv": [
+            11.02,
+            4.98,
+            16,
+            11.02
           ],
           "tintindex": 1
         },
@@ -111,19 +102,19 @@
           "texture": "#overlay",
           "uv": [
             0,
-            0,
-            16,
-            16
+            4.98,
+            4.98,
+            11.02
           ],
           "tintindex": 1
         },
         "south": {
           "texture": "#overlay",
           "uv": [
-            0,
-            0,
+            11.02,
+            4.98,
             16,
-            16
+            11.02
           ],
           "tintindex": 1
         }

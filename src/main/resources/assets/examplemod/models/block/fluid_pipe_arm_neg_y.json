@@ -1,5 +1,5 @@
 {
-  "ambientocclusion": true,
+  "ambientocclusion": false,
   "textures": {
     "particle": "examplemod:blocks/fluid_pipe",
     "side": "examplemod:blocks/fluid_pipe",
@@ -15,84 +15,75 @@
       ],
       "to": [
         11,
-        11,
+        5,
         11
       ],
       "faces": {
-        "up": {
+        "north": {
           "texture": "#side",
           "uv": [
-            0,
-            0,
-            16,
+            5,
+            11,
+            11,
+            16
+          ]
+        },
+        "south": {
+          "texture": "#side",
+          "uv": [
+            5,
+            11,
+            11,
+            16
+          ]
+        },
+        "west": {
+          "texture": "#side",
+          "uv": [
+            5,
+            11,
+            11,
+            16
+          ]
+        },
+        "east": {
+          "texture": "#side",
+          "uv": [
+            5,
+            11,
+            11,
             16
           ]
         },
         "down": {
           "texture": "#end",
           "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
-        },
-        "north": {
-          "texture": "#side",
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
-        },
-        "south": {
-          "texture": "#side",
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
-        },
-        "east": {
-          "texture": "#side",
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
-        },
-        "west": {
-          "texture": "#side",
-          "uv": [
-            0,
-            0,
-            16,
-            16
+            5,
+            5,
+            11,
+            11
           ]
         }
       }
     },
     {
       "from": [
-        4.945,
+        4.98,
         0,
-        4.945
+        4.98
       ],
       "to": [
-        11.055,
-        11,
-        11.055
+        11.02,
+        4.98,
+        11.02
       ],
       "faces": {
         "north": {
           "texture": "#overlay",
           "uv": [
-            0,
-            0,
-            16,
+            4.98,
+            11.02,
+            11.02,
             16
           ],
           "tintindex": 1
@@ -100,19 +91,9 @@
         "south": {
           "texture": "#overlay",
           "uv": [
-            0,
-            0,
-            16,
-            16
-          ],
-          "tintindex": 1
-        },
-        "east": {
-          "texture": "#overlay",
-          "uv": [
-            0,
-            0,
-            16,
+            4.98,
+            11.02,
+            11.02,
             16
           ],
           "tintindex": 1
@@ -120,9 +101,19 @@
         "west": {
           "texture": "#overlay",
           "uv": [
-            0,
-            0,
-            16,
+            4.98,
+            11.02,
+            11.02,
+            16
+          ],
+          "tintindex": 1
+        },
+        "east": {
+          "texture": "#overlay",
+          "uv": [
+            4.98,
+            11.02,
+            11.02,
             16
           ],
           "tintindex": 1

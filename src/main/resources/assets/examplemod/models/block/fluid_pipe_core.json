@@ -1,8 +1,9 @@
 {
-  "ambientocclusion": true,
+  "ambientocclusion": false,
   "textures": {
     "particle": "examplemod:blocks/fluid_pipe",
-    "core": "examplemod:blocks/fluid_pipe",
+    "side": "examplemod:blocks/fluid_pipe",
+    "end": "examplemod:blocks/fluid_pipe_end",
     "overlay": "examplemod:blocks/fluid_pipe_overlay"
   },
   "elements": [
@@ -19,132 +20,132 @@
       ],
       "faces": {
         "down": {
-          "texture": "#core",
+          "texture": "#side",
           "uv": [
-            0,
-            0,
-            16,
-            16
+            5,
+            5,
+            11,
+            11
           ]
         },
         "up": {
-          "texture": "#core",
+          "texture": "#side",
           "uv": [
-            0,
-            0,
-            16,
-            16
+            5,
+            5,
+            11,
+            11
           ]
         },
         "north": {
-          "texture": "#core",
+          "texture": "#side",
           "uv": [
-            0,
-            0,
-            16,
-            16
+            5,
+            5,
+            11,
+            11
           ]
         },
         "south": {
-          "texture": "#core",
+          "texture": "#side",
           "uv": [
-            0,
-            0,
-            16,
-            16
+            5,
+            5,
+            11,
+            11
           ]
         },
         "west": {
-          "texture": "#core",
+          "texture": "#side",
           "uv": [
-            0,
-            0,
-            16,
-            16
+            5,
+            5,
+            11,
+            11
           ]
         },
         "east": {
-          "texture": "#core",
+          "texture": "#side",
           "uv": [
-            0,
-            0,
-            16,
-            16
+            5,
+            5,
+            11,
+            11
           ]
         }
       }
     },
     {
       "from": [
-        4.93,
-        4.93,
-        4.93
+        4.98,
+        4.98,
+        4.98
       ],
       "to": [
-        11.07,
-        11.07,
-        11.07
+        11.02,
+        11.02,
+        11.02
       ],
       "faces": {
-        "up": {
-          "texture": "#overlay",
-          "tintindex": 1,
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
-        },
         "down": {
           "texture": "#overlay",
-          "tintindex": 1,
           "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
+            4.98,
+            4.98,
+            11.02,
+            11.02
+          ],
+          "tintindex": 1
+        },
+        "up": {
+          "texture": "#overlay",
+          "uv": [
+            4.98,
+            4.98,
+            11.02,
+            11.02
+          ],
+          "tintindex": 1
         },
         "north": {
           "texture": "#overlay",
-          "tintindex": 1,
           "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
+            4.98,
+            4.98,
+            11.02,
+            11.02
+          ],
+          "tintindex": 1
         },
         "south": {
           "texture": "#overlay",
-          "tintindex": 1,
           "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
-        },
-        "east": {
-          "texture": "#overlay",
-          "tintindex": 1,
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
+            4.98,
+            4.98,
+            11.02,
+            11.02
+          ],
+          "tintindex": 1
         },
         "west": {
           "texture": "#overlay",
-          "tintindex": 1,
           "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
+            4.98,
+            4.98,
+            11.02,
+            11.02
+          ],
+          "tintindex": 1
+        },
+        "east": {
+          "texture": "#overlay",
+          "uv": [
+            4.98,
+            4.98,
+            11.02,
+            11.02
+          ],
+          "tintindex": 1
         }
       }
     }

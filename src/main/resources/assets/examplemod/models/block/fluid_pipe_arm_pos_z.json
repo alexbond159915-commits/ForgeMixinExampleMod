@@ -1,5 +1,5 @@
 {
-  "ambientocclusion": true,
+  "ambientocclusion": false,
   "textures": {
     "particle": "examplemod:blocks/fluid_pipe",
     "side": "examplemod:blocks/fluid_pipe",
@@ -11,7 +11,7 @@
       "from": [
         5,
         5,
-        5
+        11
       ],
       "to": [
         11,
@@ -19,100 +19,81 @@
         16
       ],
       "faces": {
-        "up": {
-          "texture": "#side",
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
-        },
         "down": {
           "texture": "#side",
           "uv": [
+            5,
             0,
-            0,
-            16,
-            16
+            11,
+            5
           ]
         },
-        "north": {
+        "up": {
           "texture": "#side",
           "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
-        },
-        "south": {
-          "texture": "#end",
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
-        },
-        "east": {
-          "texture": "#side",
-          "uv": [
-            0,
-            0,
-            16,
+            5,
+            11,
+            11,
             16
           ]
         },
         "west": {
           "texture": "#side",
           "uv": [
-            0,
-            0,
+            11,
+            5,
             16,
-            16
+            11
+          ]
+        },
+        "east": {
+          "texture": "#side",
+          "uv": [
+            0,
+            5,
+            5,
+            11
+          ]
+        },
+        "south": {
+          "texture": "#end",
+          "uv": [
+            5,
+            5,
+            11,
+            11
           ]
         }
       }
     },
     {
       "from": [
-        4.945,
-        4.945,
-        5
+        4.98,
+        4.98,
+        11.02
       ],
       "to": [
-        11.055,
-        11.055,
+        11.02,
+        11.02,
         16
       ],
       "faces": {
-        "up": {
-          "texture": "#overlay",
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ],
-          "tintindex": 1
-        },
         "down": {
           "texture": "#overlay",
           "uv": [
+            4.98,
             0,
-            0,
-            16,
-            16
+            11.02,
+            4.98
           ],
           "tintindex": 1
         },
-        "east": {
+        "up": {
           "texture": "#overlay",
           "uv": [
-            0,
-            0,
-            16,
+            4.98,
+            11.02,
+            11.02,
             16
           ],
           "tintindex": 1
@@ -120,10 +101,20 @@
         "west": {
           "texture": "#overlay",
           "uv": [
-            0,
-            0,
+            11.02,
+            4.98,
             16,
-            16
+            11.02
+          ],
+          "tintindex": 1
+        },
+        "east": {
+          "texture": "#overlay",
+          "uv": [
+            0,
+            4.98,
+            4.98,
+            11.02
           ],
           "tintindex": 1
         }
