@@ -7,6 +7,7 @@ import com.example.examplemod.block.BlockFluidPipe;
 import com.example.examplemod.block.BlockFluidTank;
 import com.example.examplemod.block.BlockFluidDuct;
 import com.example.examplemod.block.BlockSteamEngine;
+import com.example.examplemod.block.BlockSteamEngineCasing;
 import com.example.examplemod.block.BlockSteamEngineFluidPort;
 import com.example.examplemod.block.BlockSteamEnginePowerPort;
 import com.example.examplemod.block.BlockOreBase;
@@ -64,14 +65,7 @@ public final class ModBlocks
                     .setHardness(3.0F);
 
     public static final Block STEAM_ENGINE_CASING =
-            new BlockBase(
-                    Material.IRON,
-                    "steam_engine_casing",
-                    ExampleMod.MACHINES_TAB
-            )
-                    .setSoundType(SoundType.METAL)
-                    .setHardness(3.0F)
-                    .setResistance(6.0F);
+            new BlockSteamEngineCasing();
 
     public static final Block RAW_IRON_BLOCK =
             new BlockBase(
