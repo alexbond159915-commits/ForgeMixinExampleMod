@@ -1,6 +1,9 @@
 {
-  "parent": "minecraft:block/cube_all",
+  "parent": "minecraft:block/cube_bottom_top",
   "textures": {
-    "all": "minecraft:blocks/iron_block"
+    "side": "examplemod:blocks/fluid_tank_side",
+    "top": "examplemod:blocks/fluid_tank_top",
+    "bottom": "examplemod:blocks/fluid_tank_top",
+    "particle": "examplemod:blocks/fluid_tank_side"
   }
 }

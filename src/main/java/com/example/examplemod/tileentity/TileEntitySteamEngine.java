@@ -120,6 +120,37 @@ public class TileEntitySteamEngine
     // Existing pre-redesign multiblocks get the new ports on first server tick.
     private boolean portLayoutChecked;
 
+    private void markAssembledCasingModels()
+    {
+        EnumFacing facing = getFacing();
+        for (int depth = 0; depth < 3; depth++)
+        {
+            for (int height = 0; height < 2; height++)
+            {
+                for (int width = 0; width < 2; width++)
+                {
+                    net.minecraft.util.math.BlockPos part =
+                            BlockSteamEngine.getStructurePos(
+                                    pos, facing, width, height, depth);
+                    if (!world.isBlockLoaded(part))
+                    {
+                        continue;
+                    }
+                    IBlockState partState = world.getBlockState(part);
+                    if (partState.getBlock() ==
+                            com.example.examplemod.init.ModBlocks.STEAM_ENGINE_CASING
+                            && !partState.getValue(
+                                    com.example.examplemod.block.BlockSteamEngineCasing.ASSEMBLED))
+                    {
+                        world.setBlockState(part, partState.withProperty(
+                                com.example.examplemod.block.BlockSteamEngineCasing.ASSEMBLED,
+                                true), 2);
+                    }
+                }
+            }
+        }
+    }
+
     @Override
     public void update()
     {
@@ -156,6 +187,13 @@ public class TileEntitySteamEngine
             }
 
             return;
+        }
+
+        // Existing worlds can contain casings saved before ASSEMBLED metadata
+        // existed. Convert only known machine casings; leave loose blocks alone.
+        if ((world.getTotalWorldTime() % 40L) == 0L)
+        {
+            markAssembledCasingModels();
         }
 
         if (!portLayoutChecked)

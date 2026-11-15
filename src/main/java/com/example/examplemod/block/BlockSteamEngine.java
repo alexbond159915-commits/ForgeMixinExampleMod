@@ -273,7 +273,8 @@ public class BlockSteamEngine extends BlockContainerBase
                     {
                         world.setBlockState(
                                 target,
-                                ModBlocks.STEAM_ENGINE_CASING.getDefaultState(),
+                                ModBlocks.STEAM_ENGINE_CASING.getDefaultState()
+                                        .withProperty(BlockSteamEngineCasing.ASSEMBLED, true),
                                 2
                         );
                     }
@@ -344,6 +345,25 @@ public class BlockSteamEngine extends BlockContainerBase
             int meta)
     {
         return new TileEntitySteamEngine();
+    }
+
+    @Override
+    public boolean isOpaqueCube(IBlockState state)
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isFullCube(IBlockState state)
+    {
+        return false;
+    }
+
+    @Override
+    public int getLightOpacity(IBlockState state,
+            net.minecraft.world.IBlockAccess world, BlockPos pos)
+    {
+        return 0;
     }
 
     @Override
