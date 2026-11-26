@@ -112,7 +112,7 @@ public final class SteamEngineTileRenderer
             GlStateManager.disableLighting();
             GlStateManager.disableCull();
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-            model.render(this, angle);
+            model.render(angle);
         }
         finally
         {

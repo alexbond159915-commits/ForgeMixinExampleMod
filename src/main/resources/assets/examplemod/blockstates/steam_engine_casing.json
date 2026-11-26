@@ -1,7 +1,10 @@
 {
   "variants": {
-    "normal": {
+    "assembled=false": {
       "model": "examplemod:steam_engine_casing"
+    },
+    "assembled=true": {
+      "model": "examplemod:steam_engine_empty"
     }
   }
 }

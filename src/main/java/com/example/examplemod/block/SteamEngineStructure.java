@@ -17,6 +17,26 @@ import java.util.Set;
 public final class SteamEngineStructure
 {
     private static final Set<String> DISMANTLING = new HashSet<String>();
+    // An intentional port move must not be treated as breaking the engine.
+    private static final Set<String> RECONFIGURING = new HashSet<String>();
+
+    public static void reconfigure(World world, BlockPos controller, Runnable edits)
+    {
+        String id = key(world, controller);
+        if (!RECONFIGURING.add(id))
+        {
+            return;
+        }
+        try
+        {
+            edits.run();
+        }
+        finally
+        {
+            RECONFIGURING.remove(id);
+        }
+    }
+
 
     private SteamEngineStructure() {}
 
@@ -60,7 +80,7 @@ public final class SteamEngineStructure
         BlockPos core = findController(world, part);
         if (core == null) return false;
         String id = key(world, core);
-        if (DISMANTLING.contains(id)) return true;
+        if (DISMANTLING.contains(id) || RECONFIGURING.contains(id)) return true;
         DISMANTLING.add(id);
         try
         {

@@ -1,13 +1,21 @@
 package com.example.examplemod.tileentity;
 
+import com.example.examplemod.block.BlockSteamEngine;
+import com.example.examplemod.block.BlockSteamEnginePowerPort;
+import com.example.examplemod.block.SteamEngineStructure;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 
-public class TileEntitySteamEnginePowerPort
-        extends TileEntity
+/**
+ * Copper cable output on the same rear face as both fluid connectors.
+ * The energy buffer remains on the controller.
+ */
+public class TileEntitySteamEnginePowerPort extends TileEntity
 {
     private TileEntitySteamEngine getEngine()
     {
@@ -16,79 +24,66 @@ public class TileEntitySteamEnginePowerPort
             return null;
         }
 
-        /*
-         * The power port sits above the front-right casing. The
-         * controller is one block DOWN and one block LEFT from it,
-         * relative to the machine's front. It is NOT directly below.
-         */
-        for (EnumFacing facing : EnumFacing.HORIZONTALS)
+        IBlockState state = world.getBlockState(pos);
+        if (!(state.getBlock() instanceof BlockSteamEnginePowerPort))
         {
-            BlockPos controllerPos = pos.down()
-                    .offset(facing.rotateY().getOpposite());
-            TileEntity tile = world.getTileEntity(controllerPos);
-            if (!(tile instanceof TileEntitySteamEngine))
-            {
-                continue;
-            }
-
-            TileEntitySteamEngine engine =
-                    (TileEntitySteamEngine) tile;
-            if (engine.getFacing() == facing
-                    && com.example.examplemod.block.BlockSteamEngine
-                    .getStructurePos(controllerPos, facing, 1, 1, 0)
-                    .equals(pos))
-            {
-                return engine;
-            }
+            return null;
         }
 
-        return null;
+        BlockPos controller = SteamEngineStructure.findController(world, pos);
+        if (controller == null)
+        {
+            return null;
+        }
+
+        TileEntity tile = world.getTileEntity(controller);
+        if (!(tile instanceof TileEntitySteamEngine))
+        {
+            return null;
+        }
+
+        TileEntitySteamEngine engine = (TileEntitySteamEngine) tile;
+        EnumFacing front = engine.getFacing();
+        BlockPos expected = BlockSteamEngine.getStructurePos(
+                controller, front, 1, 1, 2);
+        return expected.equals(pos)
+                && state.getValue(BlockSteamEnginePowerPort.FACING) == front
+                ? engine : null;
+    }
+
+    private boolean isCableFace(TileEntitySteamEngine engine,
+                                EnumFacing side)
+    {
+        return side == null || side == engine.getFacing().getOpposite();
     }
 
     @Override
-    public boolean hasCapability(
-            Capability<?> capability,
-            EnumFacing facing)
+    public boolean hasCapability(Capability<?> capability, EnumFacing facing)
     {
-        if (capability ==
-                CapabilityEnergy.ENERGY)
+        if (capability == CapabilityEnergy.ENERGY)
         {
-            return getEngine() != null;
+            TileEntitySteamEngine engine = getEngine();
+            return engine != null && isCableFace(engine, facing);
         }
-
-        return super.hasCapability(
-                capability,
-                facing
-        );
+        return super.hasCapability(capability, facing);
     }
 
     @Override
-    public <T> T getCapability(
-            Capability<T> capability,
-            EnumFacing facing)
+    public <T> T getCapability(Capability<T> capability, EnumFacing facing)
     {
-        if (capability ==
-                CapabilityEnergy.ENERGY)
+        if (capability == CapabilityEnergy.ENERGY)
         {
-            TileEntitySteamEngine engine =
-                    getEngine();
-
-            if (engine != null)
+            TileEntitySteamEngine engine = getEngine();
+            if (engine != null && isCableFace(engine, facing))
             {
-                return CapabilityEnergy
-                        .ENERGY
-                        .cast(
-                                engine.getCapability(
-                                        CapabilityEnergy.ENERGY,
-                                        null
-                                )
-                        );
+                IEnergyStorage buffer =
+                        engine.getCapability(CapabilityEnergy.ENERGY, null);
+                if (buffer != null)
+                {
+                    return CapabilityEnergy.ENERGY.cast(buffer);
+                }
             }
         }
-
-        return super.getCapability(
-                capability,
-                facing
-        );
+        return super.getCapability(capability, facing);
     }
 }

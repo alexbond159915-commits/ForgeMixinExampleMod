@@ -3,7 +3,7 @@ package com.example.examplemod.client;
 import com.example.examplemod.CommonProxy;
 import net.minecraft.util.EnumHand;
 import com.example.examplemod.ExampleMod;
-import com.example.examplemod.client.model.FluidDuctBakedModel;
+import com.example.examplemod.client.model.FluidDuctFixedBakedModel;
 import com.example.examplemod.fluid.TileEntityFluidPipe;
 import com.example.examplemod.init.ModBlocks;
 import net.minecraft.block.state.IBlockState;
@@ -244,13 +244,7 @@ public class ClientProxy
                             OVERLAY_TEXTURE.toString()
                     );
 
-            FluidDuctBakedModel.ObjModel obj =
-                    FluidDuctBakedModel.load(
-                            new ResourceLocation(
-                                    ExampleMod.MODID,
-                                    "models/block/pipe_neo.obj"
-                            )
-                    );
+            // Render a continuous HBM-style octagonal duct with no loose OBJ pieces.
 
             ResourceLocation ductLocation =
                     new ResourceLocation(
@@ -263,11 +257,10 @@ public class ClientProxy
                             ductLocation,
                             "normal"
                     ),
-                    new FluidDuctBakedModel(
-                            obj,
+                    new FluidDuctFixedBakedModel(
                             base,
                             overlay,
-                            true
+                            false
                     )
             );
 
@@ -276,11 +269,10 @@ public class ClientProxy
                             ductLocation,
                             "inventory"
                     ),
-                    new FluidDuctBakedModel(
-                            obj,
+                    new FluidDuctFixedBakedModel(
                             base,
                             overlay,
-                            false
+                            true
                     )
             );
 
@@ -288,7 +280,7 @@ public class ClientProxy
         catch (Exception exception)
         {
             throw new RuntimeException(
-                    "Failed to bake HBM-style fluid duct model",
+                    "Failed to bake continuous fluid duct model",
                     exception
             );
         }

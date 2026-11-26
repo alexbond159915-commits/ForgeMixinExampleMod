@@ -233,47 +233,36 @@ public class BlockSteamEngine extends BlockContainerBase
                             );
 
                     /*
-                     * Energy output block sits above the front-right casing
-                     * so the top of the controller remains available for
-                     * the steam input port.
+                     * All three ports are on the REAR wall, facing away
+                     * from the flywheel. Two black fluid sockets share
+                     * the left column; the copper FE cable uses the
+                     * upper-right block.
                      */
-                    if (width == 1 && height == 1 && depth == 0)
+                    if (depth == 2 && width == 1 && height == 1)
                     {
-                        // Front-right upper block: FE output.
-                        world.setBlockState(
-                                target,
+                        world.setBlockState(target,
                                 ModBlocks.STEAM_ENGINE_POWER_PORT.getDefaultState()
-                                        .withProperty(BlockSteamEnginePowerPort.FACING, facing),
-                                3
-                        );
+                                        .withProperty(
+                                                BlockSteamEnginePowerPort.FACING,
+                                                facing), 3);
                     }
-                    else if (width == 0 && height == 1 && depth == 0)
+                    else if (depth == 2 && width == 0)
                     {
-                        // Upper front-left block: steam inlet.
-                        world.setBlockState(
-                                target,
+                        world.setBlockState(target,
                                 ModBlocks.STEAM_ENGINE_FLUID_PORT.getDefaultState()
-                                        .withProperty(BlockSteamEngineFluidPort.FACING, facing)
-                                        .withProperty(BlockSteamEngineFluidPort.OUTPUT, false),
-                                3
-                        );
-                    }
-                    else if (width == 0 && height == 0 && depth == 1)
-                    {
-                        // Lower left-hand side: condensate outlet.
-                        world.setBlockState(
-                                target,
-                                ModBlocks.STEAM_ENGINE_FLUID_PORT.getDefaultState()
-                                        .withProperty(BlockSteamEngineFluidPort.FACING, facing)
-                                        .withProperty(BlockSteamEngineFluidPort.OUTPUT, true),
-                                3
-                        );
+                                        .withProperty(
+                                                BlockSteamEngineFluidPort.FACING,
+                                                facing)
+                                        .withProperty(
+                                                BlockSteamEngineFluidPort.OUTPUT,
+                                                height == 0), 3);
                     }
                     else
                     {
                         world.setBlockState(
                                 target,
-                                ModBlocks.STEAM_ENGINE_CASING.getDefaultState(),
+                                ModBlocks.STEAM_ENGINE_CASING.getDefaultState()
+                                        .withProperty(BlockSteamEngineCasing.ASSEMBLED, true),
                                 2
                         );
                     }
@@ -344,6 +333,25 @@ public class BlockSteamEngine extends BlockContainerBase
             int meta)
     {
         return new TileEntitySteamEngine();
+    }
+
+    @Override
+    public boolean isOpaqueCube(IBlockState state)
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isFullCube(IBlockState state)
+    {
+        return false;
+    }
+
+    @Override
+    public int getLightOpacity(IBlockState state,
+            net.minecraft.world.IBlockAccess world, BlockPos pos)
+    {
+        return 0;
     }
 
     @Override
