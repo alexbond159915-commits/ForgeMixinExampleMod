@@ -1,93 +1,96 @@
-# Steam engine — new industrial design
+# Steam engine — enclosed copper industrial redesign
 
-The assembled machine is **2 wide × 2 high × 3 deep**. The controller is the lower-left block of the front.
+This document describes the working implementation on
+`feature/steam-engine-obj-3d` for **Minecraft Forge 1.12.2 / Java 8**.
 
-### Ports (relative to the machine front)
+## Construction and appearance
 
-| Function | Position from controller | Exterior face | Forge capability |
+The machine is a **2 × 2 × 3** multiblock, using the same controller and
+structural block registry IDs as before. The controller is the bottom-left
+block of the front when facing the flywheel.
+
+- **Closed case:** the installed engine is rendered as an original, fully
+  enclosed copper-lined/gunmetal OBJ machine. There are no open cage walls.
+- **Animated front:** a larger, 24-segment copper flywheel, eight spokes,
+  an offset crank, a copper connecting rod, a geared shaft and a moving
+  copper piston. Named OBJ groups stay `Base`, `Flywheel`, `Shaft`,
+  `Transmission`, and `Piston`.
+- **Material atlas:** `textures/blocks/steam_engine_materials.png`
+  contains gunmetal, copper, brass and dark gasket materials.
+- **Inventory item:** `steam_engine_copper_item_front.png` is the static
+  copper flywheel face; `steam_engine_copper_casing.png` is the solid
+  matching block casing texture.
+- The OBJ is loaded by
+  `com.example.examplemod.client.model.SteamEngineModel` using the
+  existing tiny Wavefront parser. No new model loader dependency is added.
+
+The assembled block models remain visually empty, because the controller's
+TESR renders the *entire* multiblock. Free-standing steam-engine casing
+still renders as an ordinary full block.
+
+## Rear-only physical connections
+
+**All connections face the REAR**, opposite the flywheel/front direction.
+Connect pipes/cables to the outside of the rear (third depth) layer.
+
+| Function | Structure coordinates (width, height, depth) | Visual | Capability |
 |---|---|---|---|
-| Steam input | Up 1 | Front | `IFluidHandler`, fill only; `examplemod:steam` |
-| Condensate output | Back 1 | Left | `IFluidHandler`, drain only; `examplemod:condensate` |
-| Electrical output | Right 1 and up 1 | Top/front | FE `IEnergyStorage`, extract only |
+| Steam input | `(0,1,2)` | Upper black circular socket | `IFluidHandler` fill-only, steam |
+| Condensate output | `(0,0,2)` | Lower black circular socket | `IFluidHandler` drain-only, condensate |
+| FE output | `(1,1,2)` | Protruding copper cable/gland | `IEnergyStorage`, extraction only |
 
-The fluid ports are installed automatically as part of the multiblock and are not individual craftable machines. Pipe fluid IDs must match the port fluid. Right-click a fluid port to inspect its tank; compatible fluid containers can be inserted/extracted via right-click.
+Positions are relative to the front lower-left controller; the `width`
+axis is the controller facing's `rotateY()`. The rear external
+`EnumFacing` is always `engine.getFacing().getOpposite()`.
 
-The steam engine also keeps its original controller-side fluid capability for backwards compatibility. The power port delegates its FE buffer to the real controller (previously it incorrectly checked directly below the power port).
+The two fluid sockets have separate capability handlers and use the
+existing controller tanks. The FE cable delegates to the same stored
+energy buffer as before. No new inventory or duplicate fluid storage
+is created.
 
-After upgrading an existing world, the controller replaces only the original casing at the designated port positions on its first server tick. It does not overwrite arbitrary nearby blocks.
+The controller itself no longer exposes *sided* fluid access at the
+front/left. Un-sided internal fluid access remains for compatibility.
 
-### Textures
+## Save migration and dismantling
 
-The **`steam_engine_atlas.png`** texture is a 4×4 grid, 256×256 pixels total, with 64×64 pixels per face. All machine models point to this single texture using per-face UV coordinates.
+On the first server tick after load, the controller reconciles the
+eleven existing structural part positions:
 
-| Slot | Face |
-|---|---|
-| 0 | Front flywheel and gauges |
-| 1 | Rear access panel |
-| 2 | Left copper piping |
-| 3 | Right copper piping |
-| 4 | Top boiler hatch |
-| 5 | Bottom armored plate |
-| 6 | Repeatable steel casing |
-| 7 | Cyan steam inlet |
-| 8 | Copper condensate outlet |
-| 9 | Gold FE power outlet |
+- Any old front steam/energy or left condensate port is converted into
+  assembled casing.
+- The three new rear slots receive their actual fluid/energy port
+  blocks. No unrelated neighboring block is overwritten.
+- The conversion runs under `SteamEngineStructure.reconfigure()`, which
+  blocks the normal break-triggered teardown while positions are moved.
+- Both fluid contents and saved FE remain on the controller; they are not
+  moved into the port blocks.
+- Later breaking a normal part still dismantles the **whole** multiblock
+  as usual, with one engine item in survival and none in creative.
 
-The look is original HBM-inspired dark steel/copper industrial pixel art, not a copy of HBM's assets. For the controller's front face, an existing TESR still renders the animated flywheel on top of the panel.
+Old pipes connected to the previous faces must be reconnected to the
+new rear panel.
 
-### Technical notes
+## Manual verification
 
-- This project targets Forge 1.12.2 / Java 8.
-- Steam and condensate are now saved under separate NBT compounds.
-- The split fluid port forwards Forge capabilities to the controller's existing steam and condensate tanks. No duplicate tank data is stored in the ports.
+1. Pull branch `feature/steam-engine-obj-3d`, run `gradlew.bat clean runClient`.
+2. Place a new engine facing each of the four horizontal directions.
+3. Confirm that the copper body is closed and the flywheel, rod and
+   piston animate without leaving the front casing.
+4. Confirm that BOTH black pipe sockets and the copper cable are
+   on the *same rear wall*, with neither an extra top nor side port.
+5. Connect a fluid pipe to the upper black socket and supply steam.
+6. Verify that condensate is available through the lower socket and
+   power extracts only through the rear FE port.
+7. Reload an existing world and inspect the automatic relocation of old
+   ports. Reconnect existing pipes to the rear side.
+8. Break controller, casing, steam inlet, condensate outlet and FE port
+   separately in test worlds; each must dismantle the entire structure,
+   without item duplication.
+9. Ensure a stand-alone crafted casing retains its own block model.
 
+## Design notes
 
-## Fully volumetric 3D model (feature/steam-engine-obj-3d)
-
-The assembled machine now renders **one coherent, original OBJ model** over the
-entire 2 wide × 2 high × 3 deep multiblock, rather than twelve visible cubic
-blocks with a decorative flywheel on the front.
-
-- `src/main/resources/assets/examplemod/models/machines/steam_engine.obj`
-  has five named parts: `Base`, `Flywheel`, `Shaft`, `Transmission`,
-  `Piston`. It may be edited in Blender using these object names.
-- `client/model/SteamEngineModel.java` loads those parts at runtime and
-  renders them using the existing `steam_engine_materials.png` palette.
-  The renderer uses only Forge 1.12.2 and Java 8 APIs, with no OBJLoader
-  dependency.
-- The 3D base includes a boiler cylinder with bands, exposed metal chassis,
-  radiator grilles, flanged steam/energy/condensate ports, industrial copper
-  piping, bearings, bolt details and a mechanical piston housing.
-- `Flywheel` rotates; `Shaft` spins at double rotor speed;
-  `Transmission` follows an exact fixed-length crank-slider linkage;
-  `Piston` slides accordingly.
-- The controller, energy port and fluid ports render empty static models.
-  This is intentional: their visible shapes are part of the OBJ.
-- `BlockSteamEngineCasing.ASSEMBLED` is a saved block state. A casing placed
-  alone retains its normal full-cube model; a casing assembled into the
-  steam engine uses an empty block model. The controller upgrades older
-  assembled casing metadata as the world runs.
-- Assembled parts are no longer visually opaque or light-blocking so the
-  TESR is not unnaturally black. Server mechanics, block collision and
-  existing fluid/FE capability locations are unchanged.
-
-**Port positions (relative to the front):** steam inlet upper front-left,
-FE output upper front-right and condensate outlet one block behind the
-controller on the machine's left side.
-
-The **item icon** still uses `steam_engine_item.json`; only the installed
-multiblock is drawn using the new OBJ.
-
-### Manual validation checklist
-
-1. Build using Java 8 and Forge 1.12.2, then place a new steam engine.
-2. Verify free-standing casings stay solid and the assembled machine is 3D.
-3. Look at all four orientations and confirm port faces align with connections.
-4. Supply steam; confirm spinning wheel, moving rod and piston, FE output,
-   and condensate production.
-5. Break any casing/port: verify full multiblock teardown and single drop.
-6. Reload a saved world built with the older engine; check casing appearance
-   updates and no floating cube faces remain.
-
-The HBM model/renderer was consulted for the five-part animation
-architecture, but its geometry and textures were not copied.
+The HBM CE steam engine renderer was inspected for the practice of
+separately animated `Base`, `Flywheel`, `Shaft`, `Transmission` and
+`Piston` groups, but this repo uses its own OBJ geometry, UV/materials,
+and visual design rather than copying HBM art assets.
