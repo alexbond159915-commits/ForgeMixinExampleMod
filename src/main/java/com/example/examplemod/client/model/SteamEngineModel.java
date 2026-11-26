@@ -45,23 +45,23 @@ public final class SteamEngineModel
             new ResourceLocation(ExampleMod.MODID,
                     "textures/blocks/steam_engine_materials.png");
 
-    // OBJ UV columns map to the four tiles in steam_engine_materials.png.
-    // Dark industrial palette: gunmetal steel, aged copper, muted brass,
-    // and nearly-black ventilation. The pixel texture itself stays intact.
+    // The OBJ now has a closed copper-lined body and separate bright
+    // copper animated meshes. Don't darken the metal as was done before.
+    // The color and weathering are baked into the material texture.
     private static final float[][] MATERIAL_TINT = {
-            {0.63F, 0.66F, 0.69F}, // dark gunmetal / frame / boiler
-            {0.83F, 0.74F, 0.61F}, // aged copper piping
-            {0.83F, 0.77F, 0.62F}, // worn brass / flywheel
-            {0.58F, 0.61F, 0.64F}  // dark grilles / vents
+            {0.93F, 0.93F, 0.94F}, // graphite steel
+            {1.00F, 0.98F, 0.97F}, // visible copper machinery
+            {1.00F, 1.00F, 0.98F}, // brass highlights and bolts
+            {0.95F, 0.95F, 0.96F}  // black pipe bores / grilles
     };
 
     // Mathematically exact crank-slider linkage in the front X/Y plane.
-    private static final float WHEEL_X = -1.01F;
-    private static final float WHEEL_Y = -0.08F;
-    private static final float WHEEL_Z = 0.80F;
-    private static final float CRANK_RADIUS = 0.23F;
-    private static final float ROD_LENGTH = 1.08F;
-    private static final float SLIDER_Y = -0.10F;
+    private static final float WHEEL_X = -1.02F;
+    private static final float WHEEL_Y = 0.43F;
+    private static final float WHEEL_Z = 0.78F;
+    private static final float CRANK_RADIUS = 0.28F;
+    private static final float ROD_LENGTH = 1.10F;
+    private static final float SLIDER_Y = 0.46F;
 
     // Each float[8] is x,y,z,u,v,nx,ny,nz for one triangle vertex.
     private Map<String, List<float[]>> mesh;
@@ -83,7 +83,7 @@ public final class SteamEngineModel
         GlStateManager.popMatrix();
 
         GlStateManager.pushMatrix();
-        GlStateManager.translate(-0.19F, 0.32F, 0.75F);
+        GlStateManager.translate(0.11F, 1.16F, 0.77F);
         GlStateManager.rotate(-2.0F * rotorAngle, 0F, 0F, 1F);
         renderPart("Shaft");
         GlStateManager.popMatrix();
@@ -105,7 +105,7 @@ public final class SteamEngineModel
         GlStateManager.popMatrix();
 
         GlStateManager.pushMatrix();
-        GlStateManager.translate(sliderX, SLIDER_Y, 0.75D);
+        GlStateManager.translate(sliderX, SLIDER_Y, 0.78D);
         renderPart("Piston");
         GlStateManager.popMatrix();
     }
@@ -135,7 +135,7 @@ public final class SteamEngineModel
             // Subtle directional shading improves the heavy industrial
             // silhouette without altering normals or rotor animation.
             float light = v[6] > 0.4F ? 1.0F :
-                    (v[6] < -0.4F ? 0.80F : 0.89F);
+                    (v[6] < -0.4F ? 0.83F : 0.96F);
 
             builder.pos(v[0], v[1], v[2])
                     .tex(v[3], v[4])
