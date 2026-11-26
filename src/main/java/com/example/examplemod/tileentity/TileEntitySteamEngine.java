@@ -491,7 +491,9 @@ public class TileEntitySteamEngine
         if (capability ==
                 CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
         {
-            return facing == null || isFluidSide(facing);
+            // All physical pipe hookups now live on the rear ports.
+            // Keep un-sided access for internal tools and compatibility.
+            return facing == null;
         }
 
         /*
@@ -524,19 +526,6 @@ public class TileEntitySteamEngine
                         .cast(allFluidHandler);
             }
 
-            if (isSteamInputSide(this, facing))
-            {
-                return CapabilityFluidHandler
-                        .FLUID_HANDLER_CAPABILITY
-                        .cast(steamHandler);
-            }
-
-            if (isCondensateOutputSide(this, facing))
-            {
-                return CapabilityFluidHandler
-                        .FLUID_HANDLER_CAPABILITY
-                        .cast(condensateHandler);
-            }
         }
 
         if (capability == CapabilityEnergy.ENERGY
