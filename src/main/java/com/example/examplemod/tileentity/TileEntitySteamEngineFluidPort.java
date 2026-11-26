@@ -25,26 +25,38 @@ public class TileEntitySteamEngineFluidPort
         {
             return null;
         }
+
         IBlockState state = world.getBlockState(pos);
         if (!(state.getBlock() instanceof BlockSteamEngineFluidPort))
         {
             return null;
         }
-        EnumFacing facing = state.getValue(BlockSteamEngineFluidPort.FACING);
-        boolean output = state.getValue(BlockSteamEngineFluidPort.OUTPUT);
-        BlockPos controllerPos = output ? pos.offset(facing) : pos.down();
-        TileEntity tile = world.getTileEntity(controllerPos);
+
+        BlockPos controller = com.example.examplemod.block.SteamEngineStructure
+                .findController(world, pos);
+        if (controller == null)
+        {
+            return null;
+        }
+
+        TileEntity tile = world.getTileEntity(controller);
         if (!(tile instanceof TileEntitySteamEngine))
         {
             return null;
         }
+
         TileEntitySteamEngine engine = (TileEntitySteamEngine) tile;
-        if (engine.getFacing() != facing)
+        EnumFacing front = engine.getFacing();
+        boolean output = state.getValue(BlockSteamEngineFluidPort.OUTPUT);
+        if (state.getValue(BlockSteamEngineFluidPort.FACING) != front)
         {
             return null;
         }
+
+        // Both sockets are on the rear column: upper = steam inlet,
+        // lower = condensate outlet.
         BlockPos expected = BlockSteamEngine.getStructurePos(
-                controllerPos, facing, 0, output ? 0 : 1, output ? 1 : 0);
+                controller, front, 0, output ? 0 : 1, 2);
         return expected.equals(pos) ? engine : null;
     }
 
@@ -65,7 +77,7 @@ public class TileEntitySteamEngineFluidPort
         }
         IBlockState state = world.getBlockState(pos);
         EnumFacing front = state.getValue(BlockSteamEngineFluidPort.FACING);
-        return side == (isOutput() ? front.rotateYCCW() : front);
+        return side == front.getOpposite();
     }
 
     @Override
