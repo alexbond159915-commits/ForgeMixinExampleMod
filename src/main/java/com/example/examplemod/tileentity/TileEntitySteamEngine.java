@@ -471,16 +471,14 @@ public class TileEntitySteamEngine
             TileEntitySteamEngine engine,
             EnumFacing side)
     {
-        return engine.getFacing() == side;
+        return engine.getFacing().getOpposite() == side;
     }
 
     public static boolean isCondensateOutputSide(
             TileEntitySteamEngine engine,
             EnumFacing side)
     {
-        return engine.getFacing()
-                .rotateYCCW()
-                == side;
+        return engine.getFacing().getOpposite() == side;
     }
 
     @Override
